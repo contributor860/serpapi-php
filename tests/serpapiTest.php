@@ -30,7 +30,7 @@ class serpapiTest extends \PHPUnit\Framework\TestCase {
   function test_get_account() {
     $search = new SerpApiSearch($this->API_KEY);
     $response = $search->get_account();
-    $this->assertEquals($this->API_KEY, $response->api_key);
+    $this->assertEquals($this->API_KEY, $response->api_key, '('.$this->API_KEY.') API key error');
   }
 
   function test_if_miss_parametrs_in_get_html() {
