@@ -1,5 +1,8 @@
 <?php
 
+  /***
+   * In case converted from old library.
+   */
 class GoogleSearch extends SerpApiSearch {
   public function __construct($api_key) {
     parent::__construct($api_key);
@@ -14,9 +17,12 @@ class SerpApiSearch {
     $this->set_api_key($api_key);
   }
 
+  /***
+   * Validate API_KEY.
+   */
   function set_api_key($api_key = null) {
     if($api_key == null) {
-      throw new SerpApiSearchException("serp_api_key must have a value");
+      throw new SerpApiSearchException("API_KEY must be present");
     }
 
     $this->_api_key = $api_key;
@@ -48,38 +54,54 @@ class SerpApiSearch {
     
     if($this->_output == 'json') {
       $error = $result->decode_response();
-      throw new SerpApiSearchException('('.$this->_api_key.') - '.$error->error);
+      throw new SerpApiSearchException($error->error);
     }
     
     throw new SerpApiSearchException("Unexpected exception: $result->response");
   }
-
+  /**
+   * Run a search
+   */
   function search($parameters = []) {
     if(!is_array($parameters) || count($parameters) == 0) {
-      throw new SerpApiSearchException("parameters must be array and has value");
+      throw new SerpApiSearchException("parameters must be an array and has a value");
     }
 
     return $this->query('/search', $parameters);
   }
 
+  /***
+   * get_json 
+   * @return [Hash] search result "json like"
+   */
   function get_json($parameters = []) {
     $this->_output = 'json';
 
     return $this->search($parameters);
   }
 
+  /***
+   * get_html
+   * @return [String] raw html search result
+   */
   function get_html($parameters = []) {
     $this->_output = 'html';
 
     return $this->search($parameters);
   }
   
+ /***
+  * Get account information using Account API
+  */
   function get_account() {
     $this->_output = 'json';
 
     return $this->query('/account', []);
   }
 
+  /***
+   * Get location using Location API 
+   */
   function get_location($q = 'Austin', $limit = 3) {
     $this->_output = 'json';
 
@@ -90,9 +112,12 @@ class SerpApiSearch {
     return $this->query("/locations.json", $query);
   }
 
+  /***
+   * Retrieve search result from the Search Archive API
+   */
   function get_search_archive($search_id = null) {
     if($search_id == null) {
-      throw new SerpApiSearchException("must be enter the search id");
+      throw new SerpApiSearchException("search_id must be present");
     }
 
     $this->_output = 'json';

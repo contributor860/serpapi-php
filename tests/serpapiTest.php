@@ -18,7 +18,7 @@ class serpapiTest extends \PHPUnit\Framework\TestCase {
 
   function test_if_API_key_not_exist() {
     $this->expectException(SerpApiSearchException::class);
-    $this->expectExceptionMessage('serp_api_key must have a value');
+    $this->expectExceptionMessage('API_KEY must be present');
     new SerpApiSearch();
   }
 
@@ -37,7 +37,7 @@ class serpapiTest extends \PHPUnit\Framework\TestCase {
 
   function test_if_miss_parametrs_in_get_html() {
     $this->expectException(SerpApiSearchException::class);
-    $this->expectExceptionMessage('parameters must be array and has value');
+    $this->expectExceptionMessage('parameters must be an array and has a value');
     $search = new SerpApiSearch($this->API_KEY);
     $search->get_html();
   }
@@ -50,7 +50,7 @@ class serpapiTest extends \PHPUnit\Framework\TestCase {
   
   function test_if_miss_parametrs_in_get_json() {
     $this->expectException(SerpApiSearchException::class);
-    $this->expectExceptionMessage('parameters must be array and has value');
+    $this->expectExceptionMessage('parameters must be an array and has a value');
     $search = new SerpApiSearch($this->API_KEY);
     $search->get_json();
   }
@@ -71,7 +71,7 @@ class serpapiTest extends \PHPUnit\Framework\TestCase {
 
   function test_get_search_archive_if_miss_id() {
     $this->expectException(SerpApiSearchException::class);
-    $this->expectExceptionMessage('must be enter the search id');
+    $this->expectExceptionMessage('search_id must be present.');
     $client = new SerpApiSearch($this->API_KEY);
     $client->get_search_archive();
   }
