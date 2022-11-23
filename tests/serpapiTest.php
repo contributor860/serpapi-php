@@ -71,7 +71,7 @@ class serpapiTest extends \PHPUnit\Framework\TestCase {
 
   function test_get_search_archive_if_miss_id() {
     $this->expectException(SerpApiSearchException::class);
-    $this->expectExceptionMessage('search_id must be present.');
+    $this->expectExceptionMessage('search_id must be present');
     $client = new SerpApiSearch($this->API_KEY);
     $client->get_search_archive();
   }
