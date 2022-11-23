@@ -48,7 +48,7 @@ class SerpApiSearch {
     
     if($this->_output == 'json') {
       $error = $result->decode_response();
-      throw new SerpApiSearchException($error->error);
+      throw new SerpApiSearchException('('.$this->_api_key.') - '.$error->error);
     }
     
     throw new SerpApiSearchException("Unexpected exception: $result->response");
