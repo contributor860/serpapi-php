@@ -31,8 +31,12 @@ class SerpApiSearch {
   function query($path = null, $query = null) {
 
     $api = new RestClient([
-      'base_url' => "https://serpapi.com",
-      'user_agent' => 'google-search-results-php/2.0.0'
+      'base_url'      => "https://serpapi.com",
+      'user_agent'    => 'serpapi-php/1.0.0',
+      'curl_options'  => [
+        CURLOPT_SSL_VERIFYHOST => 0,
+        CURLOPT_SSL_VERIFYPEER => 0,
+      ]
     ]);
 
     $default_query = [
