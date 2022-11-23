@@ -3,15 +3,17 @@
 class serpapiTest extends \PHPUnit\Framework\TestCase {
   protected function setUp(): void {
     $this->QUERY = [
-     'q' => "Coffee", 
-     'location' => "Austin,Texas"
-   ];
+      'q' => "Coffee", 
+      'location' => "Austin,Texas"
+    ];
 
-   if(isset($_ENV["API_KEY"])) {
-     $this->API_KEY = $_ENV["API_KEY"];
-   } else {
-     $this->API_KEY = "demo";
-   }
+    if(isset($_ENV["API_KEY"])) {
+      $this->API_KEY = $_ENV["API_KEY"];
+    } elseif(getenv('API_KEY')) {
+      $this->API_KEY = getenv('API_KEY');
+    } else {
+      $this->API_KEY = "demo";
+    }
  }
 
   function test_if_API_key_not_exist() {
