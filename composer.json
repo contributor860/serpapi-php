@@ -1,0 +1,66 @@
+{
+    "name": "serpapi/serpapi-php",
+    "description": "Get Google, Bing, Baidu, Ebay, Yahoo, Yandex, Home depot, Naver, Apple, Duckduckgo, Yelp and Youtube search results via SerpApi.com",
+    "type": "library",
+    "keywords": [
+        "Google",
+        "Serp",
+        "Search",
+        "Result",
+        "Google",
+        "Youtube",
+        "Walmart",
+        "Yandex",
+        "Localisation",
+        "REST",
+        "api",
+        "client",
+        "curl",
+        "JSON",
+        "XML",
+        "naver",
+        "duckduckgo",
+        "apple",
+        "store",
+        "naver",
+        "homedepot",
+        "datamining",
+        "ml",
+        "learning",
+        "scrape"
+    ],
+    "homepage": "http://github.com/serpapi/serpapi-php",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Alaa Abdulridha",
+            "role": "Software Engineer",
+            "email": "alaa@serpapi.com"
+        }
+    ],
+    "support": {
+        "issues": "http://github.com/serpapi/serpapi-php/issues"
+    },
+    "require": {
+        "tcdent/php-restclient": "0.1.8.1",
+        "php": "^7.0 || ^8.1",
+        "ext-curl": "*",
+        "ext-json": "*"
+    },
+    "require-dev": {
+        "phpunit/phpunit": "^9.5",
+        "php": "^7.0 || ^8.1"
+    },
+    "autoload": {
+        "files": [
+            "src/serpapi.php"
+        ]
+    },
+    "scripts": {
+        "test": "phpunit tests/serpapiTest.php"
+    },
+    "config": {
+        "platform-check": false
+    }
+
+}

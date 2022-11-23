@@ -1,0 +1,9 @@
+vendor/*
+.vscode/*
+
+# MacOS Specific
+.DS_Store
+
+composer.lock
+composer.phar
+tmp/
