@@ -12,7 +12,7 @@ class GoogleSearch extends SerpApiSearch {
 class SerpApiSearch {
   private $_api_key;
   private $_output = 'json';
-  
+
   function __construct($api_key = null) {
     $this->set_api_key($api_key);
   }
@@ -55,12 +55,12 @@ class SerpApiSearch {
 
       return $result->decode_response();
     }
-    
+
     if($this->_output == 'json') {
       $error = $result->decode_response();
       throw new SerpApiSearchException($error->error);
     }
-    
+
     throw new SerpApiSearchException("Unexpected exception: $result->response");
   }
   /**
@@ -75,7 +75,7 @@ class SerpApiSearch {
   }
 
   /***
-   * get_json 
+   * get_json
    * @return [Hash] search result "json like"
    */
   function get_json($parameters = []) {
@@ -93,7 +93,7 @@ class SerpApiSearch {
 
     return $this->search($parameters);
   }
-  
+
  /***
   * Get account information using Account API
   */
@@ -104,13 +104,13 @@ class SerpApiSearch {
   }
 
   /***
-   * Get location using Location API 
+   * Get location using Location API
    */
   function get_location($q = 'Austin', $limit = 3) {
     $this->_output = 'json';
 
     $query = [
-      'q' => $q, 
+      'q' => $q,
       'limit' => $limit
     ];
     return $this->query("/locations.json", $query);
