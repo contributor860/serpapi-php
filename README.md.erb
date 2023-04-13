@@ -1,86 +1,254 @@
+<%-
+def snippet(format, path)
+ slice = File.new(path).readlines[2..-1]
+ buf = slice.map { |l| l.gsub(/()/, '')}.join
+ %Q(```#{format}\n#{buf}```\ntest: #{path})
+end
+-%>
+
+# Google Search Results in PHP
+
+This PHP API is meant to scrape and parse Google, Bing, Apple, Baidu, Naver and more results using [SerpApi](https://serpapi.com).
+
+
+[The full documentation is available here.](https://serpapi.com/search-api)
+
+The following services are provided:
+ * [Search API](https://serpapi.com/search-api)
+ * [Location API](https://serpapi.com/locations-api)
+ * [Search Archive API](https://serpapi.com/search-archive-api)
+ * [Account API](https://serpapi.com/account-api)
+
+SerpApi provides a [script builder](https://serpapi.com/demo) to get you started quickly.
+
+## Installation
+
+ PHP 7+ must be already installed and [composer](https://getcomposer.org/) dependency management tool.
+
+ Package available from packagist.
+
+## Quick start
+
+if you're using composer, you can add this package ([link to packagist](https://packagist.org/packages/serpapi/google-search-results-php)).
+```bash
+$ composer require serpapi/google-search-results-php
+```
+
+Then you need to load the dependency in your script.
+```
+<?php
+require __DIR__ . '/vendor/autoload.php';
+ ?>
+```
+
+if not, you must clone this repository and link the class.
+```php
+require 'path/to/serpapi-php';
+
+```
+
+Get "your secret key" from https://serpapi.com/dashboard
+
+Then you can start coding something like:
+```php
+require 'vendor/autoload.php';
+$query = [
+  "engine" => "naver",
+  "query" => "paris",
+];
+
+$search = new SerpApiSearch('YOUR API KEY HERE');
+$result = $search->get_json($query);
+print_r($result)
+
+ ```
+
+This example runs a search about "coffee" using your secret api key.
+
+The SerpApi service (backend)
+ - searches on Google using the query: q = "coffee"
+ - parses the messy HTML responses
+ - return a standardizes JSON response
+The PHP class SerpApiSearch
+ - Format the request to SerpApi server
+ - Execute GET http request
+ - Parse JSON into Ruby Hash using JSON standard library provided by Ruby
+Et voila..
+
+### How to set SERP API key
+The SerpApi api_key can be set globally using a singleton pattern.
+
+```php
+$client = new SerpApiSearch();
+$client->set_serp_api_key("Your Private Key");
+
+```
+Or
+
+```php
+$client = new SerpApiSearch("Your Private Key");
+
+```
+
 ## Examples in php
 Here is how to calls the APIs
 
-    ### Search bing
-    <%= snippet('php', 'tests/example_search_bing_test.php') %>
-    see: [https://serpapi.com/bing-search-api](https://serpapi.com/bing-search-api)
+### Search Archive API
 
-    ### Search baidu
-    <%= snippet('php', 'tests/example_search_baidu_test.php') %>
-    see: [https://serpapi.com/baidu-search-api](https://serpapi.com/baidu-search-api)
+Let's run a search to get a search_id.
+```php
+$client = SerpApiSearch(getenv("API_KEY"));
+$result = $client->get_json($this->QUERY);
+$search_id = $result->search_metadata->id
 
-    ### Search yahoo
-    <%= snippet('php', 'tests/example_search_yahoo_test.php') %>
-    see: [https://serpapi.com/yahoo-search-api](https://serpapi.com/yahoo-search-api)
+```
 
-    ### Search youtube
-    <%= snippet('php', 'tests/example_search_youtube_test.php') %>
-    see: [https://serpapi.com/youtube-search-api](https://serpapi.com/youtube-search-api)
 
-    ### Search walmart
-    <%= snippet('php', 'tests/example_search_walmart_test.php') %>
-    see: [https://serpapi.com/walmart-search-api](https://serpapi.com/walmart-search-api)
+Now let's retrieve the previous search from the archive.
 
-    ### Search ebay
-    <%= snippet('php', 'tests/example_search_ebay_test.php') %>
-    see: [https://serpapi.com/ebay-search-api](https://serpapi.com/ebay-search-api)
+```php
+$archived_result = $client->get_search_archive($search_id);
+print_r($archived_result);
 
-    ### Search naver
-    <%= snippet('php', 'tests/example_search_naver_test.php') %>
-    see: [https://serpapi.com/naver-search-api](https://serpapi.com/naver-search-api)
+```
+it prints the search from the archive.
 
-    ### Search home depot
-    <%= snippet('php', 'tests/example_search_home_depot_test.php') %>
-    see: [https://serpapi.com/home-depot-search-api](https://serpapi.com/home-depot-search-api)
+### Account API
+```php
+$client = new SerpApiSearch($this->API_KEY);
+$info = $client->get_account();
+print_r($info);
 
-    ### Search apple app store
-    <%= snippet('php', 'tests/example_search_apple_app_store_test.php') %>
-    see: [https://serpapi.com/apple-app-store](https://serpapi.com/apple-app-store)
+```
+it prints your account information.
 
-    ### Search duckduckgo
-    <%= snippet('php', 'tests/example_search_duckduckgo_test.php') %>
-    see: [https://serpapi.com/duckduckgo-search-api](https://serpapi.com/duckduckgo-search-api)
+### Search Google Images
 
-    ### Search google
-    <%= snippet('php', 'tests/example_search_google_test.php') %>
-    see: [https://serpapi.com/search-api](https://serpapi.com/search-api)
+```php
+$client = new SerpApiSearch(getenv("API_KEY"));
+$data = $client->get_json([
+  'q' => "Coffee",
+  'tbm' => 'isch'
+]);
 
-    ### Search google scholar
-    <%= snippet('php', 'tests/example_search_google_scholar_test.php') %>
-    see: [https://serpapi.com/google-scholar-api](https://serpapi.com/google-scholar-api)
+foreach($data->images_results as $image_result) {
+  print_r($image_result->original);
+  //to download the image:
+  // `wget #{image_result[:original]}`
+}
+```
 
-    ### Search google autocomplete
-    <%= snippet('php', 'tests/example_search_google_autocomplete_test.php') %>
-    see: [https://serpapi.com/google-autocomplete-api](https://serpapi.com/google-autocomplete-api)
 
-    ### Search google product
-    <%= snippet('php', 'tests/example_search_google_product_test.php') %>
-    see: [https://serpapi.com/google-product-api](https://serpapi.com/google-product-api)
 
-    ### Search google reverse image
-    <%= snippet('php', 'tests/example_search_google_reverse_image_test.php') %>
-    see: [https://serpapi.com/google-reverse-image](https://serpapi.com/google-reverse-image)
+### Search bing
+<%= snippet('php', 'tests/example_search_bing_test.php') %>
+see: [https://serpapi.com/bing-search-api](https://serpapi.com/bing-search-api)
 
-    ### Search google events
-    <%= snippet('php', 'tests/example_search_google_events_test.php') %>
-    see: [https://serpapi.com/google-events-api](https://serpapi.com/google-events-api)
+### Search baidu
+<%= snippet('php', 'tests/example_search_baidu_test.php') %>
+see: [https://serpapi.com/baidu-search-api](https://serpapi.com/baidu-search-api)
 
-    ### Search google local services
-    <%= snippet('php', 'tests/example_search_google_local_services_test.php') %>
-    see: [https://serpapi.com/google-local-services-api](https://serpapi.com/google-local-services-api)
+### Search yahoo
+<%= snippet('php', 'tests/example_search_yahoo_test.php') %>
+see: [https://serpapi.com/yahoo-search-api](https://serpapi.com/yahoo-search-api)
 
-    ### Search google maps
-    <%= snippet('php', 'tests/example_search_google_maps_test.php') %>
-    see: [https://serpapi.com/google-maps-api](https://serpapi.com/google-maps-api)
+### Search youtube
+<%= snippet('php', 'tests/example_search_youtube_test.php') %>
+see: [https://serpapi.com/youtube-search-api](https://serpapi.com/youtube-search-api)
 
-    ### Search google jobs
-    <%= snippet('php', 'tests/example_search_google_jobs_test.php') %>
-    see: [https://serpapi.com/google-jobs-api](https://serpapi.com/google-jobs-api)
+### Search walmart
+<%= snippet('php', 'tests/example_search_walmart_test.php') %>
+see: [https://serpapi.com/walmart-search-api](https://serpapi.com/walmart-search-api)
 
-    ### Search google play
-    <%= snippet('php', 'tests/example_search_google_play_test.php') %>
-    see: [https://serpapi.com/google-play-api](https://serpapi.com/google-play-api)
+### Search ebay
+<%= snippet('php', 'tests/example_search_ebay_test.php') %>
+see: [https://serpapi.com/ebay-search-api](https://serpapi.com/ebay-search-api)
 
-    ### Search google
-    <%= snippet('php', 'tests/example_search_google_test.php') %>
-    see: [https://serpapi.com/search-api](https://serpapi.com/search-api)
+### Search naver
+<%= snippet('php', 'tests/example_search_naver_test.php') %>
+see: [https://serpapi.com/naver-search-api](https://serpapi.com/naver-search-api)
+
+### Search home depot
+<%= snippet('php', 'tests/example_search_home_depot_test.php') %>
+see: [https://serpapi.com/home-depot-search-api](https://serpapi.com/home-depot-search-api)
+
+### Search apple app store
+<%= snippet('php', 'tests/example_search_apple_app_store_test.php') %>
+see: [https://serpapi.com/apple-app-store](https://serpapi.com/apple-app-store)
+
+### Search duckduckgo
+<%= snippet('php', 'tests/example_search_duckduckgo_test.php') %>
+see: [https://serpapi.com/duckduckgo-search-api](https://serpapi.com/duckduckgo-search-api)
+
+### Search google
+<%= snippet('php', 'tests/example_search_google_test.php') %>
+see: [https://serpapi.com/search-api](https://serpapi.com/search-api)
+
+### Search google scholar
+<%= snippet('php', 'tests/example_search_google_scholar_test.php') %>
+see: [https://serpapi.com/google-scholar-api](https://serpapi.com/google-scholar-api)
+
+### Search google autocomplete
+<%= snippet('php', 'tests/example_search_google_autocomplete_test.php') %>
+see: [https://serpapi.com/google-autocomplete-api](https://serpapi.com/google-autocomplete-api)
+
+### Search google product
+<%= snippet('php', 'tests/example_search_google_product_test.php') %>
+see: [https://serpapi.com/google-product-api](https://serpapi.com/google-product-api)
+
+### Search google reverse image
+<%= snippet('php', 'tests/example_search_google_reverse_image_test.php') %>
+see: [https://serpapi.com/google-reverse-image](https://serpapi.com/google-reverse-image)
+
+### Search google events
+<%= snippet('php', 'tests/example_search_google_events_test.php') %>
+see: [https://serpapi.com/google-events-api](https://serpapi.com/google-events-api)
+
+### Search google local services
+<%= snippet('php', 'tests/example_search_google_local_services_test.php') %>
+see: [https://serpapi.com/google-local-services-api](https://serpapi.com/google-local-services-api)
+
+### Search google maps
+<%= snippet('php', 'tests/example_search_google_maps_test.php') %>
+see: [https://serpapi.com/google-maps-api](https://serpapi.com/google-maps-api)
+
+### Search google jobs
+<%= snippet('php', 'tests/example_search_google_jobs_test.php') %>
+see: [https://serpapi.com/google-jobs-api](https://serpapi.com/google-jobs-api)
+
+### Search google play
+<%= snippet('php', 'tests/example_search_google_play_test.php') %>
+see: [https://serpapi.com/google-play-api](https://serpapi.com/google-play-api)
+
+### Search google
+<%= snippet('php', 'tests/example_search_google_test.php') %>
+see: [https://serpapi.com/search-api](https://serpapi.com/search-api)
+
+
+## Composer example
+
+To run the code.
+ - git clone https://github.com/serpapi/serpapi-php
+ - cd serpapi-php
+ - composer install
+ - composer update
+
+
+## Change log
+
+ * 1.0
+   * First stable version
+
+## Conclusion
+
+SerpApi supports all the major search engines. Google has the more advance support with all the major services available: Images, News, Shopping and more...
+
+[The full documentation is available here.](https://serpapi.com/search-api)
+
+Authors: Victor Benarbia victor@serpapi.com, Alaa Abdulridha alaa@serpapi.com
+For more information: https://serpapi.com
+
+Thanks Rest API for Php
+ - Travis Dent  - https://github.com/tcdent/php-restclient
+ - Test framework - PhpUnit - https://phpunit.de/getting-started/phpunit-7.html
+
