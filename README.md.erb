@@ -6,9 +6,11 @@ def snippet(format, path)
 end
 -%>
 
-# Google Search Results in PHP
+# SerpApi PHP integration library
 
 This PHP API is meant to scrape and parse Google, Bing, Apple, Baidu, Naver and more results using [SerpApi](https://serpapi.com).
+
+This is the new library provided by SerpApi as a replacement for our old library that can be found [here](https://github.com/serpapi/google-search-results-php) feel free to contact us in case you needed any help: contact@serpapi.com
 
 
 [The full documentation is available here.](https://serpapi.com/search-api)
@@ -29,13 +31,13 @@ SerpApi provides a [script builder](https://serpapi.com/demo) to get you started
 
 ## Quick start
 
-if you're using composer, you can add this package ([link to packagist](https://packagist.org/packages/serpapi/google-search-results-php)).
+if you're using composer, you can add this package ([link to packagist](https://packagist.org/packages/serpapi/serpapi-php)).
 ```bash
-$ composer require serpapi/google-search-results-php
+$ composer require serpapi/serpapi-php
 ```
 
 Then you need to load the dependency in your script.
-```
+```php
 <?php
 require __DIR__ . '/vendor/autoload.php';
  ?>
