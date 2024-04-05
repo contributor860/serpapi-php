@@ -22,9 +22,19 @@ SerpApi provides a [script builder](https://serpapi.com/demo) to get you started
 
 ## Installation
 
- PHP 7+ must be already installed and [composer](https://getcomposer.org/) dependency management tool.
+PHP 7.1+ must be already installed and [composer](https://getcomposer.org/) dependency management tool.
 
- Package available from packagist.
+Tested PHP versions:
+* 7.1.33
+* 7.2.34
+* 7.3.33
+* 7.4.33
+* 8.0.30
+* 8.1.27
+* 8.2.17
+* 8.3.4
+
+Package available from packagist.
 
 ## Quick start
 
@@ -36,14 +46,13 @@ $ composer require serpapi/serpapi-php
 Then you need to load the dependency in your script.
 ```php
 <?php
-require __DIR__ . '/vendor/autoload.php';
- ?>
+  require __DIR__ . '/vendor/autoload.php';
+?>
 ```
 
 if not, you must clone this repository and link the class.
 ```php
 require 'path/to/serpapi-php';
-
 ```
 
 Get "your secret key" from https://serpapi.com/dashboard

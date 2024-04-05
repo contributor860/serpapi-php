@@ -1,34 +1,27 @@
 <?php
 
-  /***
-   * In case converted from old library.
-   */
-class GoogleSearch extends SerpApiSearch {
-  public function __construct($api_key) {
-    parent::__construct($api_key);
-  }
-}
-
-class SerpApiSearch {
-  private $_api_key;
+class SerpApi {
+  public $_api_key;
   private $_output = 'json';
 
-  function __construct($api_key = null) {
-    $this->set_api_key($api_key);
-  }
+  private $_params;
 
-  /***
-   * Validate API_KEY.
-   */
-  function set_api_key($api_key = null) {
-    if($api_key == null) {
-      throw new SerpApiSearchException("API_KEY must be present");
+  function __construct($params = null) {
+    if(!is_array($params) || count($params) == 0) {
+      throw new SerpApiException("parameters must be an array and has a value");
     }
 
-    $this->_api_key = $api_key;
+    if(!empty($params['api_key'])) {
+      $this->_api_key = $params['api_key'];
+    }
+
+    $this->_params = $params;
   }
 
-  function query($path = null, $query = null) {
+  private function get_results($path = null) {
+    if(empty($this->_api_key)) {
+      throw new SerpApiException("API_KEY must be present");
+    }
 
     $api = new RestClient([
       'base_url'      => "https://serpapi.com",
@@ -45,7 +38,7 @@ class SerpApiSearch {
       'api_key' => $this->_api_key,
     ];
 
-    $query = array_merge($default_query, $query);
+    $query = array_merge($default_query, $this->_params);
     $result = $api->get($path, $query);
 
     if($result->info->http_code == 200) {
@@ -58,76 +51,70 @@ class SerpApiSearch {
 
     if($this->_output == 'json') {
       $error = $result->decode_response();
-      throw new SerpApiSearchException($error->error);
+      throw new SerpApiException($error->error);
     }
 
-    throw new SerpApiSearchException("Unexpected exception: $result->response");
-  }
-  /**
-   * Run a search
-   */
-  function search($parameters = []) {
-    if(!is_array($parameters) || count($parameters) == 0) {
-      throw new SerpApiSearchException("parameters must be an array and has a value");
-    }
-
-    return $this->query('/search', $parameters);
+    throw new SerpApiException("Unexpected exception: $result->response");
   }
 
   /***
    * get_json
    * @return [Hash] search result "json like"
    */
-  function get_json($parameters = []) {
+  public function get_json() {
     $this->_output = 'json';
 
-    return $this->search($parameters);
+    return $this->get_results('/search');
   }
 
   /***
    * get_html
    * @return [String] raw html search result
    */
-  function get_html($parameters = []) {
+  public function get_html() {
     $this->_output = 'html';
 
-    return $this->search($parameters);
+    return $this->get_results('/search');
   }
 
  /***
   * Get account information using Account API
   */
-  function get_account() {
+  public function get_account() {
     $this->_output = 'json';
 
-    return $this->query('/account', []);
+    return $this->get_results('/account');
   }
 
   /***
    * Get location using Location API
    */
-  function get_location($q = 'Austin', $limit = 3) {
+  public function get_location($q = 'Austin', $limit = 3) {
     $this->_output = 'json';
 
-    $query = [
+    $this->_params = [
       'q' => $q,
-      'limit' => $limit
+      'limit' => $limit,
+      'api_key' => $this->_api_key,
     ];
-    return $this->query("/locations.json", $query);
+    return $this->get_results("/locations.json");
   }
 
   /***
    * Retrieve search result from the Search Archive API
    */
-  function get_search_archive($search_id = null) {
+  public function get_search_archive($search_id = null) {
     if($search_id == null) {
-      throw new SerpApiSearchException("search_id must be present");
+      throw new SerpApiException("search_id must be present");
     }
 
     $this->_output = 'json';
+    $this->_params = [
+      'api_key' => $this->_api_key,
+    ];
 
-    return $this->query("/searches/$search_id.json", []);
+    return $this->get_results("/searches/$search_id.json");
   }
 }
 
-class SerpApiSearchException extends Exception {}
+class SerpApiException extends Exception {}

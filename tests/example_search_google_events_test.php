@@ -1,24 +1,28 @@
 <?php
 
-class serpapiTest extends \PHPUnit\Framework\TestCase {
+class ExampleSearchGoogleEventsTest extends \PHPUnit\Framework\TestCase {
+  
+  private $_search_params;
+  private $_api_key;
+
   protected function setUp(): void {
-    $this->QUERY = [
+    $this->_search_params = [
       'engine' => 'google_events',
       'q' => 'coffee'
     ];
 
     if(isset($_ENV["API_KEY"])) {
-      $this->API_KEY = $_ENV["API_KEY"];
+      $this->_search_params['api_key'] = $_ENV["API_KEY"];
     } elseif(getenv('API_KEY')) {
-      $this->API_KEY = getenv('API_KEY');
+      $this->_search_params['api_key'] = getenv('API_KEY');
     } else {
-      $this->API_KEY = "demo";
+      $this->_search_params['api_key'] = "demo";
     }
  }
 
   function test_if_result_exist() {
-    $search = new SerpApiSearch($this->API_KEY);
-    $response = $search->get_json($this->QUERY);
+    $search = new SerpApi($this->_search_params);
+    $response = $search->get_json();
     $this->assertObjectHasAttribute('events_results', $response, "Error on `{google_events}` engine not has `{events_results}`");
   }
 }
