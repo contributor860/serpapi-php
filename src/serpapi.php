@@ -1,17 +1,16 @@
 <?php
 
 class SerpApi {
-  public string $_api_key;
-  private string $_output = 'json';
+  public $_api_key;
+  private $_output = 'json';
 
-  public array $_params = [];
+  public $_params = [];
 
   function __construct($params = []) {
     $this->_params = $params;
   }
 
   private function get_results($path = null) {
-    var_dump($this->_params);
     if(!empty($this->_params['api_key']) && empty($this->_api_key)) {
       $this->_api_key = $this->_params['api_key'];
     }

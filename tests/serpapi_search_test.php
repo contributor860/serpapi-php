@@ -94,7 +94,8 @@ class GoogleSearchTest extends TestCase {
   public function test_ebay_get_search_method() {
     $query = [
       "engine" => "ebay",
-      '_nkw' => "Coffee"
+      '_nkw' => "Coffee",
+      "no_cache" => true
     ];
     $client = new GoogleSearch($this->API_KEY);
     $response = $client->get_json($query);
