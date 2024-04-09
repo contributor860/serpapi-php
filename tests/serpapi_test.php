@@ -27,6 +27,13 @@ class serpapiTest extends \PHPUnit\Framework\TestCase {
     $search->search($this->search_params);
   }
 
+  function test_if_empty_engine() {
+    $this->expectException(SerpApiException::class);
+    $this->expectExceptionMessage('engine must be present');
+    $search = new SerpApi($this->api_key, '');
+    $search->search($this->search_params);
+  }
+
   function test_if_API_key_error() {
     $this->expectException(SerpApiException::class);
     $this->expectExceptionMessage('Invalid API key. Your API key should be here: https://serpapi.com/manage-api-key');
@@ -45,14 +52,6 @@ class serpapiTest extends \PHPUnit\Framework\TestCase {
     $response = $search->html($this->search_params);
     $this->assertGreaterThan(10000, strlen($response));
   }
-
-  // function test_if_miss_parametrs_in_get_json() {
-  //   $this->expectException(SerpApiException::class);
-  //   $this->expectExceptionMessage('parameters must be an array and has a value');
-  //   $search = new SerpApi();
-  //   $search->_api_key = $this->_search_params['api_key'];
-  //   $search->get_json();
-  // }
 
   function test_search() {
     $search = new SerpApi($this->api_key);
