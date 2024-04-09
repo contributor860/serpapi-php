@@ -45,6 +45,7 @@ class serpapiTest extends \PHPUnit\Framework\TestCase {
     $this->expectException(SerpApiException::class);
     $this->expectExceptionMessage('parameters must be an array and has a value');
     $search = new SerpApi();
+    $search->_api_key = $this->_search_params['api_key'];
     $search->get_html();
   }
 
@@ -58,6 +59,7 @@ class serpapiTest extends \PHPUnit\Framework\TestCase {
     $this->expectException(SerpApiException::class);
     $this->expectExceptionMessage('parameters must be an array and has a value');
     $search = new SerpApi();
+    $search->_api_key = $this->_search_params['api_key'];
     $search->get_json();
   }
 
@@ -70,22 +72,23 @@ class serpapiTest extends \PHPUnit\Framework\TestCase {
   }
 
   function test_google_get_location_method() {
-    $client = new SerpApi($this->_search_params);
-    $location_list = $client->get_location('Austin', 3);
+    $search = new SerpApi(["q" => "Austin", "limit" => 3]);
+    $search->_api_key = $this->_search_params['api_key'];
+    $location_list = $search->get_location();
     $this->assertEquals(200635, $location_list[0]->google_id);
   }
 
   function test_get_search_archive_if_miss_id() {
     $this->expectException(SerpApiException::class);
     $this->expectExceptionMessage('search_id must be present');
-    $client = new SerpApi($this->_search_params);
-    $client->get_search_archive();
+    $search = new SerpApi($this->_search_params);
+    $search->get_search_archive();
   }
 
   function test_get_search_archive_method() {
-    $client = new SerpApi($this->_search_params);
-    $result = $client->get_json();
-    $archived_result = $client->get_search_archive($result->search_metadata->id);
+    $search = new SerpApi($this->_search_params);
+    $result = $search->get_json();
+    $archived_result = $search->get_search_archive($result->search_metadata->id);
     $this->assertEquals($result->search_metadata->id, $archived_result->search_metadata->id);
   }
 }
