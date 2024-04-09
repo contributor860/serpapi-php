@@ -22,10 +22,9 @@ SerpApi provides a [script builder](https://serpapi.com/demo) to get you started
 
 ## Installation
 
-PHP 7.1+ must be already installed and [composer](https://getcomposer.org/) dependency management tool.
+PHP 7.2+ must be already installed and [composer](https://getcomposer.org/) dependency management tool.
 
 Tested PHP versions:
-* 7.1.33
 * 7.2.34
 * 7.3.33
 * 7.4.33
@@ -40,7 +39,7 @@ Package available from packagist.
 
 if you're using composer, you can add this package ([link to packagist](https://packagist.org/packages/serpapi/serpapi-php)).
 ```bash
-$ composer require serpapi/serpapi-php
+composer require serpapi/serpapi-php
 ```
 
 Then you need to load the dependency in your script.
@@ -58,14 +57,15 @@ Get "secret_api_key" from https://serpapi.com/dashboard
 Then you can start coding something like:
 ```php
 require 'vendor/autoload.php';
+
+$api_key = "secret_api_key";
+
 $params = [
-  "engine"  => "naver",
   "query"   => "paris",
-  "api_key" => "secret_api_key"
 ];
 
-$search = new SerpApi($params);
-$result = $search->get_json();
+$search = new SerpApi($api_key, 'naver');
+$result = $search->search($params);
 print_r($result);
 ```
 
@@ -81,21 +81,25 @@ The PHP class SerpApi
  - Parse JSON into Ruby Hash using JSON standard library provided by Ruby
 Et voila..
 
-### How to set SERP API key
+## How to set SERP API key
 The SerpApi api_key can be set globally using a singleton pattern.
 
 ```php
-$search = new SerpApi();
-$search->_api_key = "secret_api_key";
+$api_key = "secret_api_key";
+
+$search = new SerpApi($api_key);
 ```
 Or with same query like this:
 
 ```php
 $params = [
-  "api_key" => "secret_api_key"
+  "api_key" => "secret_api_key",
+  'q' => 'Coffee'
 ];
 
-$search = new SerpApi($params);
+$search = new SerpApi();
+$result = $search->search($params);
+print_r($result);
 ```
 
 ## Examples in php
@@ -105,13 +109,15 @@ Here is how to calls the APIs
 
 Let's run a search to get a search_id.
 ```php
+$api_key = "secret_api_key";
+
 $params = [
   "q" => "Coffee", 
   "location" => "Portland"
 ];
 
-$search = new SerpApi($params);
-$result = $search->get_json();
+$search = new SerpApi($api_key);
+$result = $search->search($params);
 $search_id = $result->search_metadata->id;
 echo $search_id;
 ```
@@ -119,17 +125,30 @@ echo $search_id;
 Now let's retrieve the previous search from the archive.
 
 ```php
-$archived_result = $search->get_search_archive($search_id);
+$archived_result = $search->search_archive($search_id);
 print_r($archived_result);
-
 ```
+
+Note: Now you can retrive search archive as JSON or HTML
+```php
+$search->search_archive($search_id, 'json|html');
+```
+
 it prints the search from the archive.
 
 ### Account API
 ```php
+$api_key = "secret_api_key";
+$search = new SerpApi($api_key);
+$info = $search->account();
+print_r($info);
+```
+Or
+
+```php
+$api_key = "secret_api_key";
 $search = new SerpApi();
-$search->_api_key = "secret_api_key";
-$info = $search->get_account();
+$info = $search->account($api_key);
 print_r($info);
 ```
 it prints your account information.
@@ -138,35 +157,32 @@ it prints your account information.
 
 ```php
 $search_params = [
-  "q" => "search",
+  "q"             => "search",
   "google_domain" => "Google Domain",
-  "location" => "Location Requested",
-  "device" => "desktop|mobile|tablet",
-  "hl" => "Google UI Language",
-  "gl" => "Google Country",
-  "safe" => "Safe Search Flag",
-  "num" => "Number of Results",
-  "start" => "Pagination Offset",
-  "api_key" => "private key", # copy paste from https://serpapi.com/dashboard
-  "tbm" => "nws|isch|shop",
-  "tbs" => "custom to be search criteria",
-  "async" => true|false # allow async
+  "location"      => "Location Requested",
+  "device"        => "desktop|mobile|tablet",
+  "hl"            => "Google UI Language",
+  "gl"            => "Google Country",
+  "safe"          => "Safe Search Flag",
+  "num"           => "Number of Results",
+  "start"         => "Pagination Offset",
+  "api_key"       => "private key", # copy paste from https://serpapi.com/dashboard
+  "tbm"           => "nws|isch|shop",
+  "tbs"           => "custom to be search criteria",
+  "async"         => true|false # allow async
 ];
 
 # define the search search
-$search = new SerpApi($search_params);
-
-# override an existing parameter
-$search->_params["location"] = "Portland,Oregon,United States";
+$search = new SerpApi();
 
 # search format return as raw html
-$html_results = $search->get_html();
+$html_results = $search->html($search_params);
 
 # search as raw JSON format
-$json_results = $search->get_json();
+$json_results = $search->search($search_params);
 ```
 
-(the full documentation)[https://serpapi.com/search-api].
+[The full documentation](https://serpapi.com/search-api).
 
 More search API are documented on [SerpApi.com](http://serpapi.com).
 
@@ -175,16 +191,17 @@ You will find more hands on examples below.
 ### Search Google Images
 
 ```php
+$api_key = "secret_api_key";
+
 $params = [
   'q' => "Coffee",
   'tbm' => 'isch'
 ];
 
-$search = new SerpApi($params);
-$search->_api_key = "secret_api_key";
-$data = $search->get_json();
+$search = new SerpApi($api_key);
+$results = $search->search($params);
 
-foreach($data->images_results as $image_result) {
+foreach($results->images_results as $image_result) {
   print_r($image_result->original);
 }
 ```
@@ -194,47 +211,65 @@ foreach($data->images_results as $image_result) {
 With SerpApi.com, we can build Google search from anywhere in the world. This code is looking for the best coffee shop per city.
 
 ```php
+$api_key = "secret_api_key";
+
 foreach(["new york", "paris", "berlin"] as $location) {
-  $search = new SerpApi(["q" => $location, "limit" => 1]);
-  $search->_api_key = "secret_api_key";
-  $location_name = $search->get_location()[0]->canonical_name;
+  $search = new SerpApi($api_key);
+  $location_name = $search->location(["q" => $location, "limit" => 1])[0]->canonical_name;
   
-  $search->_params = [
+  $params = [
     "q" => 'best coffee shop',
     "location" => $location_name,
     "start" => 0 # offset
   ];
 
-  $top_result = $search->get_json()->organic_results[0];
-  echo "top coffee result for {$location_name} is: {$top_result->title}".PHP_EOL;
+  $top_result = $search->search($params)->organic_results[0];
+  echo "top coffee result for ($location_name) is: ($top_result->title)".PHP_EOL;
 }
 ```
 
 ### Search bing
 ```php
+$api_key = "secret_api_key";
+
 $params = [
   'engine' => 'bing',
   'q' => 'Coffee',
 ];
 
-$search = new SerpApi($params);
-$search->_api_key = "secret_api_key";
-$data = $search->get_json();
+$search = new SerpApi($api_key);
+$data = $search->search($params);
 print_r($data);
 ```
+
+or you can set the engine when the initiation class
+
+```php
+$api_key = "secret_api_key";
+
+$params = [
+  'q' => 'Coffee',
+];
+
+$search = new SerpApi($api_key, 'bing');
+$data = $search->search($params);
+print_r($data);
+```
+
 test: tests/example_search_bing_test.php
 see: [https://serpapi.com/bing-search-api](https://serpapi.com/bing-search-api)
 
 ### Search baidu
 ```php
+$api_key = "secret_api_key";
+
 $params = [
   'engine' => 'baidu',
   'q' => 'Coffee',
 ];
 
-$search = new SerpApi($params);
-$search->_api_key = "secret_api_key";
-$data = $search->get_json();
+$search = new SerpApi($api_key);
+$data = $search->search($params);
 print_r($data);
 ```
 test: tests/example_search_baidu_test.php
@@ -242,14 +277,15 @@ see: [https://serpapi.com/baidu-search-api](https://serpapi.com/baidu-search-api
 
 ### Search yahoo
 ```php
+$api_key = "secret_api_key";
+
 $params = [
   'engine' => 'yahoo',
   'p' => 'Coffee',
 ];
 
-$search = new SerpApi($params);
-$search->_api_key = "secret_api_key";
-$data = $search->get_json();
+$search = new SerpApi($api_key);
+$data = $search->search($params);
 print_r($data);
 ```
 test: tests/example_search_yahoo_test.php
@@ -257,14 +293,15 @@ see: [https://serpapi.com/yahoo-search-api](https://serpapi.com/yahoo-search-api
 
 ### Search youtube
 ```php
+$api_key = "secret_api_key";
+
 $params = [
   'engine' => 'youtube',
   'search_query' => 'coffee'
 ];
 
-$search = new SerpApi($params);
-$search->_api_key = "secret_api_key";
-$data = $search->get_json();
+$search = new SerpApi($api_key);
+$data = $search->search($params);
 print_r($data);
 ```
 test: tests/example_search_youtube_test.php
@@ -272,14 +309,15 @@ see: [https://serpapi.com/youtube-search-api](https://serpapi.com/youtube-search
 
 ### Search walmart
 ```php
+$api_key = "secret_api_key";
+
 $params = [
   'engine' => 'walmart',
   'query' => 'coffee'
 ];
 
-$search = new SerpApi($params);
-$search->_api_key = "secret_api_key";
-$data = $search->get_json();
+$search = new SerpApi($api_key);
+$data = $search->search($params);
 print_r($data);
 ```
 test: tests/example_search_walmart_test.php
@@ -287,14 +325,15 @@ see: [https://serpapi.com/walmart-search-api](https://serpapi.com/walmart-search
 
 ### Search ebay
 ```php
+$api_key = "secret_api_key";
+
 $params = [
   'engine' => 'ebay',
   '_nkw' => 'coffee'
 ];
 
-$search = new SerpApi($params);
-$search->_api_key = "secret_api_key";
-$data = $search->get_json();
+$search = new SerpApi($api_key);
+$data = $search->search($params);
 print_r($data);
 ```
 test: tests/example_search_ebay_test.php
@@ -302,14 +341,15 @@ see: [https://serpapi.com/ebay-search-api](https://serpapi.com/ebay-search-api)
 
 ### Search naver
 ```php
+$api_key = "secret_api_key";
+
 $params = [
   'engine' => 'naver',
   'query' => 'coffee'
 ];
 
-$search = new SerpApi($params);
-$search->_api_key = "secret_api_key";
-$data = $search->get_json();
+$search = new SerpApi($api_key);
+$data = $search->search($params);
 print_r($data);
 ```
 test: tests/example_search_naver_test.php
@@ -317,14 +357,15 @@ see: [https://serpapi.com/naver-search-api](https://serpapi.com/naver-search-api
 
 ### Search home depot
 ```php
+$api_key = "secret_api_key";
+
 $params = [
   'engine' => 'home_depot',
   'q' => 'table'
 ];
 
-$search = new SerpApi($params);
-$search->_api_key = "secret_api_key";
-$data = $search->get_json();
+$search = new SerpApi($api_key);
+$data = $search->search($params);
 print_r($data);
 ```
 test: tests/example_search_home_depot_test.php
@@ -332,14 +373,15 @@ see: [https://serpapi.com/home-depot-search-api](https://serpapi.com/home-depot-
 
 ### Search apple app store
 ```php
+$api_key = "secret_api_key";
+
 $params = [
   'engine' => 'apple_app_store',
   'term' => 'coffee'
 ];
 
-$search = new SerpApi($params);
-$search->_api_key = "secret_api_key";
-$data = $search->get_json();
+$search = new SerpApi($api_key);
+$data = $search->search($params);
 print_r($data);
 ```
 test: tests/example_search_apple_app_store_test.php
@@ -347,14 +389,15 @@ see: [https://serpapi.com/apple-app-store](https://serpapi.com/apple-app-store)
 
 ### Search duckduckgo
 ```php
+$api_key = "secret_api_key";
+
 $params = [
   'engine' => 'duckduckgo',
   'q' => 'coffee'
 ];
 
-$search = new SerpApi($params);
-$search->_api_key = "secret_api_key";
-$data = $search->get_json();
+$search = new SerpApi($api_key);
+$data = $search->search($params);
 print_r($data);
 ```
 test: tests/example_search_duckduckgo_test.php
@@ -362,15 +405,16 @@ see: [https://serpapi.com/duckduckgo-search-api](https://serpapi.com/duckduckgo-
 
 ### Search google
 ```php
+$api_key = "secret_api_key";
+
 $params = [
   'engine' => 'google',
   'tbm' => 'isch',
   'q' => 'coffee'
 ];
 
-$search = new SerpApi($params);
-$search->_api_key = "secret_api_key";
-$data = $search->get_json();
+$search = new SerpApi($api_key);
+$data = $search->search($params);
 print_r($data);
 ```
 test: tests/example_search_google_test.php
@@ -378,14 +422,15 @@ see: [https://serpapi.com/search-api](https://serpapi.com/search-api)
 
 ### Search google scholar
 ```php
+$api_key = "secret_api_key";
+
 $params = [
   'engine' => 'google_scholar',
   'q' => 'coffee'
 ];
 
-$search = new SerpApi($params);
-$search->_api_key = "secret_api_key";
-$data = $search->get_json();
+$search = new SerpApi($api_key);
+$data = $search->search($params);
 print_r($data);
 ```
 test: tests/example_search_google_scholar_test.php
@@ -393,14 +438,15 @@ see: [https://serpapi.com/google-scholar-api](https://serpapi.com/google-scholar
 
 ### Search google autocomplete
 ```php
+$api_key = "secret_api_key";
+
 $params = [
   'engine' => 'google_autocomplete',
   'q' => 'coffee'
 ];
 
-$search = new SerpApi($params);
-$search->_api_key = "secret_api_key";
-$data = $search->get_json();
+$search = new SerpApi($api_key);
+$data = $search->search($params);
 print_r($data);
 ```
 test: tests/example_search_google_autocomplete_test.php
@@ -408,15 +454,16 @@ see: [https://serpapi.com/google-autocomplete-api](https://serpapi.com/google-au
 
 ### Search google product
 ```php
+$api_key = "secret_api_key";
+
 $params = [
   'engine' => 'google_product',
   'q' => 'coffee',
   'product_id' => '4172129135583325756'
 ];
 
-$search = new SerpApi($params);
-$search->_api_key = "secret_api_key";
-$data = $search->get_json();
+$search = new SerpApi($api_key);
+$data = $search->search($params);
 print_r($data);
 ```
 test: tests/example_search_google_product_test.php
@@ -424,14 +471,15 @@ see: [https://serpapi.com/google-product-api](https://serpapi.com/google-product
 
 ### Search google reverse image
 ```php
+$api_key = "secret_api_key";
+
 $params = [
   'engine' => 'google_reverse_image',
   'image_url' => 'https://i.imgur.com/5bGzZi7.jpg'
 ];
 
-$search = new SerpApi($params);
-$search->_api_key = "secret_api_key";
-$data = $search->get_json();
+$search = new SerpApi($api_key);
+$data = $search->search($params);
 print_r($data);
 ```
 test: tests/example_search_google_reverse_image_test.php
@@ -439,14 +487,15 @@ see: [https://serpapi.com/google-reverse-image](https://serpapi.com/google-rever
 
 ### Search google events
 ```php
+$api_key = "secret_api_key";
+
 $params = [
   'engine' => 'google_events',
   'q' => 'coffee'
 ];
 
-$search = new SerpApi($params);
-$search->_api_key = "secret_api_key";
-$data = $search->get_json();
+$search = new SerpApi($api_key);
+$data = $search->search($params);
 print_r($data);
 ```
 test: tests/example_search_google_events_test.php
@@ -454,15 +503,16 @@ see: [https://serpapi.com/google-events-api](https://serpapi.com/google-events-a
 
 ### Search google local services
 ```php
+$api_key = "secret_api_key";
+
 $params = [
   'engine' => 'google_local_services',
   'q' => 'Electrician',
   'place_id' => 'ChIJOwg_06VPwokRYv534QaPC8g'
 ];
 
-$search = new SerpApi($params);
-$search->_api_key = "secret_api_key";
-$data = $search->get_json();
+$search = new SerpApi($api_key);
+$data = $search->search($params);
 print_r($data);
 ```
 test: tests/example_search_google_local_services_test.php
@@ -470,6 +520,8 @@ see: [https://serpapi.com/google-local-services-api](https://serpapi.com/google-
 
 ### Search google maps
 ```php
+$api_key = "secret_api_key";
+
 $params = [
   'engine' => 'google_maps',
   'q' => 'pizza',
@@ -477,9 +529,8 @@ $params = [
   'type' => 'search'
 ];
 
-$search = new SerpApi($params);
-$search->_api_key = "secret_api_key";
-$data = $search->get_json();
+$search = new SerpApi($api_key);
+$data = $search->search($params);
 print_r($data);
 ```
 test: tests/example_search_google_maps_test.php
@@ -487,14 +538,15 @@ see: [https://serpapi.com/google-maps-api](https://serpapi.com/google-maps-api)
 
 ### Search google jobs
 ```php
+$api_key = "secret_api_key";
+
 $params = [
   'engine' => 'google_jobs',
   'q' => 'coffee'
 ];
 
-$search = new SerpApi($params);
-$search->_api_key = "secret_api_key";
-$data = $search->get_json();
+$search = new SerpApi($api_key);
+$data = $search->search($params);
 print_r($data);
 ```
 test: tests/example_search_google_jobs_test.php
@@ -502,15 +554,16 @@ see: [https://serpapi.com/google-jobs-api](https://serpapi.com/google-jobs-api)
 
 ### Search google play
 ```php
+$api_key = "secret_api_key";
+
 $params = [
   'engine' => 'google_play',
   'q' => 'kite',
   'store' => 'apps'
 ];
 
-$search = new SerpApi($params);
-$search->_api_key = "secret_api_key";
-$data = $search->get_json();
+$search = new SerpApi($api_key);
+$data = $search->search($params);
 print_r($data);
 ```
 test: tests/example_search_google_play_test.php
@@ -518,15 +571,15 @@ see: [https://serpapi.com/google-play-api](https://serpapi.com/google-play-api)
 
 ### Generic SerpApi search
 ```php
+$api_key = "secret_api_key";
+
 $params = [
-  'engine' => 'google',
   'tbm' => 'isch',
   'q' => 'coffee'
 ];
 
-$search = new SerpApi($params);
-$search->_api_key = "secret_api_key";
-$data = $search->get_json();
+$search = new SerpApi($api_key);
+$data = $search->search($params);
 print_r($data->organic_results);
 ```
 test: tests/example_search_google_test.php

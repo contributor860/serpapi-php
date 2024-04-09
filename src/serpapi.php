@@ -1,32 +1,71 @@
 <?php
 
 class SerpApi {
-  public $_api_key;
-  private $_output = 'json';
+  public $api_key;
+  public $engine;
 
-  public $_params = [];
+  function __construct($api_key = '', $engine = 'google') {
+    if(empty($engine)) {
+      throw new SerpApiException("engine must be present");
+    }
 
-  function __construct($params = []) {
-    $this->_params = $params;
+    $this->api_key = $api_key;
+    $this->engine = $engine;
   }
 
-  private function get_results($path = null) {
-    if(!empty($this->_params['api_key']) && empty($this->_api_key)) {
-      $this->_api_key = $this->_params['api_key'];
+  /***
+   * search
+   * @return [Hash] search result "json like"
+   */
+  public function search($params = []) {
+    return $this->get('/search', 'json', $params);
+  }
+
+  /***
+   * html
+   * @return [String] raw html search result
+   */
+  public function html($params = []) {
+    return $this->get('/search', 'html', $params);
+  }
+
+ /***
+  * Get account information using Account API
+  */
+  public function account($api_key = null) {
+    $params = empty($api_key) ? [] : ['api_key' => $api_key];
+    return $this->get('/account', 'json', $params);
+  }
+
+  /***
+   * Get location using Location API
+   */
+  public function location($params = []) {
+    return $this->get("/locations.json", 'json', $params);
+  }
+
+  /***
+   * Retrieve search result from the Search Archive API
+   */
+  public function search_archive($search_id = null, $format = 'json') {
+    if($search_id == null) {
+      throw new SerpApiException("search_id must be present");
     }
 
-    if(empty($this->_api_key)) {
+    if(!in_array($format, ['json', 'html'])) {
+      throw new SerpApiException("format must be json or html");
+    }
+
+    return $this->get("/searches/$search_id.$format", $format, []);
+  }
+
+  private function get($endpoint = null, $format = 'json', $params = []) {
+    if(empty($this->api_key)) {
       throw new SerpApiException("API_KEY must be present");
     }
-
-    $path_skip_to_check_params = [
-      '^\/account$', 
-      '^\/searches\/.*\.json$'
-    ];
-    $skip_check_params = preg_match("/".implode("|", $path_skip_to_check_params)."/", $path);
-
-    if(!$skip_check_params && (!is_array($this->_params) || count($this->_params) == 0)) {
-      throw new SerpApiException("parameters must be an array and has a value");
+    
+    if(!in_array($format, ['json', 'html'])) {
+      throw new SerpApiException("not supported decoder $format. should be: html or json");
     }
 
     $api = new RestClient([
@@ -39,86 +78,30 @@ class SerpApi {
     ]);
 
     $default_query = [
-      'output'  => $this->_output,
+      'engine'  => $this->engine,
+      'output'  => $format,
       'source'  => 'php',
-      'api_key' => $this->_api_key,
+      'api_key' => $this->api_key,
     ];
 
-    $query = array_merge($this->_params, $default_query);
-    $result = $api->get($path, $query);
+    $query = array_merge($default_query, $params);
+
+    $result = $api->get($endpoint, $query);
 
     if($result->info->http_code == 200) {
-      if($this->_output == 'html') {
+      if($format == 'html') {
        return $result->response;
       }
 
       return $result->decode_response();
     }
 
-    if($this->_output == 'json') {
+    if($format == 'json') {
       $error = $result->decode_response();
       throw new SerpApiException($error->error);
     }
 
     throw new SerpApiException("Unexpected exception: $result->response");
-  }
-
-  /***
-   * get_json
-   * @return [Hash] search result "json like"
-   */
-  public function get_json() {
-    $this->_output = 'json';
-
-    return $this->get_results('/search');
-  }
-
-  /***
-   * get_html
-   * @return [String] raw html search result
-   */
-  public function get_html() {
-    $this->_output = 'html';
-
-    return $this->get_results('/search');
-  }
-
- /***
-  * Get account information using Account API
-  */
-  public function get_account() {
-    $this->_output = 'json';
-
-    $this->_params = array_filter($this->_params, function($k) {
-      return $k == 'api_key';
-    }, ARRAY_FILTER_USE_KEY);
-
-    return $this->get_results('/account');
-  }
-
-  /***
-   * Get location using Location API
-   */
-  public function get_location() {
-    $this->_output = 'json';
-
-    return $this->get_results("/locations.json");
-  }
-
-  /***
-   * Retrieve search result from the Search Archive API
-   */
-  public function get_search_archive($search_id = null) {
-    if($search_id == null) {
-      throw new SerpApiException("search_id must be present");
-    }
-
-    $this->_output = 'json';
-    $this->_params = array_filter($this->_params, function($k) {
-      return $k == 'api_key';
-    }, ARRAY_FILTER_USE_KEY);
-
-    return $this->get_results("/searches/$search_id.json");
   }
 }
 
@@ -126,18 +109,7 @@ class SerpApiException extends Exception {}
 
 class SerpApiSearch extends SerpApi {
   function __construct($api_key = null, $engine = null){
-    if($api_key == NULL) {
-      throw new SerpApiException("serp_api_key must have a value");
-    }
-
-    if($engine) {
-      $this->_params['engine'] = $engine;
-    } else {
-      throw new SerpApiException("engine must be defined");
-    }
-
-    $this->_api_key = $api_key;
-    parent::__construct();
+    parent::__construct($api_key, $engine);
   }
 
   function set_serp_api_key($api_key) {
@@ -145,26 +117,22 @@ class SerpApiSearch extends SerpApi {
       throw new SerpApiException("serp_api_key must have a value");
     }
     
-    $this->_api_key = $api_key;
+    $this->api_key = $api_key;
   }
 
   function get_json($params = []) {
-    $this->_params = $params;
-    return parent::get_json();
+    return parent::search($params);
   }
 
   function get_html($params = []) {
-    $this->_params = $params;
-    return parent::get_html();
+    return parent::html($params);
   }
 
   function search($output = null, $params = []) {
-    $this->_params = $params;
-
     if($output == 'json') {
-      return parent::get_json();
+      return parent::search($params);
     } elseif($output == 'html') {
-      return parent::get_html();
+      return parent::html($params);
     } else {
       throw new SerpApiException("output must be json or html");
     }
@@ -179,12 +147,16 @@ class SerpApiSearch extends SerpApi {
       throw new SerpApiException("limit must be present");
     }
 
-    $this->_params = [
+    $params = [
       'q' => $location, 
       'limit' => $limit
     ];
 
-    return parent::get_location();
+    return parent::location($params);
+  }
+
+  function get_account() {
+    return parent::account($this->api_key);
   }
 }
 

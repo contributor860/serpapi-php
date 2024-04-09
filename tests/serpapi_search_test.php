@@ -51,7 +51,7 @@ class GoogleSearchTest extends TestCase {
   public function test_google_get_search_archive_method() {
     $client = new GoogleSearch($this->API_KEY);
     $result = $client->get_json($this->QUERY);
-    $archived_result = $client->get_search_archive($result->search_metadata->id);
+    $archived_result = $client->search_archive($result->search_metadata->id);
     $this->assertEquals($result->search_metadata->id, $archived_result->search_metadata->id);
   }
 

@@ -2,93 +2,83 @@
 
 class serpapiTest extends \PHPUnit\Framework\TestCase {
 
-  private $_search_params;
-  private $_api_key;
+  private $search_params;
+  private $api_key;
 
   protected function setUp(): void {
-    $this->_search_params = [
+    $this->search_params = [
       'q' => "Coffee",
       'location' => "Austin,Texas"
     ];
 
     if(isset($_ENV["API_KEY"])) {
-      $this->_search_params['api_key'] = $_ENV["API_KEY"];
+      $this->api_key = $_ENV["API_KEY"];
     } elseif(getenv('API_KEY')) {
-      $this->_search_params['api_key'] = getenv('API_KEY');
+      $this->api_key = getenv('API_KEY');
     } else {
-      $this->_search_params['api_key'] = "demo";
+      $this->api_key = "demo";
     }
  }
 
   function test_if_API_key_not_exist() {
     $this->expectException(SerpApiException::class);
     $this->expectExceptionMessage('API_KEY must be present');
-    unset($this->_search_params['api_key']);
-    $search = new SerpApi($this->_search_params);
-    $search->get_json();
+    $search = new SerpApi();
+    $search->search($this->search_params);
   }
 
   function test_if_API_key_error() {
     $this->expectException(SerpApiException::class);
     $this->expectExceptionMessage('Invalid API key. Your API key should be here: https://serpapi.com/manage-api-key');
-    $search = new SerpApi(['api_key' => 'not_valid_Key']);
-    $search->get_json();
+    $search = new SerpApi('not_valid_Key');
+    $search->search();
   }
 
-  function test_get_account() {
-    $search = new SerpApi($this->_search_params);
-    $response = $search->get_account();
-    $this->assertEquals($search->_api_key, $response->api_key);
+  function test_account() {
+    $search = new SerpApi($this->api_key);
+    $response = $search->account();
+    $this->assertEquals($search->api_key, $response->api_key);
   }
 
-  function test_if_miss_parametrs_in_get_html() {
-    $this->expectException(SerpApiException::class);
-    $this->expectExceptionMessage('parameters must be an array and has a value');
-    $search = new SerpApi();
-    $search->_api_key = $this->_search_params['api_key'];
-    $search->get_html();
-  }
-
-  function test_get_html() {
-    $search = new SerpApi($this->_search_params);
-    $response = $search->get_html();
+  function test_html() {
+    $search = new SerpApi($this->api_key);
+    $response = $search->html($this->search_params);
     $this->assertGreaterThan(10000, strlen($response));
   }
 
-  function test_if_miss_parametrs_in_get_json() {
-    $this->expectException(SerpApiException::class);
-    $this->expectExceptionMessage('parameters must be an array and has a value');
-    $search = new SerpApi();
-    $search->_api_key = $this->_search_params['api_key'];
-    $search->get_json();
-  }
+  // function test_if_miss_parametrs_in_get_json() {
+  //   $this->expectException(SerpApiException::class);
+  //   $this->expectExceptionMessage('parameters must be an array and has a value');
+  //   $search = new SerpApi();
+  //   $search->_api_key = $this->_search_params['api_key'];
+  //   $search->get_json();
+  // }
 
-  function test_get_json() {
-    $search = new SerpApi($this->_search_params);
-    $response = $search->get_json();
+  function test_search() {
+    $search = new SerpApi($this->api_key);
+    $response = $search->search($this->search_params);
     $this->assertEquals("Success", $response->search_metadata->status);
     $this->assertGreaterThan(5, count($response->organic_results));
     $this->assertGreaterThan(5, strlen($response->organic_results[0]->title));
   }
 
-  function test_google_get_location_method() {
-    $search = new SerpApi(["q" => "Austin", "limit" => 3]);
-    $search->_api_key = $this->_search_params['api_key'];
-    $location_list = $search->get_location();
+  function test_location_method() {
+    $search = new SerpApi($this->api_key);
+    $location_list = $search->location(["q" => "Austin", "limit" => 3]);
     $this->assertEquals(200635, $location_list[0]->google_id);
   }
 
-  function test_get_search_archive_if_miss_id() {
+  function test_search_archive_if_miss_id() {
     $this->expectException(SerpApiException::class);
     $this->expectExceptionMessage('search_id must be present');
-    $search = new SerpApi($this->_search_params);
-    $search->get_search_archive();
+    $search = new SerpApi($this->api_key);
+    $search->search_archive();
   }
 
-  function test_get_search_archive_method() {
-    $search = new SerpApi($this->_search_params);
-    $result = $search->get_json();
-    $archived_result = $search->get_search_archive($result->search_metadata->id);
+  function test_search_archive_method() {
+    $search = new SerpApi($this->api_key);
+    $result = $search->search($this->search_params);
+    $archived_result = $search->search_archive($result->search_metadata->id);
     $this->assertEquals($result->search_metadata->id, $archived_result->search_metadata->id);
   }
 }
