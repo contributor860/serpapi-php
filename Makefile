@@ -10,12 +10,11 @@ clean:
 
 # Install the necessary libraries and dependencies
 install:
-	composer install --no-dev
-	composer update
+	composer install --prefer-dist --no-progress
 
 # Run the tests
-test:
-	vendor/bin/phpunit tests
+test: install
+	vendor/bin/phpunit -c phpunit.xml
 
 readme:
 	erb -T '-' README.md.erb > README.md
