@@ -62,7 +62,7 @@ class SerpApi {
 
   private function get($endpoint = null, $format = 'json', $params = []) {
     if(!in_array($format, ['json', 'html'])) {
-      throw new SerpApiException("not supported decoder $format. should be: html or json");
+      throw new SerpApiException("Unsupported format '$format'. Expected 'html' or 'json'.");
     }
 
     $api_key = $params['api_key'] ?? $this->api_key;
