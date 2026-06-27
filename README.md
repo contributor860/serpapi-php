@@ -3,7 +3,7 @@
 
 [![serpapi-php](https://github.com/serpapi/serpapi-php/actions/workflows/test.yml/badge.svg)](https://github.com/serpapi/serpapi-php/actions/workflows/test.yml)
 
-Integrate search data into your Ruby application. This library is the official wrapper for SerpApi (https://serpapi.com).
+Integrate search data into your PHP application. This library is the official wrapper for SerpApi (https://serpapi.com).
 
 SerpApi supports Google, Google Maps, Google Shopping, Baidu, Yandex, Yahoo, eBay, App Stores, and more.
 
@@ -78,7 +78,7 @@ The SerpApi service (backend)
 The PHP class SerpApi
  - Format the request to SerpApi server
  - Execute GET http request
- - Parse JSON into Ruby Hash using JSON standard library provided by Ruby
+ - Parse JSON into PHP objects using the ext-json extension
 Et voila..
 
 ## How to set SERP API key
