@@ -108,7 +108,7 @@ class SerpApi {
 class SerpApiException extends Exception {}
 
 class SerpApiSearch extends SerpApi {
-  function __construct($api_key = null, $engine = null){
+  function __construct($api_key = '', $engine = 'google'){
     parent::__construct($api_key, $engine);
   }
 
