@@ -110,10 +110,10 @@ class SerpApiSearch extends SerpApi {
   }
 
   function set_serp_api_key($api_key) {
-    if($api_key == NULL) {
+    if(empty($api_key)) {
       throw new SerpApiException("serp_api_key must have a value");
     }
-    
+
     $this->api_key = $api_key;
   }
 
