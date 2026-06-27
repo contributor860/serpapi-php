@@ -1,6 +1,9 @@
 vendor/*
 .vscode/*
 
+# PHPUnit
+.phpunit.result.cache
+
 # MacOS Specific
 .DS_Store
 
