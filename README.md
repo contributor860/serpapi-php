@@ -181,7 +181,7 @@ class ExampleSearchBingTest extends \PHPUnit\Framework\TestCase {
   }
 }
 ```
-test: tests/example_search_bing_test.php
+test: tests/ExampleSearchBingTest.php
 see: [https://serpapi.com/bing-search-api](https://serpapi.com/bing-search-api)
 
 ### Search baidu
@@ -213,7 +213,7 @@ class ExampleSearchBaiduTest extends \PHPUnit\Framework\TestCase {
   }
 }
 ```
-test: tests/example_search_baidu_test.php
+test: tests/ExampleSearchBaiduTest.php
 see: [https://serpapi.com/baidu-search-api](https://serpapi.com/baidu-search-api)
 
 ### Search yahoo
@@ -245,7 +245,7 @@ class ExampleSearchYahooTest extends \PHPUnit\Framework\TestCase {
   }
 }
 ```
-test: tests/example_search_yahoo_test.php
+test: tests/ExampleSearchYahooTest.php
 see: [https://serpapi.com/yahoo-search-api](https://serpapi.com/yahoo-search-api)
 
 ### Search youtube
@@ -277,7 +277,7 @@ class ExampleSearchYoutubeTest extends \PHPUnit\Framework\TestCase {
   }
 }
 ```
-test: tests/example_search_youtube_test.php
+test: tests/ExampleSearchYoutubeTest.php
 see: [https://serpapi.com/youtube-search-api](https://serpapi.com/youtube-search-api)
 
 ### Search walmart
@@ -309,7 +309,7 @@ class ExampleSearchWalmartTest extends \PHPUnit\Framework\TestCase {
   }
 }
 ```
-test: tests/example_search_walmart_test.php
+test: tests/ExampleSearchWalmartTest.php
 see: [https://serpapi.com/walmart-search-api](https://serpapi.com/walmart-search-api)
 
 ### Search ebay
@@ -341,7 +341,7 @@ class ExampleSearchEbayTest extends \PHPUnit\Framework\TestCase {
   }
 }
 ```
-test: tests/example_search_ebay_test.php
+test: tests/ExampleSearchEbayTest.php
 see: [https://serpapi.com/ebay-search-api](https://serpapi.com/ebay-search-api)
 
 ### Search naver
@@ -373,7 +373,7 @@ class ExampleSearchNaverTest extends \PHPUnit\Framework\TestCase {
   }
 }
 ```
-test: tests/example_search_naver_test.php
+test: tests/ExampleSearchNaverTest.php
 see: [https://serpapi.com/naver-search-api](https://serpapi.com/naver-search-api)
 
 ### Search home depot
@@ -405,7 +405,7 @@ class ExampleSearchHomeDepotTest extends \PHPUnit\Framework\TestCase {
   }
 }
 ```
-test: tests/example_search_home_depot_test.php
+test: tests/ExampleSearchHomeDepotTest.php
 see: [https://serpapi.com/home-depot-search-api](https://serpapi.com/home-depot-search-api)
 
 ### Search apple app store
@@ -437,7 +437,7 @@ class ExampleSearchAppleAppStoreTest extends \PHPUnit\Framework\TestCase {
   }
 }
 ```
-test: tests/example_search_apple_app_store_test.php
+test: tests/ExampleSearchAppleAppStoreTest.php
 see: [https://serpapi.com/apple-app-store](https://serpapi.com/apple-app-store)
 
 ### Search duckduckgo
@@ -469,7 +469,7 @@ class ExampleSearchDuckduckgoTest extends \PHPUnit\Framework\TestCase {
   }
 }
 ```
-test: tests/example_search_duckduckgo_test.php
+test: tests/ExampleSearchDuckduckgoTest.php
 see: [https://serpapi.com/duckduckgo-search-api](https://serpapi.com/duckduckgo-search-api)
 
 ### Search google
@@ -502,7 +502,7 @@ class ExampleSearchGoogleTest extends \PHPUnit\Framework\TestCase {
   }
 }
 ```
-test: tests/example_search_google_test.php
+test: tests/ExampleSearchGoogleTest.php
 see: [https://serpapi.com/search-api](https://serpapi.com/search-api)
 
 ### Search google scholar
@@ -534,7 +534,7 @@ class ExampleSearchGoogleScholarTest extends \PHPUnit\Framework\TestCase {
   }
 }
 ```
-test: tests/example_search_google_scholar_test.php
+test: tests/ExampleSearchGoogleScholarTest.php
 see: [https://serpapi.com/google-scholar-api](https://serpapi.com/google-scholar-api)
 
 ### Search google autocomplete
@@ -566,7 +566,7 @@ class ExampleSearchGoogleAutocompleteTest extends \PHPUnit\Framework\TestCase {
   }
 }
 ```
-test: tests/example_search_google_autocomplete_test.php
+test: tests/ExampleSearchGoogleAutocompleteTest.php
 see: [https://serpapi.com/google-autocomplete-api](https://serpapi.com/google-autocomplete-api)
 
 ### Search google product
@@ -599,7 +599,7 @@ class ExampleSearchGoogleProductTest extends \PHPUnit\Framework\TestCase {
   }
 }
 ```
-test: tests/example_search_google_product_test.php
+test: tests/ExampleSearchGoogleProductTest.php
 see: [https://serpapi.com/google-product-api](https://serpapi.com/google-product-api)
 
 ### Search google reverse image
@@ -631,7 +631,7 @@ class ExampleSearchGoogleReverseImageTest extends \PHPUnit\Framework\TestCase {
   }
 }
 ```
-test: tests/example_search_google_reverse_image_test.php
+test: tests/ExampleSearchGoogleReverseImageTest.php
 see: [https://serpapi.com/google-reverse-image](https://serpapi.com/google-reverse-image)
 
 ### Search google events
@@ -663,7 +663,7 @@ class ExampleSearchGoogleEventsTest extends \PHPUnit\Framework\TestCase {
   }
 }
 ```
-test: tests/example_search_google_events_test.php
+test: tests/ExampleSearchGoogleEventsTest.php
 see: [https://serpapi.com/google-events-api](https://serpapi.com/google-events-api)
 
 ### Search google local services
@@ -696,7 +696,7 @@ class ExampleSearchGoogleLocalServicesTest extends \PHPUnit\Framework\TestCase {
   }
 }
 ```
-test: tests/example_search_google_local_services_test.php
+test: tests/ExampleSearchGoogleLocalServicesTest.php
 see: [https://serpapi.com/google-local-services-api](https://serpapi.com/google-local-services-api)
 
 ### Search google maps
@@ -730,7 +730,7 @@ class ExampleSearchGoogleMapsTest extends \PHPUnit\Framework\TestCase {
   }
 }
 ```
-test: tests/example_search_google_maps_test.php
+test: tests/ExampleSearchGoogleMapsTest.php
 see: [https://serpapi.com/google-maps-api](https://serpapi.com/google-maps-api)
 
 ### Search google jobs
@@ -762,7 +762,7 @@ class ExampleSearchGoogleJobsTest extends \PHPUnit\Framework\TestCase {
   }
 }
 ```
-test: tests/example_search_google_jobs_test.php
+test: tests/ExampleSearchGoogleJobsTest.php
 see: [https://serpapi.com/google-jobs-api](https://serpapi.com/google-jobs-api)
 
 ### Search google play
@@ -795,41 +795,8 @@ class ExampleSearchGooglePlayTest extends \PHPUnit\Framework\TestCase {
   }
 }
 ```
-test: tests/example_search_google_play_test.php
+test: tests/ExampleSearchGooglePlayTest.php
 see: [https://serpapi.com/google-play-api](https://serpapi.com/google-play-api)
-
-### Search google
-```php
-class ExampleSearchGoogleTest extends \PHPUnit\Framework\TestCase {
-  
-  private $search_params;
-  private $api_key;
-
-  protected function setUp(): void {
-    $this->search_params = [
-      'engine' => 'google',
-      'tbm' => 'isch',
-      'q' => 'coffee'
-    ];
-
-    if(isset($_ENV["API_KEY"])) {
-      $this->api_key = $_ENV["API_KEY"];
-    } elseif(getenv('API_KEY')) {
-      $this->api_key = getenv('API_KEY');
-    } else {
-      $this->api_key = "demo";
-    }
- }
-
-  function test_if_result_exist() {
-    $search = new SerpApi($this->api_key);
-    $response = $search->search($this->search_params);
-    $this->assertObjectHasAttribute('images_results', $response, "Error on `{google}` engine not has `{images_results}`");
-  }
-}
-```
-test: tests/example_search_google_test.php
-see: [https://serpapi.com/search-api](https://serpapi.com/search-api)
 
 
 ## Composer example
