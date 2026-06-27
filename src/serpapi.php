@@ -101,7 +101,7 @@ class SerpApi {
       throw new SerpApiException($error->error);
     }
 
-    throw new SerpApiException("Unexpected exception: $result->response");
+    throw new SerpApiException('Unexpected exception: ' . $result->response);
   }
 }
 
