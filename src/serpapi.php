@@ -56,7 +56,8 @@ class SerpApi {
       throw new SerpApiException("format must be json or html");
     }
 
-    return $this->get("/searches/$search_id.$format", $format, []);
+    $safe_search_id = rawurlencode((string)$search_id);
+    return $this->get("/searches/{$safe_search_id}.{$format}", $format, []);
   }
 
   private function get($endpoint = null, $format = 'json', $params = []) {
