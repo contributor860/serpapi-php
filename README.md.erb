@@ -5,8 +5,13 @@ def snippet(format, path)
  %Q(```#{format}\n#{buf}```\ntest: #{path})
 end
 -%>
+# SerpApi PHP library
 
-# SerpApi PHP integration library
+[![serpapi-php](https://github.com/serpapi/serpapi-php/actions/workflows/serpapi-php.yml/badge.svg)](https://github.com/serpapi/serpapi-php/actions/workflows/serpapi-php.yml)
+
+Integrate search data into your PHP application. This library is the official wrapper for SerpApi (https://serpapi.com).
+
+SerpApi supports Google, Google Maps, Google Shopping, Baidu, Yandex, Yahoo, eBay, App Stores, and more.
 
 This PHP API is meant to scrape and parse Google, Bing, Apple, Baidu, Naver and more results using [SerpApi](https://serpapi.com).
 
@@ -25,9 +30,20 @@ SerpApi provides a [script builder](https://serpapi.com/demo) to get you started
 
 ## Installation
 
- PHP 7+ must be already installed and [composer](https://getcomposer.org/) dependency management tool.
+PHP 7.2+ must be already installed and [composer](https://getcomposer.org/) dependency management tool.
 
- Package available from packagist.
+Tested PHP versions:
+* 7.2
+* 7.3
+* 7.4
+* 8.0
+* 8.1
+* 8.2
+* 8.3
+* 8.4
+* 8.5
+
+Package available from packagist.
 
 ## Quick start
 
@@ -233,7 +249,6 @@ To run the code.
  - git clone https://github.com/serpapi/serpapi-php
  - cd serpapi-php
  - composer install
- - composer update
 
 
 ## Change log
@@ -252,5 +267,41 @@ For more information: https://serpapi.com
 
 Thanks Rest API for Php
  - Travis Dent  - https://github.com/tcdent/php-restclient
- - Test framework - PhpUnit - https://phpunit.de/getting-started/phpunit-7.html
+ - Test framework - PhpUnit - https://phpunit.de/getting-started/phpunit-8.html
+
+## Continuous integration
+
+We love "true open source", "continuous integration", and Test Driven Development (TDD).
+We use PHPUnit to test our infrastructure around the clock using [GitHub Actions](https://github.com/serpapi/serpapi-php/actions/workflows/serpapi-php.yml) to achieve the best QoS (Quality Of Service).
+
+The `tests/` directory includes specifications which serve the dual purposes of examples and functional tests.
+
+PHP versions validated by GitHub Actions:
+* 7.2
+* 7.3
+* 7.4
+* 8.0
+* 8.1
+* 8.2
+* 8.3
+* 8.4
+* 8.5
+
+Set your secret API key in your shell before running a test.
+
+```bash
+export API_KEY="your_secret_key"
+```
+
+Install testing dependencies and run the test suite:
+
+```bash
+make test
+```
+
+Contributions are welcome. Feel free to submit a pull request!
+
+## License
+
+MIT License.
 
