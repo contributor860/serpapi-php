@@ -77,20 +77,19 @@ $query = [
 
 $search = new SerpApiSearch('YOUR API KEY HERE');
 $result = $search->get_json($query);
-print_r($result)
+print_r($result);
+```
 
- ```
-
-This example runs a search about "coffee" using your secret api key.
+This example runs a search about "paris" on Naver using your secret api key.
 
 The SerpApi service (backend)
- - searches on Google using the query: q = "coffee"
+ - searches on Naver using the query: paris
  - parses the messy HTML responses
- - return a standardizes JSON response
+ - returns a standardized JSON response
 The PHP class SerpApiSearch
- - Format the request to SerpApi server
- - Execute GET http request
- - Parse JSON into PHP objects using the ext-json extension
+ - formats the request to SerpApi server
+ - executes GET http request
+ - parses JSON into PHP objects using the ext-json extension
 Et voila..
 
 ### How to set SERP API key
@@ -115,17 +114,19 @@ Here is how to calls the APIs
 
 Let's run a search to get a search_id.
 ```php
-$client = SerpApiSearch(getenv("API_KEY"));
-$result = $client->get_json($this->QUERY);
-$search_id = $result->search_metadata->id
-
+$client = new SerpApiSearch(getenv("API_KEY"));
+$result = $client->get_json([
+  'q' => 'Coffee',
+  'location' => 'Austin, Texas'
+]);
+$search_id = $result->search_metadata->id;
 ```
 
 
 Now let's retrieve the previous search from the archive.
 
 ```php
-$archived_result = $client->get_search_archive($search_id);
+$archived_result = $client->search_archive($search_id);
 print_r($archived_result);
 
 ```
@@ -133,7 +134,7 @@ it prints the search from the archive.
 
 ### Account API
 ```php
-$client = new SerpApiSearch($this->API_KEY);
+$client = new SerpApiSearch(getenv("API_KEY"));
 $info = $client->get_account();
 print_r($info);
 
@@ -151,7 +152,7 @@ $data = $client->get_json([
 
 foreach($data->images_results as $image_result) {
   print_r($image_result->original);
-  //to download the image:
+  // to download the image:
   // `wget #{image_result[:original]}`
 }
 ```
@@ -258,7 +259,7 @@ To run the code.
 
 ## Conclusion
 
-SerpApi supports all the major search engines. Google has the more advance support with all the major services available: Images, News, Shopping and more...
+SerpApi supports all the major search engines. Google has the more advanced support with all the major services available: Images, News, Shopping and more...
 
 [The full documentation is available here.](https://serpapi.com/search-api)
 
