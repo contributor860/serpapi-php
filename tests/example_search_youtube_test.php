@@ -1,6 +1,6 @@
 <?php
 
-class serpaExampleSearchYoutubeTestpiTest extends \PHPUnit\Framework\TestCase {
+class ExampleSearchYoutubeTest extends \PHPUnit\Framework\TestCase {
 
   private $search_params;
   private $api_key;

@@ -2,7 +2,7 @@
 
 use PHPUnit\Framework\TestCase;
 
-class GoogleSearchTest extends TestCase {
+class SerpApiGoogleSearchTest extends TestCase {
 
   private $QUERY;
   private $API_KEY;
@@ -114,7 +114,7 @@ class GoogleSearchTest extends TestCase {
     $this->assertGreaterThan(5, count($response->video_results));
   }
 
-  public function test_searpapiclient_get_search_method() {
+  public function test_serpapiclient_get_search_method() {
     $query = [
       'q' => "Coffee"
     ];

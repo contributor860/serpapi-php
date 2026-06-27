@@ -1,6 +1,6 @@
 <?php
 
-class serpapiTest extends \PHPUnit\Framework\TestCase {
+class SerpApiTest extends \PHPUnit\Framework\TestCase {
 
   private $search_params;
   private $api_key;
