@@ -29,7 +29,7 @@
         "learning",
         "scrape"
     ],
-    "homepage": "http://github.com/serpapi/serpapi-php",
+    "homepage": "https://github.com/serpapi/serpapi-php",
     "license": "MIT",
     "authors": [
         {
@@ -39,7 +39,7 @@
         }
     ],
     "support": {
-        "issues": "http://github.com/serpapi/serpapi-php/issues"
+        "issues": "https://github.com/serpapi/serpapi-php/issues"
     },
     "require": {
         "tcdent/php-restclient": "0.1.8.4",
