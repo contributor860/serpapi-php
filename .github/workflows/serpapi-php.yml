@@ -26,7 +26,7 @@ jobs:
         coverage: xdebug        
         tools: php-cs-fixer, phpunit:${{ matrix.phpunit-versions }}
         
-    - name: Validate composer.json and composer.lock
+    - name: Validate composer.json
       run: composer validate
 
     - name: Cache Composer packages
@@ -34,9 +34,9 @@ jobs:
       uses: actions/cache@v3
       with:
         path: vendor
-        key: ${{ runner.os }}-php-${{ hashFiles('**/composer.lock') }}
+        key: ${{ runner.os }}-php-${{ matrix.php-versions }}-${{ hashFiles('composer.json') }}
         restore-keys: |
-          ${{ runner.os }}-php-
+          ${{ runner.os }}-php-${{ matrix.php-versions }}-
 
     - name: Install dependencies
       if: steps.composer-cache.outputs.cache-hit != 'true'
