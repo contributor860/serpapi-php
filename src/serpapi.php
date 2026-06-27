@@ -60,28 +60,25 @@ class SerpApi {
   }
 
   private function get($endpoint = null, $format = 'json', $params = []) {
-    if(empty($this->api_key)) {
-      throw new SerpApiException("API_KEY must be present");
-    }
-    
     if(!in_array($format, ['json', 'html'])) {
       throw new SerpApiException("not supported decoder $format. should be: html or json");
+    }
+
+    $api_key = $params['api_key'] ?? $this->api_key;
+    if(empty($api_key)) {
+      throw new SerpApiException("API_KEY must be present");
     }
 
     $api = new RestClient([
       'base_url'      => "https://serpapi.com",
       'user_agent'    => 'serpapi-php/1.0.0',
-      'curl_options'  => [
-        CURLOPT_SSL_VERIFYHOST => 0,
-        CURLOPT_SSL_VERIFYPEER => 0,
-      ]
     ]);
 
     $default_query = [
       'engine'  => $this->engine,
       'output'  => $format,
       'source'  => 'php',
-      'api_key' => $this->api_key,
+      'api_key' => $api_key,
     ];
 
     $query = array_merge($default_query, $params);
