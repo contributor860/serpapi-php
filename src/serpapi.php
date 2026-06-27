@@ -126,6 +126,10 @@ class SerpApiSearch extends SerpApi {
   }
 
   function search($output = null, $params = []) {
+    if($output === null || is_array($output)) {
+      return parent::search(is_array($output) ? $output : []);
+    }
+
     if($output == 'json') {
       return parent::search($params);
     } elseif($output == 'html') {
