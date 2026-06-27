@@ -43,13 +43,13 @@
     },
     "require": {
         "tcdent/php-restclient": "0.1.8.4",
-        "php": ">=7.1",
+        "php": ">=7.2",
         "ext-curl": "*",
         "ext-json": "*"
     },
     "require-dev": {
         "phpunit/phpunit": "8.5.31",
-        "php": ">=7.1"
+        "php": ">=7.2"
     },
     "autoload": {
         "files": [

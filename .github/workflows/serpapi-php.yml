@@ -11,7 +11,7 @@ jobs:
     strategy:
       matrix:
         operating-system: ['ubuntu-latest']
-        php-versions: ['7.2','7.3','7.4','8.0', '8.1', '8.2', '8.3']
+        php-versions: ['7.2', '7.3', '7.4', '8.0', '8.1', '8.2', '8.3', '8.4', '8.5']
         phpunit-versions: ['latest']
     steps:
     - name: Checkout
@@ -21,10 +21,15 @@ jobs:
       uses: shivammathur/setup-php@v2
       with:
         php-version: ${{ matrix.php-versions }}
-        extensions: mbstring, intl
+        extensions: mbstring, intl, curl
         ini-values: post_max_size=256M, max_execution_time=180
         coverage: xdebug        
         tools: php-cs-fixer, phpunit:${{ matrix.phpunit-versions }}
+
+    - name: Verify required PHP extensions
+      run: |
+        php -m | grep -i curl
+        php -m | grep -i json
         
     - name: Validate composer.json
       run: composer validate
