@@ -3,7 +3,7 @@
 
   <testsuites>
     <testsuite name="serpapi">
-      <directory suffix="_test.php">tests/</directory>
+      <directory suffix="Test.php">tests/</directory>
     </testsuite>
   </testsuites>
 
