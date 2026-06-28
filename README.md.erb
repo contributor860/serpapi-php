@@ -61,7 +61,7 @@ require __DIR__ . '/vendor/autoload.php';
 
 if not, you must clone this repository and link the class.
 ```php
-require 'path/to/serpapi-php';
+require 'path/to/serpapi-php/src/serpapi.php';
 
 ```
 
@@ -93,7 +93,7 @@ The PHP class SerpApiSearch
 Et voila..
 
 ### How to set SERP API key
-The SerpApi api_key can be set globally using a singleton pattern.
+The SerpApi api_key can be set per client instance (either in the constructor or later via `set_serp_api_key`).
 
 ```php
 $client = new SerpApiSearch();
