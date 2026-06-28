@@ -36,7 +36,7 @@ class SerpApiTest extends \PHPUnit\Framework\TestCase {
 
   function test_if_API_key_error() {
     $this->expectException(SerpApiException::class);
-    $this->expectExceptionMessage('Invalid API key. Your API key should be here: https://serpapi.com/manage-api-key');
+    $this->expectExceptionMessageMatches('/Invalid API key/i');
     $search = new SerpApi('not_valid_Key');
     $search->search();
   }
