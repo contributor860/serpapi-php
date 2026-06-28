@@ -83,6 +83,7 @@ class SerpApi {
     ];
 
     $query = array_merge($default_query, $params);
+    $query['output'] = $format;
 
     $result = $api->get($endpoint, $query);
 
