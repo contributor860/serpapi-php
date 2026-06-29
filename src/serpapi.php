@@ -48,7 +48,7 @@ class SerpApi {
    * Retrieve search result from the Search Archive API
    */
   public function search_archive($search_id = null, $format = 'json') {
-    if($search_id == null) {
+    if(empty($search_id)) {
       throw new SerpApiException("search_id must be present");
     }
 
