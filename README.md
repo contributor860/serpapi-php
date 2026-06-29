@@ -101,7 +101,7 @@ $client = new SerpApiSearch("Your Private Key");
 ```
 
 ## Examples in php
-Here is how to calls the APIs
+Here is how to call the APIs
 
 ### Search Archive API
 
