@@ -12,7 +12,6 @@ jobs:
       matrix:
         operating-system: ['ubuntu-latest']
         php-versions: ['7.4', '8.0', '8.1', '8.2', '8.3', '8.4', '8.5']
-        phpunit-versions: ['latest']
         include:
           - operating-system: ubuntu-20.04
             php-versions: '7.2'
@@ -29,7 +28,7 @@ jobs:
         extensions: mbstring, intl, curl
         ini-values: post_max_size=256M, max_execution_time=180
         coverage: xdebug        
-        tools: php-cs-fixer, phpunit:${{ matrix.phpunit-versions }}
+        tools: php-cs-fixer
 
     - name: Verify required PHP extensions
       run: |
