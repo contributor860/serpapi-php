@@ -97,7 +97,8 @@ class SerpApi {
 
     if($format == 'json') {
       $error = $result->decode_response();
-      throw new SerpApiException($error->error);
+      $message = (is_object($error) && isset($error->error)) ? $error->error : ('Unexpected exception: ' . $result->response);
+      throw new SerpApiException($message);
     }
 
     throw new SerpApiException('Unexpected exception: ' . $result->response);
