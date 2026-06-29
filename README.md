@@ -40,7 +40,7 @@ Package available from packagist.
 
 ## Quick start
 
-if you're using composer, you can add this package ([link to packagist](https://packagist.org/packages/serpapi/serpapi-php)).
+If you're using composer, you can add this package ([link to packagist](https://packagist.org/packages/serpapi/serpapi-php)).
 ```bash
 $ composer require serpapi/serpapi-php
 ```
@@ -52,7 +52,7 @@ require __DIR__ . '/vendor/autoload.php';
  ?>
 ```
 
-if not, you must clone this repository and link the class.
+If not, you must clone this repository and link the class.
 ```php
 require 'path/to/serpapi-php/src/serpapi.php';
 
@@ -642,9 +642,9 @@ SerpApi supports all the major search engines. Google has the more advanced supp
 Authors: Victor Benarbia victor@serpapi.com, Alaa Abdulridha alaa@serpapi.com
 For more information: https://serpapi.com
 
-Thanks Rest API for Php
+Thanks to REST API for PHP
  - Travis Dent  - https://github.com/tcdent/php-restclient
- - Test framework - PhpUnit - https://phpunit.de/getting-started/phpunit-8.html
+ - Test framework - PHPUnit - https://phpunit.de/index.html
 
 ## Continuous integration
 
