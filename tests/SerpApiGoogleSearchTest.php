@@ -1,29 +1,18 @@
 <?php
 
-use PHPUnit\Framework\TestCase;
-
-class SerpApiGoogleSearchTest extends TestCase {
+class SerpApiGoogleSearchTest extends SerpApiTestCase {
 
   private $QUERY;
-  private $API_KEY;
-
   protected function setUp(): void {
+    parent::setUp();
      $this->QUERY = [
       'q' => "Coffee", 
       'location' => "Austin,Texas"
     ];
-
-    if(isset($_ENV["API_KEY"])) {
-      $this->API_KEY = $_ENV["API_KEY"];
-    } elseif(getenv('API_KEY')) {
-      $this->API_KEY = getenv('API_KEY');
-    } else {
-      $this->API_KEY = "demo";
-    }
   }
   
   public function testGoogleSearch() {
-    $client = new GoogleSearch($this->API_KEY);
+    $client = new GoogleSearch($this->api_key);
     $response = $client->get_json($this->QUERY);
     $this->assertEquals("Success", $response->search_metadata->status);
     $this->assertGreaterThan(5, count($response->organic_results));
@@ -31,39 +20,39 @@ class SerpApiGoogleSearchTest extends TestCase {
   }
 
   public function test_google_get_html_method() {
-    $client = new GoogleSearch($this->API_KEY);
+    $client = new GoogleSearch($this->api_key);
     $response = $client->get_html($this->QUERY);
     $this->assertGreaterThan(10000, strlen($response));
   }
 
   public function test_google_get_account_method() {
-    $client = new GoogleSearch($this->API_KEY);
+    $client = new GoogleSearch($this->api_key);
     $info = $client->get_account();
-    $this->assertEquals($this->API_KEY , $info->api_key);
+    $this->assertEquals($this->api_key , $info->api_key);
   }
 
   public function test_google_get_location_method() {
-    $client = new GoogleSearch($this->API_KEY);
+    $client = new GoogleSearch($this->api_key);
     $location_list = $client->get_location('Austin', 3);
     $this->assertEquals(200635, $location_list[0]->google_id);
   }
 
   public function test_google_get_search_archive_method() {
-    $client = new GoogleSearch($this->API_KEY);
+    $client = new GoogleSearch($this->api_key);
     $result = $client->get_json($this->QUERY);
     $archived_result = $client->search_archive($result->search_metadata->id);
     $this->assertEquals($result->search_metadata->id, $archived_result->search_metadata->id);
   }
 
   public function test_bing_get_search_method() {
-    $client = new SerpApiSearch($this->API_KEY, 'bing');
+    $client = new SerpApiSearch($this->api_key, 'bing');
     $response = $client->get_json($this->QUERY);
     $this->assertEquals("Success", $response->search_metadata->status);
     $this->assertGreaterThan(5, count($response->organic_results));
   }
 
   public function test_baidu_get_search_method() {
-    $client = new SerpApiSearch($this->API_KEY, 'baidu');
+    $client = new SerpApiSearch($this->api_key, 'baidu');
     $response = $client->get_json($this->QUERY);
     $this->assertEquals("Success", $response->search_metadata->status);
     $this->assertGreaterThan(5, count($response->organic_results));
@@ -74,7 +63,7 @@ class SerpApiGoogleSearchTest extends TestCase {
       'p' => "Coffee",
       'engine'  => 'yahoo'
     ];
-    $client = new GoogleSearch($this->API_KEY);
+    $client = new GoogleSearch($this->api_key);
     $response = $client->get_json($query);
     $this->assertEquals("Success", $response->search_metadata->status);
     $this->assertGreaterThan(5, count($response->organic_results));
@@ -85,7 +74,7 @@ class SerpApiGoogleSearchTest extends TestCase {
       "engine" => "yandex",
       'text' => "Coffee",
     ];
-    $client = new GoogleSearch($this->API_KEY);
+    $client = new GoogleSearch($this->api_key);
     $response = $client->get_json($query);
     $this->assertEquals("Success", $response->search_metadata->status);
     $this->assertGreaterThan(5, count($response->organic_results));
@@ -97,7 +86,7 @@ class SerpApiGoogleSearchTest extends TestCase {
       '_nkw' => "Coffee",
       "no_cache" => true
     ];
-    $client = new GoogleSearch($this->API_KEY);
+    $client = new GoogleSearch($this->api_key);
     $response = $client->get_json($query);
     $this->assertEquals("Success", $response->search_metadata->status);
     $this->assertGreaterThan(5, count($response->organic_results));
@@ -108,7 +97,7 @@ class SerpApiGoogleSearchTest extends TestCase {
       "engine" => "youtube",
       'search_query' => "Coffee"
     ];
-    $client = new GoogleSearch($this->API_KEY);
+    $client = new GoogleSearch($this->api_key);
     $response = $client->get_json($query);
     $this->assertEquals("Success", $response->search_metadata->status);
     $this->assertGreaterThan(5, count($response->video_results));
@@ -118,14 +107,14 @@ class SerpApiGoogleSearchTest extends TestCase {
     $query = [
       'q' => "Coffee"
     ];
-    $client = new SerpApiSearch($this->API_KEY, 'google');
+    $client = new SerpApiSearch($this->api_key, 'google');
     $response = $client->get_json($query);
     $this->assertEquals("Success", $response->search_metadata->status);
     $this->assertGreaterThan(5, count($response->organic_results));
   }
 
   public function test_google_get_search_method() {
-    $client = new GoogleSearch($this->API_KEY);
+    $client = new GoogleSearch($this->api_key);
     $response = $client->search("json", $this->QUERY);
     $this->assertGreaterThan(5, count($response->organic_results));
   }

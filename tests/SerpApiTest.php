@@ -1,23 +1,14 @@
 <?php
 
-class SerpApiTest extends \PHPUnit\Framework\TestCase {
+class SerpApiTest extends SerpApiTestCase {
 
   private $search_params;
-  private $api_key;
-
   protected function setUp(): void {
+    parent::setUp();
     $this->search_params = [
       'q' => "Coffee",
       'location' => "Austin,Texas"
     ];
-
-    if(isset($_ENV["API_KEY"])) {
-      $this->api_key = $_ENV["API_KEY"];
-    } elseif(getenv('API_KEY')) {
-      $this->api_key = getenv('API_KEY');
-    } else {
-      $this->api_key = "demo";
-    }
  }
 
   function test_if_API_key_not_exist() {
@@ -42,19 +33,19 @@ class SerpApiTest extends \PHPUnit\Framework\TestCase {
   }
 
   function test_account() {
-    $search = new SerpApi($this->api_key);
+    $search = $this->serpApiClient();
     $response = $search->account();
     $this->assertEquals($search->api_key, $response->api_key);
   }
 
   function test_html() {
-    $search = new SerpApi($this->api_key);
+    $search = $this->serpApiClient();
     $response = $search->html($this->search_params);
     $this->assertGreaterThan(10000, strlen($response));
   }
 
   function test_search() {
-    $search = new SerpApi($this->api_key);
+    $search = $this->serpApiClient();
     $response = $search->search($this->search_params);
     $this->assertEquals("Success", $response->search_metadata->status);
     $this->assertGreaterThan(5, count($response->organic_results));
@@ -62,7 +53,7 @@ class SerpApiTest extends \PHPUnit\Framework\TestCase {
   }
 
   function test_location_method() {
-    $search = new SerpApi($this->api_key);
+    $search = $this->serpApiClient();
     $location_list = $search->location(["q" => "Austin", "limit" => 3]);
     $this->assertEquals(200635, $location_list[0]->google_id);
   }
@@ -70,12 +61,12 @@ class SerpApiTest extends \PHPUnit\Framework\TestCase {
   function test_search_archive_if_miss_id() {
     $this->expectException(SerpApiException::class);
     $this->expectExceptionMessage('search_id must be present');
-    $search = new SerpApi($this->api_key);
+    $search = $this->serpApiClient();
     $search->search_archive();
   }
 
   function test_search_archive_method() {
-    $search = new SerpApi($this->api_key);
+    $search = $this->serpApiClient();
     $result = $search->search($this->search_params);
     $archived_result = $search->search_archive($result->search_metadata->id);
     $this->assertEquals($result->search_metadata->id, $archived_result->search_metadata->id);
