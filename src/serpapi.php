@@ -52,7 +52,7 @@ class SerpApi {
       throw new SerpApiException("search_id must be present");
     }
 
-    if(!in_array($format, ['json', 'html'])) {
+    if(!in_array($format, ['json', 'html'], true)) {
       throw new SerpApiException("format must be json or html");
     }
 
@@ -61,7 +61,7 @@ class SerpApi {
   }
 
   private function get($endpoint = null, $format = 'json', $params = []) {
-    if(!in_array($format, ['json', 'html'])) {
+    if(!in_array($format, ['json', 'html'], true)) {
       throw new SerpApiException("Unsupported format '$format'. Expected 'html' or 'json'.");
     }
 
