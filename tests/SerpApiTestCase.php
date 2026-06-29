@@ -4,6 +4,7 @@ abstract class SerpApiTestCase extends \PHPUnit\Framework\TestCase {
   protected $api_key;
 
   protected function setUp(): void {
+    parent::setUp();
     $this->api_key = $this->apiKey();
   }
 
