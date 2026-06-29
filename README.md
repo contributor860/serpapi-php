@@ -454,7 +454,7 @@ see: [https://serpapi.com/google-autocomplete-api](https://serpapi.com/google-au
 
 ### Search google shopping
 ```php
-class ExampleSearchGoogleProductTest extends SerpApiTestCase {
+class ExampleSearchGoogleShoppingTest extends SerpApiTestCase {
   
   private $search_params;
   protected function setUp(): void {
@@ -472,12 +472,12 @@ class ExampleSearchGoogleProductTest extends SerpApiTestCase {
   }
 }
 ```
-test: tests/ExampleSearchGoogleProductTest.php
+test: tests/ExampleSearchGoogleShoppingTest.php
 see: [https://serpapi.com/google-shopping-api](https://serpapi.com/google-shopping-api)
 
 ### Search google lens
 ```php
-class ExampleSearchGoogleReverseImageTest extends SerpApiTestCase {
+class ExampleSearchGoogleLensTest extends SerpApiTestCase {
   
   private $search_params;
   protected function setUp(): void {
@@ -497,7 +497,7 @@ class ExampleSearchGoogleReverseImageTest extends SerpApiTestCase {
   }
 }
 ```
-test: tests/ExampleSearchGoogleReverseImageTest.php
+test: tests/ExampleSearchGoogleLensTest.php
 see: [https://serpapi.com/google-lens-api](https://serpapi.com/google-lens-api)
 
 ### Search google events
