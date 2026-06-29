@@ -9,12 +9,14 @@ abstract class SerpApiTestCase extends \PHPUnit\Framework\TestCase {
   }
 
   protected function apiKey(): string {
-    if(isset($_ENV['API_KEY'])) {
-      return $_ENV['API_KEY'];
+    $env = $_ENV['API_KEY'] ?? null;
+    if(!empty($env)) {
+      return $env;
     }
 
-    if(getenv('API_KEY')) {
-      return getenv('API_KEY');
+    $value = getenv('API_KEY');
+    if(!empty($value)) {
+      return $value;
     }
 
     return 'demo';
