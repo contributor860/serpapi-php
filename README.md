@@ -146,7 +146,7 @@ $data = $client->get_json([
 foreach($data->images_results as $image_result) {
   print_r($image_result->original);
   // to download the image:
-  // `wget #{image_result[:original]}`
+  // `wget {$image_result->original}`
 }
 ```
 
