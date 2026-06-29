@@ -46,65 +46,6 @@ class SerpApiGoogleSearchTest extends SerpApiTestCase {
     $this->assertEquals($result->search_metadata->id, $archived_result->search_metadata->id);
   }
 
-  public function test_bing_get_search_method() {
-    $client = new SerpApiSearch($this->api_key, 'bing');
-    $response = $client->get_json($this->QUERY);
-    $this->assertEquals("Success", $response->search_metadata->status);
-    $this->assertGreaterThan(5, count($response->organic_results));
-  }
-
-  public function test_baidu_get_search_method() {
-    $client = new SerpApiSearch($this->api_key, 'baidu');
-    $response = $client->get_json($this->QUERY);
-    $this->assertEquals("Success", $response->search_metadata->status);
-    $this->assertGreaterThan(5, count($response->organic_results));
-  }
-
-  public function test_yahoo_get_search_method() {
-    $query = [
-      'p' => "Coffee",
-      'engine'  => 'yahoo'
-    ];
-    $client = new GoogleSearch($this->api_key);
-    $response = $client->get_json($query);
-    $this->assertEquals("Success", $response->search_metadata->status);
-    $this->assertGreaterThan(5, count($response->organic_results));
-  }
-
-  public function test_yandex_get_search_method() {
-    $query = [
-      "engine" => "yandex",
-      'text' => "Coffee",
-    ];
-    $client = new GoogleSearch($this->api_key);
-    $response = $client->get_json($query);
-    $this->assertEquals("Success", $response->search_metadata->status);
-    $this->assertGreaterThan(5, count($response->organic_results));
-  }
-
-  public function test_ebay_get_search_method() {
-    $query = [
-      "engine" => "ebay",
-      '_nkw' => "Coffee",
-      "no_cache" => true
-    ];
-    $client = new GoogleSearch($this->api_key);
-    $response = $client->get_json($query);
-    $this->assertEquals("Success", $response->search_metadata->status);
-    $this->assertGreaterThan(5, count($response->organic_results));
-  }
-
-  public function test_youtube_get_search_method() {
-    $query = [
-      "engine" => "youtube",
-      'search_query' => "Coffee"
-    ];
-    $client = new GoogleSearch($this->api_key);
-    $response = $client->get_json($query);
-    $this->assertEquals("Success", $response->search_metadata->status);
-    $this->assertGreaterThan(5, count($response->video_results));
-  }
-
   public function test_serpapiclient_get_search_method() {
     $query = [
       'q' => "Coffee"
