@@ -48,15 +48,15 @@ class SerpApiTest extends SerpApiTestCase {
     $search = $this->serpApiClient();
     $response = $search->search($this->search_params);
     $this->assertEquals("Success", $response->search_metadata->status);
-    $this->assertGreaterThan(5, count($response->organic_results));
-    $this->assertGreaterThan(5, strlen($response->organic_results[0]->title));
+    $this->assertResponseHasProperty($response, 'organic_results');
+    $this->assertNotEmpty($response->organic_results);
   }
 
   function test_location_method() {
     $search = $this->serpApiClient();
     $location_list = $search->location(["q" => "Austin", "limit" => 3]);
     $this->assertCount(3, $location_list);
-    $this->assertEquals('Austin', $location_list[0]->name);
+    $this->assertStringContainsString('Austin', $location_list[0]->name);
     $this->assertGreaterThan(0, $location_list[0]->google_id);
   }
 

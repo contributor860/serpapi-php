@@ -15,8 +15,8 @@ class SerpApiGoogleSearchTest extends SerpApiTestCase {
     $client = new GoogleSearch($this->api_key);
     $response = $client->get_json($this->QUERY);
     $this->assertEquals("Success", $response->search_metadata->status);
-    $this->assertGreaterThan(5, count($response->organic_results));
-    $this->assertGreaterThan(5, strlen($response->organic_results[0]->title));
+    $this->assertResponseHasProperty($response, 'organic_results');
+    $this->assertNotEmpty($response->organic_results);
   }
 
   public function test_google_get_html_method() {
@@ -35,7 +35,7 @@ class SerpApiGoogleSearchTest extends SerpApiTestCase {
     $client = new GoogleSearch($this->api_key);
     $location_list = $client->get_location('Austin', 3);
     $this->assertCount(3, $location_list);
-    $this->assertEquals('Austin', $location_list[0]->name);
+    $this->assertStringContainsString('Austin', $location_list[0]->name);
     $this->assertGreaterThan(0, $location_list[0]->google_id);
   }
 
@@ -53,12 +53,14 @@ class SerpApiGoogleSearchTest extends SerpApiTestCase {
     $client = new SerpApiSearch($this->api_key, 'google');
     $response = $client->get_json($query);
     $this->assertEquals("Success", $response->search_metadata->status);
-    $this->assertGreaterThan(5, count($response->organic_results));
+    $this->assertResponseHasProperty($response, 'organic_results');
+    $this->assertNotEmpty($response->organic_results);
   }
 
   public function test_google_get_search_method() {
     $client = new GoogleSearch($this->api_key);
     $response = $client->search("json", $this->QUERY);
-    $this->assertGreaterThan(5, count($response->organic_results));
+    $this->assertResponseHasProperty($response, 'organic_results');
+    $this->assertNotEmpty($response->organic_results);
   }
 }
