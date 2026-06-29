@@ -2,11 +2,11 @@
 
 class SerpApiEnginesTest extends SerpApiTestCase {
 
-  private $QUERY;
+  private $queryParams;
 
   protected function setUp(): void {
     parent::setUp();
-    $this->QUERY = [
+    $this->queryParams = [
       'q' => "Coffee",
       'location' => "Austin,Texas"
     ];
@@ -14,7 +14,7 @@ class SerpApiEnginesTest extends SerpApiTestCase {
 
   public function test_bing_get_search_method() {
     $client = new SerpApiSearch($this->api_key, 'bing');
-    $response = $client->get_json($this->QUERY);
+    $response = $client->get_json($this->queryParams);
     $this->assertEquals("Success", $response->search_metadata->status);
     $this->assertResponseHasProperty($response, 'organic_results');
     $this->assertNotEmpty($response->organic_results);
@@ -22,7 +22,7 @@ class SerpApiEnginesTest extends SerpApiTestCase {
 
   public function test_baidu_get_search_method() {
     $client = new SerpApiSearch($this->api_key, 'baidu');
-    $response = $client->get_json($this->QUERY);
+    $response = $client->get_json($this->queryParams);
     $this->assertEquals("Success", $response->search_metadata->status);
     $this->assertResponseHasProperty($response, 'organic_results');
     $this->assertNotEmpty($response->organic_results);

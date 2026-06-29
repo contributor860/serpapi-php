@@ -2,10 +2,10 @@
 
 class SerpApiGoogleSearchTest extends SerpApiTestCase {
 
-  private $QUERY;
+  private $queryParams;
   protected function setUp(): void {
     parent::setUp();
-     $this->QUERY = [
+    $this->queryParams = [
       'q' => "Coffee", 
       'location' => "Austin,Texas"
     ];
@@ -13,7 +13,7 @@ class SerpApiGoogleSearchTest extends SerpApiTestCase {
   
   public function testGoogleSearch() {
     $client = new GoogleSearch($this->api_key);
-    $response = $client->get_json($this->QUERY);
+    $response = $client->get_json($this->queryParams);
     $this->assertEquals("Success", $response->search_metadata->status);
     $this->assertResponseHasProperty($response, 'organic_results');
     $this->assertNotEmpty($response->organic_results);
@@ -21,7 +21,7 @@ class SerpApiGoogleSearchTest extends SerpApiTestCase {
 
   public function test_google_get_html_method() {
     $client = new GoogleSearch($this->api_key);
-    $response = $client->get_html($this->QUERY);
+    $response = $client->get_html($this->queryParams);
     $this->assertGreaterThan(10000, strlen($response));
   }
 
@@ -41,7 +41,7 @@ class SerpApiGoogleSearchTest extends SerpApiTestCase {
 
   public function test_google_get_search_archive_method() {
     $client = new GoogleSearch($this->api_key);
-    $result = $client->get_json($this->QUERY);
+    $result = $client->get_json($this->queryParams);
     $archived_result = $client->search_archive($result->search_metadata->id);
     $this->assertEquals($result->search_metadata->id, $archived_result->search_metadata->id);
   }
@@ -59,7 +59,7 @@ class SerpApiGoogleSearchTest extends SerpApiTestCase {
 
   public function test_google_get_search_method() {
     $client = new GoogleSearch($this->api_key);
-    $response = $client->search("json", $this->QUERY);
+    $response = $client->search("json", $this->queryParams);
     $this->assertResponseHasProperty($response, 'organic_results');
     $this->assertNotEmpty($response->organic_results);
   }
