@@ -14,6 +14,6 @@ class ExampleSearchGoogleEventsTest extends SerpApiTestCase {
   function test_if_result_exist() {
     $search = $this->serpApiClient();
     $response = $search->search($this->search_params);
-    $this->assertObjectHasAttribute('events_results', $response, "Error on `{google_events}` engine not has `{events_results}`");
+    $this->assertResponseHasProperty($response, 'events_results', "Error on `{google_events}` engine not has `{events_results}`");
   }
 }

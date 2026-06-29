@@ -14,6 +14,6 @@ class ExampleSearchBingTest extends SerpApiTestCase {
   function test_if_result_exist() {
     $search = $this->serpApiClient();
     $response = $search->search($this->search_params);
-    $this->assertObjectHasAttribute('organic_results', $response, "Error on `{bing}` engine not has `{organic_results}`");
+    $this->assertResponseHasProperty($response, 'organic_results', "Error on `{bing}` engine not has `{organic_results}`");
   }
 }

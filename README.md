@@ -154,30 +154,21 @@ foreach($data->images_results as $image_result) {
 
 ### Search bing
 ```php
-class ExampleSearchBingTest extends \PHPUnit\Framework\TestCase {
+class ExampleSearchBingTest extends SerpApiTestCase {
   
   private $search_params;
-  private $api_key;
-
   protected function setUp(): void {
+    parent::setUp();
     $this->search_params = [
       'engine' => 'bing',
       'q' => 'coffee'
     ];
-
-    if(isset($_ENV["API_KEY"])) {
-      $this->api_key = $_ENV["API_KEY"];
-    } elseif(getenv('API_KEY')) {
-      $this->api_key = getenv('API_KEY');
-    } else {
-      $this->api_key = "demo";
-    }
  }
 
   function test_if_result_exist() {
-    $search = new SerpApi($this->api_key);
+    $search = $this->serpApiClient();
     $response = $search->search($this->search_params);
-    $this->assertObjectHasAttribute('organic_results', $response, "Error on `{bing}` engine not has `{organic_results}`");
+    $this->assertResponseHasProperty($response, 'organic_results', "Error on `{bing}` engine not has `{organic_results}`");
   }
 }
 ```
@@ -186,30 +177,21 @@ see: [https://serpapi.com/bing-search-api](https://serpapi.com/bing-search-api)
 
 ### Search baidu
 ```php
-class ExampleSearchBaiduTest extends \PHPUnit\Framework\TestCase {
+class ExampleSearchBaiduTest extends SerpApiTestCase {
   
   private $search_params;
-  private $api_key;
-
   protected function setUp(): void {
+    parent::setUp();
     $this->search_params = [
       'engine' => 'baidu',
       'q' => 'coffee'
     ];
-
-    if(isset($_ENV["API_KEY"])) {
-      $this->api_key = $_ENV["API_KEY"];
-    } elseif(getenv('API_KEY')) {
-      $this->api_key = getenv('API_KEY');
-    } else {
-      $this->api_key = "demo";
-    }
  }
 
   function test_if_result_exist() {
-    $search = new SerpApi($this->api_key);
+    $search = $this->serpApiClient();
     $response = $search->search($this->search_params);
-    $this->assertObjectHasAttribute('organic_results', $response, "Error on `{baidu}` engine not has `{organic_results}`");
+    $this->assertResponseHasProperty($response, 'organic_results', "Error on `{baidu}` engine not has `{organic_results}`");
   }
 }
 ```
@@ -218,30 +200,21 @@ see: [https://serpapi.com/baidu-search-api](https://serpapi.com/baidu-search-api
 
 ### Search yahoo
 ```php
-class ExampleSearchYahooTest extends \PHPUnit\Framework\TestCase {
+class ExampleSearchYahooTest extends SerpApiTestCase {
 
   private $search_params;
-  private $api_key;
-
   protected function setUp(): void {
+    parent::setUp();
     $this->search_params = [
       'engine' => 'yahoo',
       'p' => 'coffee'
     ];
-
-    if(isset($_ENV["API_KEY"])) {
-      $this->api_key = $_ENV["API_KEY"];
-    } elseif(getenv('API_KEY')) {
-      $this->api_key = getenv('API_KEY');
-    } else {
-      $this->api_key = "demo";
-    }
  }
 
   function test_if_result_exist() {
-    $search = new SerpApi($this->api_key);
+    $search = $this->serpApiClient();
     $response = $search->search($this->search_params);
-    $this->assertObjectHasAttribute('organic_results', $response, "Error on `{yahoo}` engine not has `{organic_results}`");
+    $this->assertResponseHasProperty($response, 'organic_results', "Error on `{yahoo}` engine not has `{organic_results}`");
   }
 }
 ```
@@ -250,30 +223,21 @@ see: [https://serpapi.com/yahoo-search-api](https://serpapi.com/yahoo-search-api
 
 ### Search youtube
 ```php
-class ExampleSearchYoutubeTest extends \PHPUnit\Framework\TestCase {
+class ExampleSearchYoutubeTest extends SerpApiTestCase {
 
   private $search_params;
-  private $api_key;
-
   protected function setUp(): void {
+    parent::setUp();
     $this->search_params = [
       'engine' => 'youtube',
       'search_query' => 'coffee'
     ];
-
-    if(isset($_ENV["API_KEY"])) {
-      $this->api_key = $_ENV["API_KEY"];
-    } elseif(getenv('API_KEY')) {
-      $this->api_key = getenv('API_KEY');
-    } else {
-      $this->api_key = "demo";
-    }
  }
 
   function test_if_result_exist() {
-    $search = new SerpApi($this->api_key);
+    $search = $this->serpApiClient();
     $response = $search->search($this->search_params);
-    $this->assertObjectHasAttribute('video_results', $response, "Error on `{youtube}` engine not has `{video_results}`");
+    $this->assertResponseHasProperty($response, 'video_results', "Error on `{youtube}` engine not has `{video_results}`");
   }
 }
 ```
@@ -282,30 +246,21 @@ see: [https://serpapi.com/youtube-search-api](https://serpapi.com/youtube-search
 
 ### Search walmart
 ```php
-class ExampleSearchWalmartTest extends \PHPUnit\Framework\TestCase {
+class ExampleSearchWalmartTest extends SerpApiTestCase {
 
   private $search_params;
-  private $api_key;
-
   protected function setUp(): void {
+    parent::setUp();
     $this->search_params = [
       'engine' => 'walmart',
       'query' => 'coffee'
     ];
-
-    if(isset($_ENV["API_KEY"])) {
-      $this->api_key = $_ENV["API_KEY"];
-    } elseif(getenv('API_KEY')) {
-      $this->api_key = getenv('API_KEY');
-    } else {
-      $this->api_key = "demo";
-    }
  }
 
   function test_if_result_exist() {
-    $search = new SerpApi($this->api_key);
+    $search = $this->serpApiClient();
     $response = $search->search($this->search_params);
-    $this->assertObjectHasAttribute('organic_results', $response, "Error on `{walmart}` engine not has `{organic_results}`");
+    $this->assertResponseHasProperty($response, 'organic_results', "Error on `{walmart}` engine not has `{organic_results}`");
   }
 }
 ```
@@ -314,30 +269,21 @@ see: [https://serpapi.com/walmart-search-api](https://serpapi.com/walmart-search
 
 ### Search ebay
 ```php
-class ExampleSearchEbayTest extends \PHPUnit\Framework\TestCase {
+class ExampleSearchEbayTest extends SerpApiTestCase {
   
   private $search_params;
-  private $api_key;
-
   protected function setUp(): void {
+    parent::setUp();
     $this->search_params = [
       'engine' => 'ebay',
       '_nkw' => 'coffee'
     ];
-
-    if(isset($_ENV["API_KEY"])) {
-      $this->api_key = $_ENV["API_KEY"];
-    } elseif(getenv('API_KEY')) {
-      $this->api_key = getenv('API_KEY');
-    } else {
-      $this->api_key = "demo";
-    }
  }
 
   function test_if_result_exist() {
-    $search = new SerpApi($this->api_key);
+    $search = $this->serpApiClient();
     $response = $search->search($this->search_params);
-    $this->assertObjectHasAttribute('organic_results', $response, "Error on `{ebay}` engine not has `{organic_results}`");
+    $this->assertResponseHasProperty($response, 'organic_results', "Error on `{ebay}` engine not has `{organic_results}`");
   }
 }
 ```
@@ -346,30 +292,21 @@ see: [https://serpapi.com/ebay-search-api](https://serpapi.com/ebay-search-api)
 
 ### Search naver
 ```php
-class ExampleSearchNaverTest extends \PHPUnit\Framework\TestCase {
+class ExampleSearchNaverTest extends SerpApiTestCase {
 
   private $search_params;
-  private $api_key;
-
   protected function setUp(): void {
+    parent::setUp();
     $this->search_params = [
       'engine' => 'naver',
       'query' => 'coffee'
     ];
-
-    if(isset($_ENV["API_KEY"])) {
-      $this->api_key = $_ENV["API_KEY"];
-    } elseif(getenv('API_KEY')) {
-      $this->api_key = getenv('API_KEY');
-    } else {
-      $this->api_key = "demo";
-    }
  }
 
   function test_if_result_exist() {
-    $search = new SerpApi($this->api_key);
+    $search = $this->serpApiClient();
     $response = $search->search($this->search_params);
-    $this->assertObjectHasAttribute('ads_results', $response, "Error on `{naver}` engine not has `{ads_results}`");
+    $this->assertResponseHasProperty($response, 'ads_results', "Error on `{naver}` engine not has `{ads_results}`");
   }
 }
 ```
@@ -378,30 +315,21 @@ see: [https://serpapi.com/naver-search-api](https://serpapi.com/naver-search-api
 
 ### Search home depot
 ```php
-class ExampleSearchHomeDepotTest extends \PHPUnit\Framework\TestCase {
+class ExampleSearchHomeDepotTest extends SerpApiTestCase {
   
   private $search_params;
-  private $api_key;
-
   protected function setUp(): void {
+    parent::setUp();
     $this->search_params = [
       'engine' => 'home_depot',
       'q' => 'table'
     ];
-
-    if(isset($_ENV["API_KEY"])) {
-      $this->api_key = $_ENV["API_KEY"];
-    } elseif(getenv('API_KEY')) {
-      $this->api_key = getenv('API_KEY');
-    } else {
-      $this->api_key = "demo";
-    }
  }
 
   function test_if_result_exist() {
-    $search = new SerpApi($this->api_key);
+    $search = $this->serpApiClient();
     $response = $search->search($this->search_params);
-    $this->assertObjectHasAttribute('products', $response, "Error on `{home_depot}` engine not has `{products}`");
+    $this->assertResponseHasProperty($response, 'products', "Error on `{home_depot}` engine not has `{products}`");
   }
 }
 ```
@@ -410,30 +338,21 @@ see: [https://serpapi.com/home-depot-search-api](https://serpapi.com/home-depot-
 
 ### Search apple app store
 ```php
-class ExampleSearchAppleAppStoreTest extends \PHPUnit\Framework\TestCase {
+class ExampleSearchAppleAppStoreTest extends SerpApiTestCase {
   
   private $search_params;
-  private $api_key;
-
   protected function setUp(): void {
+    parent::setUp();
     $this->search_params = [
       'engine' => 'apple_app_store',
       'term' => 'coffee'
     ];
-
-    if(isset($_ENV["API_KEY"])) {
-      $this->api_key = $_ENV["API_KEY"];
-    } elseif(getenv('API_KEY')) {
-      $this->api_key = getenv('API_KEY');
-    } else {
-      $this->api_key = "demo";
-    }
  }
 
   function test_if_result_exist() {
-    $search = new SerpApi($this->api_key);
+    $search = $this->serpApiClient();
     $response = $search->search($this->search_params);
-    $this->assertObjectHasAttribute('organic_results', $response, "Error on `{apple_app_store}` engine not has `{organic_results}`");
+    $this->assertResponseHasProperty($response, 'organic_results', "Error on `{apple_app_store}` engine not has `{organic_results}`");
   }
 }
 ```
@@ -442,30 +361,21 @@ see: [https://serpapi.com/apple-app-store](https://serpapi.com/apple-app-store)
 
 ### Search duckduckgo
 ```php
-class ExampleSearchDuckduckgoTest extends \PHPUnit\Framework\TestCase {
+class ExampleSearchDuckduckgoTest extends SerpApiTestCase {
   
   private $search_params;
-  private $api_key;
-
   protected function setUp(): void {
+    parent::setUp();
     $this->search_params = [
       'engine' => 'duckduckgo',
       'q' => 'coffee'
     ];
-
-    if(isset($_ENV["API_KEY"])) {
-      $this->api_key = $_ENV["API_KEY"];
-    } elseif(getenv('API_KEY')) {
-      $this->api_key = getenv('API_KEY');
-    } else {
-      $this->api_key = "demo";
-    }
  }
 
   function test_if_result_exist() {
-    $search = new SerpApi($this->api_key);
+    $search = $this->serpApiClient();
     $response = $search->search($this->search_params);
-    $this->assertObjectHasAttribute('organic_results', $response, "Error on `{duckduckgo}` engine not has `{organic_results}`");
+    $this->assertResponseHasProperty($response, 'organic_results', "Error on `{duckduckgo}` engine not has `{organic_results}`");
   }
 }
 ```
@@ -474,31 +384,22 @@ see: [https://serpapi.com/duckduckgo-search-api](https://serpapi.com/duckduckgo-
 
 ### Search google
 ```php
-class ExampleSearchGoogleTest extends \PHPUnit\Framework\TestCase {
+class ExampleSearchGoogleTest extends SerpApiTestCase {
   
   private $search_params;
-  private $api_key;
-
   protected function setUp(): void {
+    parent::setUp();
     $this->search_params = [
       'engine' => 'google',
       'tbm' => 'isch',
       'q' => 'coffee'
     ];
-
-    if(isset($_ENV["API_KEY"])) {
-      $this->api_key = $_ENV["API_KEY"];
-    } elseif(getenv('API_KEY')) {
-      $this->api_key = getenv('API_KEY');
-    } else {
-      $this->api_key = "demo";
-    }
  }
 
   function test_if_result_exist() {
-    $search = new SerpApi($this->api_key);
+    $search = $this->serpApiClient();
     $response = $search->search($this->search_params);
-    $this->assertObjectHasAttribute('images_results', $response, "Error on `{google}` engine not has `{images_results}`");
+    $this->assertResponseHasProperty($response, 'images_results', "Error on `{google}` engine not has `{images_results}`");
   }
 }
 ```
@@ -507,30 +408,21 @@ see: [https://serpapi.com/search-api](https://serpapi.com/search-api)
 
 ### Search google scholar
 ```php
-class ExampleSearchGoogleScholarTest extends \PHPUnit\Framework\TestCase {
+class ExampleSearchGoogleScholarTest extends SerpApiTestCase {
   
   private $search_params;
-  private $api_key;
-
   protected function setUp(): void {
+    parent::setUp();
     $this->search_params = [
       'engine' => 'google_scholar',
       'q' => 'coffee'
     ];
-
-    if(isset($_ENV["API_KEY"])) {
-      $this->api_key = $_ENV["API_KEY"];
-    } elseif(getenv('API_KEY')) {
-      $this->api_key = getenv('API_KEY');
-    } else {
-      $this->api_key = "demo";
-    }
  }
 
   function test_if_result_exist() {
-    $search = new SerpApi($this->api_key);
+    $search = $this->serpApiClient();
     $response = $search->search($this->search_params);
-    $this->assertObjectHasAttribute('organic_results', $response, "Error on `{google_scholar}` engine not has `{organic_results}`");
+    $this->assertResponseHasProperty($response, 'organic_results', "Error on `{google_scholar}` engine not has `{organic_results}`");
   }
 }
 ```
@@ -539,127 +431,92 @@ see: [https://serpapi.com/google-scholar-api](https://serpapi.com/google-scholar
 
 ### Search google autocomplete
 ```php
-class ExampleSearchGoogleAutocompleteTest extends \PHPUnit\Framework\TestCase {
+class ExampleSearchGoogleAutocompleteTest extends SerpApiTestCase {
   
   private $search_params;
-  private $api_key;
-
   protected function setUp(): void {
+    parent::setUp();
     $this->search_params = [
       'engine' => 'google_autocomplete',
       'q' => 'coffee'
     ];
-
-    if(isset($_ENV["API_KEY"])) {
-      $this->api_key = $_ENV["API_KEY"];
-    } elseif(getenv('API_KEY')) {
-      $this->api_key = getenv('API_KEY');
-    } else {
-      $this->api_key = "demo";
-    }
  }
 
   function test_if_result_exist() {
-    $search = new SerpApi($this->api_key);
+    $search = $this->serpApiClient();
     $response = $search->search($this->search_params);
-    $this->assertObjectHasAttribute('suggestions', $response, "Error on `{google_autocomplete}` engine not has `{suggestions}`");
+    $this->assertResponseHasProperty($response, 'suggestions', "Error on `{google_autocomplete}` engine not has `{suggestions}`");
   }
 }
 ```
 test: tests/ExampleSearchGoogleAutocompleteTest.php
 see: [https://serpapi.com/google-autocomplete-api](https://serpapi.com/google-autocomplete-api)
 
-### Search google product
+### Search google shopping
 ```php
-class ExampleSearchGoogleProductTest extends \PHPUnit\Framework\TestCase {
+class ExampleSearchGoogleProductTest extends SerpApiTestCase {
   
   private $search_params;
-  private $api_key;
-
   protected function setUp(): void {
+    parent::setUp();
     $this->search_params = [
-      'engine' => 'google_product',
+      'engine' => 'google_shopping',
       'q' => 'coffee',
-      'product_id' => '4172129135583325756'
     ];
-
-    if(isset($_ENV["API_KEY"])) {
-      $this->api_key = $_ENV["API_KEY"];
-    } elseif(getenv('API_KEY')) {
-      $this->api_key = getenv('API_KEY');
-    } else {
-      $this->api_key = "demo";
-    }
  }
 
   function test_if_result_exist() {
-    $search = new SerpApi($this->api_key);
+    $search = $this->serpApiClient();
     $response = $search->search($this->search_params);
-    $this->assertObjectHasAttribute('product_results', $response, "Error on `{google_product}` engine not has `{product_results}`");
+    $this->assertResponseHasProperty($response, 'shopping_results', "Error on `{google_shopping}` engine not has `{shopping_results}`");
   }
 }
 ```
 test: tests/ExampleSearchGoogleProductTest.php
-see: [https://serpapi.com/google-product-api](https://serpapi.com/google-product-api)
+see: [https://serpapi.com/google-shopping-api](https://serpapi.com/google-shopping-api)
 
-### Search google reverse image
+### Search google lens
 ```php
-class ExampleSearchGoogleReverseImageTest extends \PHPUnit\Framework\TestCase {
+class ExampleSearchGoogleReverseImageTest extends SerpApiTestCase {
   
   private $search_params;
-  private $api_key;
-
   protected function setUp(): void {
+    parent::setUp();
     $this->search_params = [
-      'engine' => 'google_reverse_image',
-      'image_url' => 'https://i.imgur.com/5bGzZi7.jpg'
+      'engine' => 'google_lens',
+      'url' => 'https://i.imgur.com/5bGzZi7.jpg',
+      'gl' => 'us',
+      'hl' => 'en',
     ];
-
-    if(isset($_ENV["API_KEY"])) {
-      $this->api_key = $_ENV["API_KEY"];
-    } elseif(getenv('API_KEY')) {
-      $this->api_key = getenv('API_KEY');
-    } else {
-      $this->api_key = "demo";
-    }
  }
 
   function test_if_result_exist() {
-    $search = new SerpApi($this->api_key);
+    $search = $this->serpApiClient();
     $response = $search->search($this->search_params);
-    $this->assertObjectHasAttribute('image_sizes', $response, "Error on `{google_reverse_image}` engine not has `{image_sizes}`");
+    $this->assertResponseHasProperty($response, 'visual_matches', "Error on `{google_lens}` engine not has `{visual_matches}`");
   }
 }
 ```
 test: tests/ExampleSearchGoogleReverseImageTest.php
-see: [https://serpapi.com/google-reverse-image](https://serpapi.com/google-reverse-image)
+see: [https://serpapi.com/google-lens-api](https://serpapi.com/google-lens-api)
 
 ### Search google events
 ```php
-class ExampleSearchGoogleEventsTest extends \PHPUnit\Framework\TestCase {
+class ExampleSearchGoogleEventsTest extends SerpApiTestCase {
   
   private $search_params;
-  private $api_key;
-
   protected function setUp(): void {
+    parent::setUp();
     $this->search_params = [
       'engine' => 'google_events',
       'q' => 'coffee'
     ];
-
-    if(isset($_ENV["API_KEY"])) {
-      $this->api_key = $_ENV["API_KEY"];
-    } elseif(getenv('API_KEY')) {
-      $this->api_key = getenv('API_KEY');
-    } else {
-      $this->api_key = "demo";
-    }
  }
 
   function test_if_result_exist() {
-    $search = new SerpApi($this->api_key);
+    $search = $this->serpApiClient();
     $response = $search->search($this->search_params);
-    $this->assertObjectHasAttribute('events_results', $response, "Error on `{google_events}` engine not has `{events_results}`");
+    $this->assertResponseHasProperty($response, 'events_results', "Error on `{google_events}` engine not has `{events_results}`");
   }
 }
 ```
@@ -668,31 +525,22 @@ see: [https://serpapi.com/google-events-api](https://serpapi.com/google-events-a
 
 ### Search google local services
 ```php
-class ExampleSearchGoogleLocalServicesTest extends \PHPUnit\Framework\TestCase {
+class ExampleSearchGoogleLocalServicesTest extends SerpApiTestCase {
   
   private $search_params;
-  private $api_key;
-
   protected function setUp(): void {
+    parent::setUp();
     $this->search_params = [
       'engine' => 'google_local_services',
       'q' => 'electrician',
       'data_cid' => '6745062158417646970'
     ];
-
-    if(isset($_ENV["API_KEY"])) {
-      $this->api_key = $_ENV["API_KEY"];
-    } elseif(getenv('API_KEY')) {
-      $this->api_key = getenv('API_KEY');
-    } else {
-      $this->api_key = "demo";
-    }
  }
 
   function test_if_result_exist() {
-    $search = new SerpApi($this->api_key);
+    $search = $this->serpApiClient();
     $response = $search->search($this->search_params);
-    $this->assertObjectHasAttribute('local_ads', $response, "Error on `{google_local_services}` engine not has `{local_ads}`");
+    $this->assertResponseHasProperty($response, 'local_ads', "Error on `{google_local_services}` engine not has `{local_ads}`");
   }
 }
 ```
@@ -701,32 +549,23 @@ see: [https://serpapi.com/google-local-services-api](https://serpapi.com/google-
 
 ### Search google maps
 ```php
-class ExampleSearchGoogleMapsTest extends \PHPUnit\Framework\TestCase {
+class ExampleSearchGoogleMapsTest extends SerpApiTestCase {
   
   private $search_params;
-  private $api_key;
-
   protected function setUp(): void {
+    parent::setUp();
     $this->search_params = [
       'engine' => 'google_maps',
       'q' => 'pizza',
       'll' => '@40.7455096,-74.0083012,15.1z',
       'type' => 'search'
     ];
-
-    if(isset($_ENV["API_KEY"])) {
-      $this->api_key = $_ENV["API_KEY"];
-    } elseif(getenv('API_KEY')) {
-      $this->api_key = getenv('API_KEY');
-    } else {
-      $this->api_key = "demo";
-    }
  }
 
   function test_if_result_exist() {
-    $search = new SerpApi($this->api_key);
+    $search = $this->serpApiClient();
     $response = $search->search($this->search_params);
-    $this->assertObjectHasAttribute('local_results', $response, "Error on `{google_maps}` engine not has `{local_results}`");
+    $this->assertResponseHasProperty($response, 'local_results', "Error on `{google_maps}` engine not has `{local_results}`");
   }
 }
 ```
@@ -735,30 +574,21 @@ see: [https://serpapi.com/google-maps-api](https://serpapi.com/google-maps-api)
 
 ### Search google jobs
 ```php
-class ExampleSearchGoogleJobsTest extends \PHPUnit\Framework\TestCase {
+class ExampleSearchGoogleJobsTest extends SerpApiTestCase {
   
   private $search_params;
-  private $api_key;
-
   protected function setUp(): void {
+    parent::setUp();
     $this->search_params = [
       'engine' => 'google_jobs',
       'q' => 'coffee'
     ];
-
-    if(isset($_ENV["API_KEY"])) {
-      $this->api_key = $_ENV["API_KEY"];
-    } elseif(getenv('API_KEY')) {
-      $this->api_key = getenv('API_KEY');
-    } else {
-      $this->api_key = "demo";
-    }
  }
 
   function test_if_result_exist() {
-    $search = new SerpApi($this->api_key);
+    $search = $this->serpApiClient();
     $response = $search->search($this->search_params);
-    $this->assertObjectHasAttribute('jobs_results', $response, "Error on `{google_jobs}` engine not has `{jobs_results}`");
+    $this->assertResponseHasProperty($response, 'jobs_results', "Error on `{google_jobs}` engine not has `{jobs_results}`");
   }
 }
 ```
@@ -767,31 +597,22 @@ see: [https://serpapi.com/google-jobs-api](https://serpapi.com/google-jobs-api)
 
 ### Search google play
 ```php
-class ExampleSearchGooglePlayTest extends \PHPUnit\Framework\TestCase {
+class ExampleSearchGooglePlayTest extends SerpApiTestCase {
   
   private $search_params;
-  private $api_key;
-
   protected function setUp(): void {
+    parent::setUp();
     $this->search_params = [
       'engine' => 'google_play',
       'q' => 'kite',
       'store' => 'apps'
     ];
-
-    if(isset($_ENV["API_KEY"])) {
-      $this->api_key = $_ENV["API_KEY"];
-    } elseif(getenv('API_KEY')) {
-      $this->api_key = getenv('API_KEY');
-    } else {
-      $this->api_key = "demo";
-    }
  }
 
   function test_if_result_exist() {
-    $search = new SerpApi($this->api_key);
+    $search = $this->serpApiClient();
     $response = $search->search($this->search_params);
-    $this->assertObjectHasAttribute('organic_results', $response, "Error on `{google_play}` engine not has `{organic_results}`");
+    $this->assertResponseHasProperty($response, 'organic_results', "Error on `{google_play}` engine not has `{organic_results}`");
   }
 }
 ```

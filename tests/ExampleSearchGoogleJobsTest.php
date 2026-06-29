@@ -14,6 +14,6 @@ class ExampleSearchGoogleJobsTest extends SerpApiTestCase {
   function test_if_result_exist() {
     $search = $this->serpApiClient();
     $response = $search->search($this->search_params);
-    $this->assertObjectHasAttribute('jobs_results', $response, "Error on `{google_jobs}` engine not has `{jobs_results}`");
+    $this->assertResponseHasProperty($response, 'jobs_results', "Error on `{google_jobs}` engine not has `{jobs_results}`");
   }
 }

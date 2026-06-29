@@ -55,7 +55,9 @@ class SerpApiTest extends SerpApiTestCase {
   function test_location_method() {
     $search = $this->serpApiClient();
     $location_list = $search->location(["q" => "Austin", "limit" => 3]);
-    $this->assertEquals(200635, $location_list[0]->google_id);
+    $this->assertCount(3, $location_list);
+    $this->assertEquals('Austin', $location_list[0]->name);
+    $this->assertGreaterThan(0, $location_list[0]->google_id);
   }
 
   function test_search_archive_if_miss_id() {

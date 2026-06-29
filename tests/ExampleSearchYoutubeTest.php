@@ -14,6 +14,6 @@ class ExampleSearchYoutubeTest extends SerpApiTestCase {
   function test_if_result_exist() {
     $search = $this->serpApiClient();
     $response = $search->search($this->search_params);
-    $this->assertObjectHasAttribute('video_results', $response, "Error on `{youtube}` engine not has `{video_results}`");
+    $this->assertResponseHasProperty($response, 'video_results', "Error on `{youtube}` engine not has `{video_results}`");
   }
 }

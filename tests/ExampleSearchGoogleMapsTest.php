@@ -16,6 +16,6 @@ class ExampleSearchGoogleMapsTest extends SerpApiTestCase {
   function test_if_result_exist() {
     $search = $this->serpApiClient();
     $response = $search->search($this->search_params);
-    $this->assertObjectHasAttribute('local_results', $response, "Error on `{google_maps}` engine not has `{local_results}`");
+    $this->assertResponseHasProperty($response, 'local_results', "Error on `{google_maps}` engine not has `{local_results}`");
   }
 }

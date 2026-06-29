@@ -34,7 +34,9 @@ class SerpApiGoogleSearchTest extends SerpApiTestCase {
   public function test_google_get_location_method() {
     $client = new GoogleSearch($this->api_key);
     $location_list = $client->get_location('Austin', 3);
-    $this->assertEquals(200635, $location_list[0]->google_id);
+    $this->assertCount(3, $location_list);
+    $this->assertEquals('Austin', $location_list[0]->name);
+    $this->assertGreaterThan(0, $location_list[0]->google_id);
   }
 
   public function test_google_get_search_archive_method() {

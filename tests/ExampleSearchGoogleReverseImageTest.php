@@ -14,6 +14,6 @@ class ExampleSearchGoogleReverseImageTest extends SerpApiTestCase {
   function test_if_result_exist() {
     $search = $this->serpApiClient();
     $response = $search->search($this->search_params);
-    $this->assertObjectHasAttribute('image_sizes', $response, "Error on `{google_reverse_image}` engine not has `{image_sizes}`");
+    $this->assertResponseHasProperty($response, 'image_sizes', "Error on `{google_reverse_image}` engine not has `{image_sizes}`");
   }
 }
