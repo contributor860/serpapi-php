@@ -1,6 +1,6 @@
 <%-
 def snippet(format, path)
- slice = File.new(path).readlines[2..-1]
+ slice = File.readlines(path)[2..-1] || []
  buf = slice.join
  %Q(```#{format}\n#{buf}```\ntest: #{path})
 end
