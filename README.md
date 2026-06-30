@@ -19,7 +19,7 @@ The following services are provided:
  * [Search Archive API](https://serpapi.com/search-archive-api)
  * [Account API](https://serpapi.com/account-api)
 
-SerpApi provides a [script builder](https://serpapi.com/demo) to get you started quickly.
+SerpApi provides a [script builder](https://serpapi.com/playground) to get you started quickly.
 
 ## Installation
 
@@ -47,9 +47,7 @@ $ composer require serpapi/serpapi-php
 
 Then you need to load the dependency in your script.
 ```php
-<?php
 require __DIR__ . '/vendor/autoload.php';
- ?>
 ```
 
 If not, you must clone this repository and link the class.
@@ -58,7 +56,7 @@ require 'path/to/serpapi-php/src/serpapi.php';
 
 ```
 
-Get "your secret key" from https://serpapi.com/dashboard
+Get "Your Private API Key" from [dashboard](https://serpapi.com/dashboard).
 
 Then you can start coding something like:
 ```php
@@ -509,7 +507,8 @@ class ExampleSearchGoogleEventsTest extends SerpApiTestCase {
     parent::setUp();
     $this->search_params = [
       'engine' => 'google_events',
-      'q' => 'Events in Austin'
+      'q' => 'Events in Austin',
+      'location' => 'Austin, Texas, United States'
     ];
  }
 
