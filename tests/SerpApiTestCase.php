@@ -5,11 +5,23 @@ abstract class SerpApiTestCase extends \PHPUnit\Framework\TestCase {
 
   protected function setUp(): void {
     parent::setUp();
-    $this->api_key = $this->apiKey();
+    $resolved = $this->resolveApiKey();
+
+    if($resolved === null && $this->requiresApiKey()) {
+      $this->markTestSkipped('API_KEY is not set');
+      return;
+    }
+
+    $this->api_key = $resolved;
   }
 
-  protected function apiKey(): string {
+  protected function requiresApiKey(): bool {
+    return true;
+  }
+
+  protected function resolveApiKey(): ?string {
     $env = $_ENV['API_KEY'] ?? null;
+
     if(!empty($env)) {
       return $env;
     }
@@ -19,7 +31,7 @@ abstract class SerpApiTestCase extends \PHPUnit\Framework\TestCase {
       return $value;
     }
 
-    return 'demo';
+    return null;
   }
 
   protected function serpApiClient(): SerpApi {

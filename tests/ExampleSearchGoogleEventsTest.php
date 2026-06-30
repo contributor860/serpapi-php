@@ -7,7 +7,8 @@ class ExampleSearchGoogleEventsTest extends SerpApiTestCase {
     parent::setUp();
     $this->search_params = [
       'engine' => 'google_events',
-      'q' => 'Events in Austin'
+      'q' => 'Events in Austin',
+      'location' => 'Austin, Texas, United States'
     ];
  }
 
