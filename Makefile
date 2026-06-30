@@ -13,7 +13,7 @@ install:
 	composer install --prefer-dist --no-progress
 
 # Run the tests
-test: install
+test:
 	vendor/bin/phpunit -c phpunit.xml
 
 readme:
