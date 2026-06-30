@@ -173,7 +173,12 @@ class Client {
         return $response;
       }
 
-      return json_decode($response);
+      $decoded = json_decode($response);
+      if ($decoded === null && json_last_error() !== JSON_ERROR_NONE) {
+        throw new SerpApiException('JSON decode error: ' . json_last_error_msg());
+      }
+
+      return $decoded;
     }
 
     if ($format === 'json') {
