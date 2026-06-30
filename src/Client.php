@@ -22,7 +22,7 @@ class Client {
    * @param string $engine
    * @throws SerpApiException
    */
-  public function __construct($api_key = '', $engine = 'google') {
+  public function __construct(string $api_key = '', string $engine = 'google') {
     if (empty($engine)) {
       throw new SerpApiException('engine must be present');
     }
@@ -35,10 +35,9 @@ class Client {
    * Set the SerpApi API key.
    *
    * @param string $api_key
-   * @return void
    * @throws SerpApiException
    */
-  public function set_api_key($api_key) {
+  public function set_api_key(string $api_key): void {
     if (empty($api_key)) {
       throw new SerpApiException('api_key must have a value');
     }
@@ -48,19 +47,15 @@ class Client {
 
   /**
    * Get the current API key.
-   *
-   * @return string
    */
-  public function get_api_key() {
+  public function get_api_key(): string {
     return $this->api_key;
   }
 
   /**
    * Get the current engine.
-   *
-   * @return string
    */
-  public function get_engine() {
+  public function get_engine(): string {
     return $this->engine;
   }
 
@@ -68,10 +63,9 @@ class Client {
    * Run a search and return decoded JSON.
    *
    * @param array<string, mixed> $params
-   * @return object
    * @throws SerpApiException
    */
-  public function search($params = []) {
+  public function search(array $params = []): object {
     return $this->get('/search', 'json', $params);
   }
 
@@ -79,21 +73,18 @@ class Client {
    * Run a search and return raw HTML.
    *
    * @param array<string, mixed> $params
-   * @return string
    * @throws SerpApiException
    */
-  public function html($params = []) {
+  public function html(array $params = []): string {
     return $this->get('/search', 'html', $params);
   }
 
   /**
    * Get account information using Account API.
    *
-   * @param string|null $api_key
-   * @return object
    * @throws SerpApiException
    */
-  public function account($api_key = null) {
+  public function account(?string $api_key = null): object {
     $params = empty($api_key) ? [] : ['api_key' => $api_key];
     return $this->get('/account', 'json', $params);
   }
@@ -105,19 +96,17 @@ class Client {
    * @return array<int, object>
    * @throws SerpApiException
    */
-  public function location($params = []) {
+  public function location(array $params = []): array {
     return $this->get('/locations.json', 'json', $params);
   }
 
   /**
    * Retrieve search result from the Search Archive API.
    *
-   * @param string $search_id
-   * @param string $format
    * @return object|string
    * @throws SerpApiException
    */
-  public function search_archive($search_id, $format = 'json') {
+  public function search_archive(string $search_id, string $format = 'json') {
     if (empty($search_id)) {
       throw new SerpApiException('search_id must be present');
     }
@@ -126,14 +115,11 @@ class Client {
       throw new SerpApiException('format must be json or html');
     }
 
-    $safe_search_id = rawurlencode((string)$search_id);
+    $safe_search_id = rawurlencode($search_id);
     return $this->get("/searches/{$safe_search_id}.{$format}", $format, []);
   }
 
-  /**
-   * @return RestClient
-   */
-  private function rest_client() {
+  private function rest_client(): RestClient {
     if ($this->rest_client === null) {
       $this->rest_client = new RestClient([
         'base_url'   => self::BASE_URL,
@@ -145,13 +131,11 @@ class Client {
   }
 
   /**
-   * @param string $endpoint
-   * @param string $format
    * @param array<string, mixed> $params
    * @return object|string
    * @throws SerpApiException
    */
-  private function get($endpoint, $format = 'json', $params = []) {
+  private function get(string $endpoint, string $format = 'json', array $params = []) {
     if (!in_array($format, ['json', 'html'], true)) {
       throw new SerpApiException("Unsupported format '$format'. Expected 'html' or 'json'.");
     }
