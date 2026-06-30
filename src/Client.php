@@ -20,11 +20,11 @@ class Client {
   /**
    * @param string $api_key
    * @param string $engine
-   * @throws Exception
+   * @throws SerpApiException
    */
   public function __construct($api_key = '', $engine = 'google') {
     if (empty($engine)) {
-      throw new Exception('engine must be present');
+      throw new SerpApiException('engine must be present');
     }
 
     $this->api_key = $api_key;
@@ -36,11 +36,11 @@ class Client {
    *
    * @param string $api_key
    * @return void
-   * @throws Exception
+   * @throws SerpApiException
    */
   public function set_api_key($api_key) {
     if (empty($api_key)) {
-      throw new Exception('api_key must have a value');
+      throw new SerpApiException('api_key must have a value');
     }
 
     $this->api_key = $api_key;
@@ -69,7 +69,7 @@ class Client {
    *
    * @param array<string, mixed> $params
    * @return object
-   * @throws Exception
+   * @throws SerpApiException
    */
   public function search($params = []) {
     return $this->get('/search', 'json', $params);
@@ -80,7 +80,7 @@ class Client {
    *
    * @param array<string, mixed> $params
    * @return string
-   * @throws Exception
+   * @throws SerpApiException
    */
   public function html($params = []) {
     return $this->get('/search', 'html', $params);
@@ -91,7 +91,7 @@ class Client {
    *
    * @param string|null $api_key
    * @return object
-   * @throws Exception
+   * @throws SerpApiException
    */
   public function account($api_key = null) {
     $params = empty($api_key) ? [] : ['api_key' => $api_key];
@@ -103,7 +103,7 @@ class Client {
    *
    * @param array<string, mixed> $params
    * @return array<int, object>
-   * @throws Exception
+   * @throws SerpApiException
    */
   public function location($params = []) {
     return $this->get('/locations.json', 'json', $params);
@@ -115,15 +115,15 @@ class Client {
    * @param string $search_id
    * @param string $format
    * @return object|string
-   * @throws Exception
+   * @throws SerpApiException
    */
   public function search_archive($search_id, $format = 'json') {
     if (empty($search_id)) {
-      throw new Exception('search_id must be present');
+      throw new SerpApiException('search_id must be present');
     }
 
     if (!in_array($format, ['json', 'html'], true)) {
-      throw new Exception('format must be json or html');
+      throw new SerpApiException('format must be json or html');
     }
 
     $safe_search_id = rawurlencode((string)$search_id);
@@ -149,16 +149,16 @@ class Client {
    * @param string $format
    * @param array<string, mixed> $params
    * @return object|string
-   * @throws Exception
+   * @throws SerpApiException
    */
   private function get($endpoint, $format = 'json', $params = []) {
     if (!in_array($format, ['json', 'html'], true)) {
-      throw new Exception("Unsupported format '$format'. Expected 'html' or 'json'.");
+      throw new SerpApiException("Unsupported format '$format'. Expected 'html' or 'json'.");
     }
 
     $api_key = $params['api_key'] ?? $this->api_key;
     if (empty($api_key)) {
-      throw new Exception('api_key must be present');
+      throw new SerpApiException('api_key must be present');
     }
 
     $default_query = [
@@ -185,9 +185,9 @@ class Client {
       $message = (is_object($error) && isset($error->error))
         ? $error->error
         : 'Unexpected exception: ' . $result->response;
-      throw new Exception($message);
+      throw new SerpApiException($message);
     }
 
-    throw new Exception('Unexpected exception: ' . $result->response);
+    throw new SerpApiException('Unexpected exception: ' . $result->response);
   }
 }
