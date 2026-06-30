@@ -215,11 +215,12 @@ class Client {
       $message .= " error: {$serpapi_error}";
     }
     $message .= ' from url: ' . self::BASE_URL . $endpoint;
+    $sanitized_search_params = $this->sanitize_search_params($search_params);
 
     throw new SerpApiException(
       $message,
       $serpapi_error,
-      $search_params,
+      $sanitized_search_params,
       $response_status,
       $search_id,
       $decoder
@@ -237,13 +238,28 @@ class Client {
     array $search_params,
     string $response_body
   ): void {
+    $sanitized_search_params = $this->sanitize_search_params($search_params);
+
     throw new SerpApiException(
-      'JSON parse error: ' . $response_body . ' on get url: ' . self::BASE_URL . $endpoint,
+      'JSON parse error: ' . json_last_error_msg() . ' response: ' . $response_body . ' on get url: ' . self::BASE_URL . $endpoint,
       null,
-      $search_params,
+      $sanitized_search_params,
       $response_status,
       null,
       'json'
     );
+  }
+
+  /**
+   * @param array<string, mixed> $search_params
+   * @param array<int, string> $keys_to_remove
+   * @return array<string, mixed>
+   */
+  private function sanitize_search_params(array $search_params, array $keys_to_remove = ['api_key']): array {
+    foreach ($keys_to_remove as $key) {
+      unset($search_params[$key]);
+    }
+
+    return $search_params;
   }
 }
