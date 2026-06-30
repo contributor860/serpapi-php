@@ -1,6 +1,3 @@
-# Variables
-PHP_VERSION ?= 7.4
-
 # Default target
 all: install readme test
 
@@ -16,5 +13,6 @@ install:
 test:
 	vendor/bin/phpunit -c phpunit.xml
 
+# Generate README from ERB template
 readme:
 	erb -T '-' README.md.erb > README.md

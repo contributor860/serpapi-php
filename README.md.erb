@@ -1,22 +1,41 @@
 <%-
-def snippet(format, path)
- slice = File.readlines(path)[2..-1] || []
- buf = slice.join
- %Q(```#{format}\n#{buf}```\ntest: #{path})
+def snippet(path)
+  source = File.read(path)
+
+  params_match = source.match(/\$this->search_params\s*=\s*(\[.*?\]);/m)
+  raise "Could not find $this->search_params in #{path}" unless params_match
+  raw_params = params_match[1]
+
+  # Re-indent: strip leading whitespace, indent by 2 spaces
+  params = raw_params.lines.map { |l| "  " + l.strip }.join("\n").strip
+
+  property = source[/assertResponseHasProperty\(\$response,\s*'([^']+)'/, 1] || 'organic_results'
+
+  # Check if engine is set in params
+  has_engine = raw_params.include?("'engine'")
+
+  code = "use SerpApi\\Client;\n\n"
+  if has_engine
+    code += "$client = new Client(getenv('API_KEY'));\n"
+  else
+    engine = raw_params[/'engine'\s*=>\s*'([^']+)'/, 1] || 'google'
+    code += "$client = new Client(getenv('API_KEY'));\n"
+  end
+  code += "$results = $client->search(#{params});\n\n"
+  code += "print_r($results->#{property});\n"
+
+  "```php\n#{code}```\n\n * source: [#{path}](https://github.com/serpapi/serpapi-php/blob/master/#{path})"
 end
 -%>
-# SerpApi PHP library
+# SerpApi PHP Library
 
 [![serpapi-php](https://github.com/serpapi/serpapi-php/actions/workflows/serpapi-php.yml/badge.svg)](https://github.com/serpapi/serpapi-php/actions/workflows/serpapi-php.yml)
 
-Integrate search data into your PHP application. This library is the official wrapper for SerpApi (https://serpapi.com).
+Integrate search data into your PHP application. This library is the official wrapper for [SerpApi](https://serpapi.com).
 
-SerpApi supports Google, Google Maps, Google Shopping, Baidu, Yandex, Yahoo, eBay, App Stores, and more.
+SerpApi supports Google, Google Maps, Google Shopping, Baidu, Yandex, Yahoo, eBay, App Stores, and [more](https://serpapi.com).
 
-This PHP API is meant to scrape and parse Google, Bing, Apple, Baidu, Naver and more results using [SerpApi](https://serpapi.com).
-
-This is the new library provided by SerpApi as a replacement for our old library that can be found [here](https://github.com/serpapi/google-search-results-php) feel free to contact us in case you needed any help: contact@serpapi.com
-
+This is the new library provided by SerpApi as a replacement for our old library that can be found [here](https://github.com/serpapi/google-search-results-php). Feel free to contact us in case you need any help: contact@serpapi.com
 
 [The full documentation is available here.](https://serpapi.com/search-api)
 
@@ -30,7 +49,7 @@ SerpApi provides a [script builder](https://serpapi.com/playground) to get you s
 
 ## Installation
 
-PHP 7.2+ must be already installed and [composer](https://getcomposer.org/) dependency management tool.
+PHP 7.2+ with `ext-curl` and `ext-json` must be installed along with [composer](https://getcomposer.org/) dependency management tool.
 
 Tested PHP versions:
 * 7.2
@@ -43,238 +62,253 @@ Tested PHP versions:
 * 8.4
 * 8.5
 
-Package available from packagist.
+Package available from [packagist](https://packagist.org/packages/serpapi/serpapi-php).
 
 ## Quick start
 
-If you're using composer, you can add this package ([link to packagist](https://packagist.org/packages/serpapi/serpapi-php)).
 ```bash
-$ composer require serpapi/serpapi-php
+composer require serpapi/serpapi-php
 ```
 
-Then you need to load the dependency in your script.
-```php
-require __DIR__ . '/vendor/autoload.php';
-```
+## Simple Usage
 
-If not, you must clone this repository and use Composer's autoloader.
-```php
-require 'path/to/serpapi-php/vendor/autoload.php';
-
-```
-
-Get "Your Private API Key" from [dashboard](https://serpapi.com/dashboard).
-
-Then you can start coding something like:
 ```php
 require 'vendor/autoload.php';
 
 use SerpApi\Client;
 
-$query = [
-  'engine' => 'naver',
-  'query' => 'paris',
-];
+$client = new Client(getenv('API_KEY'));
+$results = $client->search([
+  'q' => 'coffee',
+]);
 
-$client = new Client('YOUR API KEY HERE');
-$result = $client->search($query);
-print_r($result);
+print_r($results->organic_results);
 ```
 
-This example runs a search about "paris" on Naver using your secret api key.
+This example runs a search for "coffee" on Google. It returns the results as a PHP object decoded from JSON.
 
-The SerpApi service (backend)
- - searches on Naver using the query: paris
- - parses the messy HTML responses
- - returns a standardized JSON response
+See the [playground](https://serpapi.com/playground) to generate your own code.
 
-The PHP class `SerpApi\Client`
- - formats the request to SerpApi server
- - executes GET http request
- - parses JSON into PHP objects using the ext-json extension
+## Configuration
 
-Et voila..
+### API key
 
-### How to configure your SerpApi API key
-The SerpApi api_key can be set per client instance (either in the constructor or later via `set_api_key`).
+The API key can be set in the constructor or later via `set_api_key`:
 
 ```php
 use SerpApi\Client;
 
-$client = new Client();
-$client->set_api_key('Your Private Key');
-
-```
-Or
-
-```php
-use SerpApi\Client;
-
+// via constructor
 $client = new Client('Your Private Key');
 
+// or later
+$client = new Client();
+$client->set_api_key('Your Private Key');
 ```
 
-### How to configure the timeout
-The default request timeout is 120 seconds. You can customize it via the third constructor parameter:
+Get your API key from [serpapi.com/dashboard](https://serpapi.com/dashboard).
+
+### Engine
+
+The default engine is `google`. You can change it via the second constructor parameter:
 
 ```php
 use SerpApi\Client;
 
-$client = new Client('Your Private Key', 'google', 30);
-
+$client = new Client(getenv('API_KEY'), 'bing');
+$results = $client->search(['q' => 'coffee']);
 ```
 
-## Examples in php
-Here is how to call the APIs
+### Timeout
+
+The default request timeout is 120 seconds. Customize it via the third constructor parameter:
+
+```php
+use SerpApi\Client;
+
+$client = new Client(getenv('API_KEY'), 'google', 30);
+```
+
+## Search API
+
+### Search Google
+<%= snippet('tests/ExampleSearchGoogleTest.php') %>
+see: [https://serpapi.com/search-api](https://serpapi.com/search-api)
+
+### Search Google Scholar
+<%= snippet('tests/ExampleSearchGoogleScholarTest.php') %>
+see: [https://serpapi.com/google-scholar-api](https://serpapi.com/google-scholar-api)
+
+### Search Google Autocomplete
+<%= snippet('tests/ExampleSearchGoogleAutocompleteTest.php') %>
+see: [https://serpapi.com/google-autocomplete-api](https://serpapi.com/google-autocomplete-api)
+
+### Search Google Shopping
+<%= snippet('tests/ExampleSearchGoogleShoppingTest.php') %>
+see: [https://serpapi.com/google-shopping-api](https://serpapi.com/google-shopping-api)
+
+### Search Google Maps
+<%= snippet('tests/ExampleSearchGoogleMapsTest.php') %>
+see: [https://serpapi.com/google-maps-api](https://serpapi.com/google-maps-api)
+
+### Search Google Jobs
+<%= snippet('tests/ExampleSearchGoogleJobsTest.php') %>
+see: [https://serpapi.com/google-jobs-api](https://serpapi.com/google-jobs-api)
+
+### Search Google Events
+<%= snippet('tests/ExampleSearchGoogleEventsTest.php') %>
+see: [https://serpapi.com/google-events-api](https://serpapi.com/google-events-api)
+
+### Search Google Lens
+<%= snippet('tests/ExampleSearchGoogleLensTest.php') %>
+see: [https://serpapi.com/google-lens-api](https://serpapi.com/google-lens-api)
+
+### Search Google Play
+<%= snippet('tests/ExampleSearchGooglePlayTest.php') %>
+see: [https://serpapi.com/google-play-api](https://serpapi.com/google-play-api)
+
+### Search Google Local Services
+<%= snippet('tests/ExampleSearchGoogleLocalServicesTest.php') %>
+see: [https://serpapi.com/google-local-services-api](https://serpapi.com/google-local-services-api)
+
+### Search Bing
+<%= snippet('tests/ExampleSearchBingTest.php') %>
+see: [https://serpapi.com/bing-search-api](https://serpapi.com/bing-search-api)
+
+### Search Baidu
+<%= snippet('tests/ExampleSearchBaiduTest.php') %>
+see: [https://serpapi.com/baidu-search-api](https://serpapi.com/baidu-search-api)
+
+### Search Yahoo
+<%= snippet('tests/ExampleSearchYahooTest.php') %>
+see: [https://serpapi.com/yahoo-search-api](https://serpapi.com/yahoo-search-api)
+
+### Search YouTube
+<%= snippet('tests/ExampleSearchYoutubeTest.php') %>
+see: [https://serpapi.com/youtube-search-api](https://serpapi.com/youtube-search-api)
+
+### Search Walmart
+<%= snippet('tests/ExampleSearchWalmartTest.php') %>
+see: [https://serpapi.com/walmart-search-api](https://serpapi.com/walmart-search-api)
+
+### Search eBay
+<%= snippet('tests/ExampleSearchEbayTest.php') %>
+see: [https://serpapi.com/ebay-search-api](https://serpapi.com/ebay-search-api)
+
+### Search Naver
+<%= snippet('tests/ExampleSearchNaverTest.php') %>
+see: [https://serpapi.com/naver-search-api](https://serpapi.com/naver-search-api)
+
+### Search Home Depot
+<%= snippet('tests/ExampleSearchHomeDepotTest.php') %>
+see: [https://serpapi.com/home-depot-search-api](https://serpapi.com/home-depot-search-api)
+
+### Search Apple App Store
+<%= snippet('tests/ExampleSearchAppleAppStoreTest.php') %>
+see: [https://serpapi.com/apple-app-store](https://serpapi.com/apple-app-store)
+
+### Search DuckDuckGo
+<%= snippet('tests/ExampleSearchDuckduckgoTest.php') %>
+see: [https://serpapi.com/duckduckgo-search-api](https://serpapi.com/duckduckgo-search-api)
+
+## APIs supported
+
+### Location API
+
+```php
+use SerpApi\Client;
+
+$client = new Client(getenv('API_KEY'));
+$locations = $client->location(['q' => 'Austin', 'limit' => 3]);
+
+echo "Number of locations: " . count($locations) . "\n";
+print_r($locations);
+```
+
+NOTE: `api_key` is not required for this endpoint.
 
 ### Search Archive API
 
-Let's run a search to get a search_id.
+First, run a search and save the search ID:
+
 ```php
 use SerpApi\Client;
 
 $client = new Client(getenv('API_KEY'));
-$result = $client->search([
+$results = $client->search([
   'q' => 'Coffee',
   'location' => 'Austin, Texas',
 ]);
-$search_id = $result->search_metadata->id;
+$search_id = $results->search_metadata->id;
 ```
 
-
-Now let's retrieve the previous search from the archive.
+Now retrieve the previous search from the archive (free of charge):
 
 ```php
-$archived_result = $client->search_archive($search_id);
-print_r($archived_result);
-
+$archived = $client->search_archive($search_id);
+print_r($archived);
 ```
-it prints the search from the archive.
 
 ### Account API
+
 ```php
 use SerpApi\Client;
 
 $client = new Client(getenv('API_KEY'));
-$info = $client->account();
-print_r($info);
-
+$account = $client->account();
+print_r($account);
 ```
-it prints your account information.
 
-### Search Google Images
+### HTML results
 
 ```php
 use SerpApi\Client;
 
 $client = new Client(getenv('API_KEY'));
-$data = $client->search([
-  'q' => 'Coffee',
-  'tbm' => 'isch',
-]);
+$html = $client->html(['q' => 'Coffee']);
 
-foreach ($data->images_results as $image_result) {
-  print_r($image_result->original);
-  // to download the image:
-  // `wget {$image_result->original}`
+echo strlen($html) . " bytes of HTML\n";
+```
+
+## Error handling
+
+```php
+use SerpApi\Client;
+use SerpApi\SerpApiException;
+
+try {
+  $client = new Client('invalid_key');
+  $client->search(['q' => 'test']);
+} catch (SerpApiException $e) {
+  echo "SerpApi error: " . $e->getMessage() . "\n";
 }
 ```
 
+## Testing
 
+We love "true open source", "continuous integration", and Test Driven Development (TDD).
+We use PHPUnit to test our infrastructure around the clock using [GitHub Actions](https://github.com/serpapi/serpapi-php/actions/workflows/serpapi-php.yml) to achieve the best QoS (Quality Of Service).
 
-### Search bing
-<%= snippet('php', 'tests/ExampleSearchBingTest.php') %>
-see: [https://serpapi.com/bing-search-api](https://serpapi.com/bing-search-api)
+The `tests/` directory includes specifications which serve the dual purposes of examples and functional tests.
 
-### Search baidu
-<%= snippet('php', 'tests/ExampleSearchBaiduTest.php') %>
-see: [https://serpapi.com/baidu-search-api](https://serpapi.com/baidu-search-api)
+Set your secret API key in your shell before running tests:
 
-### Search yahoo
-<%= snippet('php', 'tests/ExampleSearchYahooTest.php') %>
-see: [https://serpapi.com/yahoo-search-api](https://serpapi.com/yahoo-search-api)
+```bash
+export API_KEY="your_secret_key"
+```
 
-### Search youtube
-<%= snippet('php', 'tests/ExampleSearchYoutubeTest.php') %>
-see: [https://serpapi.com/youtube-search-api](https://serpapi.com/youtube-search-api)
+Install dependencies and run the test suite:
 
-### Search walmart
-<%= snippet('php', 'tests/ExampleSearchWalmartTest.php') %>
-see: [https://serpapi.com/walmart-search-api](https://serpapi.com/walmart-search-api)
+```bash
+make install
+make test
+```
 
-### Search ebay
-<%= snippet('php', 'tests/ExampleSearchEbayTest.php') %>
-see: [https://serpapi.com/ebay-search-api](https://serpapi.com/ebay-search-api)
-
-### Search naver
-<%= snippet('php', 'tests/ExampleSearchNaverTest.php') %>
-see: [https://serpapi.com/naver-search-api](https://serpapi.com/naver-search-api)
-
-### Search home depot
-<%= snippet('php', 'tests/ExampleSearchHomeDepotTest.php') %>
-see: [https://serpapi.com/home-depot-search-api](https://serpapi.com/home-depot-search-api)
-
-### Search apple app store
-<%= snippet('php', 'tests/ExampleSearchAppleAppStoreTest.php') %>
-see: [https://serpapi.com/apple-app-store](https://serpapi.com/apple-app-store)
-
-### Search duckduckgo
-<%= snippet('php', 'tests/ExampleSearchDuckduckgoTest.php') %>
-see: [https://serpapi.com/duckduckgo-search-api](https://serpapi.com/duckduckgo-search-api)
-
-### Search google
-<%= snippet('php', 'tests/ExampleSearchGoogleTest.php') %>
-see: [https://serpapi.com/search-api](https://serpapi.com/search-api)
-
-### Search google scholar
-<%= snippet('php', 'tests/ExampleSearchGoogleScholarTest.php') %>
-see: [https://serpapi.com/google-scholar-api](https://serpapi.com/google-scholar-api)
-
-### Search google autocomplete
-<%= snippet('php', 'tests/ExampleSearchGoogleAutocompleteTest.php') %>
-see: [https://serpapi.com/google-autocomplete-api](https://serpapi.com/google-autocomplete-api)
-
-### Search google shopping
-<%= snippet('php', 'tests/ExampleSearchGoogleShoppingTest.php') %>
-see: [https://serpapi.com/google-shopping-api](https://serpapi.com/google-shopping-api)
-
-### Search google lens
-<%= snippet('php', 'tests/ExampleSearchGoogleLensTest.php') %>
-see: [https://serpapi.com/google-lens-api](https://serpapi.com/google-lens-api)
-
-### Search google events
-<%= snippet('php', 'tests/ExampleSearchGoogleEventsTest.php') %>
-see: [https://serpapi.com/google-events-api](https://serpapi.com/google-events-api)
-
-### Search google local services
-<%= snippet('php', 'tests/ExampleSearchGoogleLocalServicesTest.php') %>
-see: [https://serpapi.com/google-local-services-api](https://serpapi.com/google-local-services-api)
-
-### Search google maps
-<%= snippet('php', 'tests/ExampleSearchGoogleMapsTest.php') %>
-see: [https://serpapi.com/google-maps-api](https://serpapi.com/google-maps-api)
-
-### Search google jobs
-<%= snippet('php', 'tests/ExampleSearchGoogleJobsTest.php') %>
-see: [https://serpapi.com/google-jobs-api](https://serpapi.com/google-jobs-api)
-
-### Search google play
-<%= snippet('php', 'tests/ExampleSearchGooglePlayTest.php') %>
-see: [https://serpapi.com/google-play-api](https://serpapi.com/google-play-api)
-
-
-## Composer example
-
-To run the code.
- - git clone https://github.com/serpapi/serpapi-php
- - cd serpapi-php
- - composer install
-
+Contributions are welcome. Feel free to submit a pull request!
 
 ## Change log
 
- * 1.0
-   * First stable version
+ * 1.0 - First stable version
 
 ## Conclusion
 
@@ -285,39 +319,6 @@ SerpApi supports all the major search engines. Google has the more advanced supp
 Authors: Victor Benarbia victor@serpapi.com, Alaa Abdulridha alaa@serpapi.com
 For more information: https://serpapi.com
 
-## Continuous integration
-
-We love "true open source", "continuous integration", and Test Driven Development (TDD).
-We use PHPUnit to test our infrastructure around the clock using [GitHub Actions](https://github.com/serpapi/serpapi-php/actions/workflows/serpapi-php.yml) to achieve the best QoS (Quality Of Service).
-
-The `tests/` directory includes specifications which serve the dual purposes of examples and functional tests.
-
-PHP versions validated by GitHub Actions:
-* 7.2
-* 7.3
-* 7.4
-* 8.0
-* 8.1
-* 8.2
-* 8.3
-* 8.4
-* 8.5
-
-Set your secret API key in your shell before running a test.
-
-```bash
-export API_KEY="your_secret_key"
-```
-
-Install testing dependencies and run the test suite:
-
-```bash
-make test
-```
-
-Contributions are welcome. Feel free to submit a pull request!
-
 ## License
 
 MIT License.
-
