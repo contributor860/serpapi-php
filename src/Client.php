@@ -132,7 +132,7 @@ class Client {
 
   /**
    * @param array<string, mixed> $params
-   * @return object|string
+   * @return object|array<int|string, mixed>|string
    * @throws SerpApiException
    */
   private function get(string $endpoint, string $format = 'json', array $params = []) {
