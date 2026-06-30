@@ -65,12 +65,12 @@ class SerpApi {
   /**
    * Retrieve search result from the Search Archive API.
    *
-   * @param string|null $search_id
+   * @param string $search_id
    * @param string $format
    * @return object|string
    * @throws SerpApiException
    */
-  public function search_archive($search_id = null, $format = 'json') {
+  public function search_archive($search_id, $format = 'json') {
     if(empty($search_id)) {
       throw new SerpApiException("search_id must be present");
     }

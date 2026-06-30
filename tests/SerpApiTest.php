@@ -37,11 +37,11 @@ class SerpApiTest extends SerpApiTestCase {
     $search->search();
   }
 
-  function test_search_archive_if_miss_id() {
+  function test_search_archive_if_empty_id() {
     $this->expectException(SerpApiException::class);
     $this->expectExceptionMessage('search_id must be present');
     $search = $this->serpApiClient();
-    $search->search_archive();
+    $search->search_archive('');
   }
 
   function test_search_archive_if_invalid_format() {
