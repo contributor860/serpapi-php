@@ -111,7 +111,7 @@ $results = $client->search([
   'engine' => 'google',
   'tbm' => 'isch',
   'q' => 'coffee',
-  ]);
+]);
 
 print_r($results->images_results);
 ```
@@ -127,7 +127,7 @@ $client = new Client(getenv('API_KEY'));
 $results = $client->search([
   'engine' => 'google_scholar',
   'q' => 'coffee',
-  ]);
+]);
 
 print_r($results->organic_results);
 ```
@@ -143,7 +143,7 @@ $client = new Client(getenv('API_KEY'));
 $results = $client->search([
   'engine' => 'google_autocomplete',
   'q' => 'coffee',
-  ]);
+]);
 
 print_r($results->suggestions);
 ```
@@ -159,7 +159,7 @@ $client = new Client(getenv('API_KEY'));
 $results = $client->search([
   'engine' => 'google_shopping',
   'q' => 'coffee',
-  ]);
+]);
 
 print_r($results->shopping_results);
 ```
@@ -177,7 +177,7 @@ $results = $client->search([
   'q' => 'pizza',
   'll' => '@40.7455096,-74.0083012,15.1z',
   'type' => 'search',
-  ]);
+]);
 
 print_r($results->local_results);
 ```
@@ -193,7 +193,7 @@ $client = new Client(getenv('API_KEY'));
 $results = $client->search([
   'engine' => 'google_jobs',
   'q' => 'coffee',
-  ]);
+]);
 
 print_r($results->jobs_results);
 ```
@@ -210,7 +210,7 @@ $results = $client->search([
   'engine' => 'google_events',
   'q' => 'Events in Austin',
   'location' => 'Austin, Texas, United States',
-  ]);
+]);
 
 print_r($results->events_results);
 ```
@@ -228,7 +228,7 @@ $results = $client->search([
   'url' => 'https://i.imgur.com/5bGzZi7.jpg',
   'gl' => 'us',
   'hl' => 'en',
-  ]);
+]);
 
 print_r($results->visual_matches);
 ```
@@ -245,7 +245,7 @@ $results = $client->search([
   'engine' => 'google_play',
   'q' => 'kite',
   'store' => 'apps',
-  ]);
+]);
 
 print_r($results->organic_results);
 ```
@@ -262,7 +262,7 @@ $results = $client->search([
   'engine' => 'google_local_services',
   'q' => 'electrician',
   'data_cid' => '6745062158417646970',
-  ]);
+]);
 
 print_r($results->local_ads);
 ```
@@ -278,7 +278,7 @@ $client = new Client(getenv('API_KEY'));
 $results = $client->search([
   'engine' => 'bing',
   'q' => 'coffee',
-  ]);
+]);
 
 print_r($results->organic_results);
 ```
@@ -294,7 +294,7 @@ $client = new Client(getenv('API_KEY'));
 $results = $client->search([
   'engine' => 'baidu',
   'q' => 'coffee',
-  ]);
+]);
 
 print_r($results->organic_results);
 ```
@@ -310,7 +310,7 @@ $client = new Client(getenv('API_KEY'));
 $results = $client->search([
   'engine' => 'yahoo',
   'p' => 'coffee',
-  ]);
+]);
 
 print_r($results->organic_results);
 ```
@@ -326,7 +326,7 @@ $client = new Client(getenv('API_KEY'));
 $results = $client->search([
   'engine' => 'youtube',
   'search_query' => 'coffee',
-  ]);
+]);
 
 print_r($results->video_results);
 ```
@@ -342,7 +342,7 @@ $client = new Client(getenv('API_KEY'));
 $results = $client->search([
   'engine' => 'walmart',
   'query' => 'coffee',
-  ]);
+]);
 
 print_r($results->organic_results);
 ```
@@ -358,7 +358,7 @@ $client = new Client(getenv('API_KEY'));
 $results = $client->search([
   'engine' => 'ebay',
   '_nkw' => 'coffee',
-  ]);
+]);
 
 print_r($results->organic_results);
 ```
@@ -374,7 +374,7 @@ $client = new Client(getenv('API_KEY'));
 $results = $client->search([
   'engine' => 'naver',
   'query' => 'coffee',
-  ]);
+]);
 
 print_r($results->ads_results);
 ```
@@ -390,7 +390,7 @@ $client = new Client(getenv('API_KEY'));
 $results = $client->search([
   'engine' => 'home_depot',
   'q' => 'table',
-  ]);
+]);
 
 print_r($results->products);
 ```
@@ -406,7 +406,7 @@ $client = new Client(getenv('API_KEY'));
 $results = $client->search([
   'engine' => 'apple_app_store',
   'term' => 'coffee',
-  ]);
+]);
 
 print_r($results->organic_results);
 ```
@@ -422,7 +422,7 @@ $client = new Client(getenv('API_KEY'));
 $results = $client->search([
   'engine' => 'duckduckgo',
   'q' => 'coffee',
-  ]);
+]);
 
 print_r($results->organic_results);
 ```

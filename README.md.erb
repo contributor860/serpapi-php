@@ -6,8 +6,11 @@ def snippet(path)
   raise "Could not find $this->search_params in #{path}" unless params_match
   raw_params = params_match[1]
 
-  # Re-indent: strip leading whitespace, indent by 2 spaces
-  params = raw_params.lines.map { |l| "  " + l.strip }.join("\n").strip
+  # Re-indent: keep opening/closing bracket at column 0, indent inner lines by 2 spaces
+  raw_lines = raw_params.lines.map { |l| l.strip }
+  params = raw_lines.each_with_index.map { |l, i|
+    (i == 0 || i == raw_lines.length - 1) ? l : "  #{l}"
+  }.join("\n")
 
   property = source[/assertResponseHasProperty\(\$response,\s*'([^']+)'/, 1] || 'organic_results'
 
