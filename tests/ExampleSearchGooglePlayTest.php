@@ -1,20 +1,23 @@
 <?php
 
+namespace SerpApi\Tests;
+
 class ExampleSearchGooglePlayTest extends SerpApiTestCase {
-  
+  /** @var array<string, string> */
   private $search_params;
+
   protected function setUp(): void {
     parent::setUp();
     $this->search_params = [
       'engine' => 'google_play',
       'q' => 'kite',
-      'store' => 'apps'
+      'store' => 'apps',
     ];
- }
+  }
 
-  function test_if_result_exist() {
-    $search = $this->serpApiClient();
-    $response = $search->search($this->search_params);
-    $this->assertResponseHasProperty($response, 'organic_results', "Error on `{google_play}` engine not has `{organic_results}`");
+  public function test_if_result_exist() {
+    $client = $this->serpApiClient();
+    $response = $client->search($this->search_params);
+    $this->assertResponseHasProperty($response, 'organic_results', 'Error on `google_play` engine: no `organic_results`');
   }
 }

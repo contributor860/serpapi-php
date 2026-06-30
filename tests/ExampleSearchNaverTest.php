@@ -1,19 +1,22 @@
 <?php
 
-class ExampleSearchNaverTest extends SerpApiTestCase {
+namespace SerpApi\Tests;
 
+class ExampleSearchNaverTest extends SerpApiTestCase {
+  /** @var array<string, string> */
   private $search_params;
+
   protected function setUp(): void {
     parent::setUp();
     $this->search_params = [
       'engine' => 'naver',
-      'query' => 'coffee'
+      'query' => 'coffee',
     ];
- }
+  }
 
-  function test_if_result_exist() {
-    $search = $this->serpApiClient();
-    $response = $search->search($this->search_params);
-    $this->assertResponseHasProperty($response, 'ads_results', "Error on `{naver}` engine not has `{ads_results}`");
+  public function test_if_result_exist() {
+    $client = $this->serpApiClient();
+    $response = $client->search($this->search_params);
+    $this->assertResponseHasProperty($response, 'ads_results', 'Error on `naver` engine: no `ads_results`');
   }
 }

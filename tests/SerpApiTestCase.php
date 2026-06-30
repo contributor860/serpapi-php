@@ -1,13 +1,19 @@
 <?php
 
-abstract class SerpApiTestCase extends \PHPUnit\Framework\TestCase {
+namespace SerpApi\Tests;
+
+use SerpApi\Client;
+use PHPUnit\Framework\TestCase;
+
+abstract class SerpApiTestCase extends TestCase {
+  /** @var string|null */
   protected $api_key;
 
   protected function setUp(): void {
     parent::setUp();
     $resolved = $this->resolveApiKey();
 
-    if($resolved === null && $this->requiresApiKey()) {
+    if ($resolved === null && $this->requiresApiKey()) {
       $this->markTestSkipped('API_KEY is not set');
       return;
     }
@@ -22,24 +28,24 @@ abstract class SerpApiTestCase extends \PHPUnit\Framework\TestCase {
   protected function resolveApiKey(): ?string {
     $env = $_ENV['API_KEY'] ?? null;
 
-    if(!empty($env)) {
+    if (!empty($env)) {
       return $env;
     }
 
     $value = getenv('API_KEY');
-    if(!empty($value)) {
+    if (!empty($value)) {
       return $value;
     }
 
     return null;
   }
 
-  protected function serpApiClient(): SerpApi {
-    return new SerpApi($this->api_key);
+  protected function serpApiClient(string $engine = 'google'): Client {
+    return new Client($this->api_key, $engine);
   }
 
   protected function assertResponseHasProperty(object $response, string $property, string $message = ''): void {
-    if(method_exists($this, 'assertObjectHasProperty')) {
+    if (method_exists($this, 'assertObjectHasProperty')) {
       $this->assertObjectHasProperty($property, $response, $message);
       return;
     }

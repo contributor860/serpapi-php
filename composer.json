@@ -7,7 +7,6 @@
         "Serp",
         "Search",
         "Result",
-        "Google",
         "Youtube",
         "Walmart",
         "Yandex",
@@ -22,7 +21,6 @@
         "duckduckgo",
         "apple",
         "store",
-        "naver",
         "homedepot",
         "datamining",
         "ml",
@@ -48,18 +46,17 @@
         "ext-json": "*"
     },
     "require-dev": {
-        "phpunit/phpunit": "^8.5.52 || ^9.6 || ^10.5",
-        "php": ">=7.2"
-    },
-    "autoload-dev": {
-        "files": [
-            "tests/SerpApiTestCase.php"
-        ]
+        "phpunit/phpunit": "^8.5.52 || ^9.6 || ^10.5"
     },
     "autoload": {
-        "files": [
-            "src/serpapi.php"
-        ]
+        "psr-4": {
+            "SerpApi\\": "src/"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "SerpApi\\Tests\\": "tests/"
+        }
     },
     "scripts": {
         "test": "vendor/bin/phpunit -c phpunit.xml"
@@ -67,5 +64,4 @@
     "config": {
         "platform-check": false
     }
-
 }

@@ -1,19 +1,22 @@
 <?php
 
-class ExampleSearchWalmartTest extends SerpApiTestCase {
+namespace SerpApi\Tests;
 
+class ExampleSearchWalmartTest extends SerpApiTestCase {
+  /** @var array<string, string> */
   private $search_params;
+
   protected function setUp(): void {
     parent::setUp();
     $this->search_params = [
       'engine' => 'walmart',
-      'query' => 'coffee'
+      'query' => 'coffee',
     ];
- }
+  }
 
-  function test_if_result_exist() {
-    $search = $this->serpApiClient();
-    $response = $search->search($this->search_params);
-    $this->assertResponseHasProperty($response, 'organic_results', "Error on `{walmart}` engine not has `{organic_results}`");
+  public function test_if_result_exist() {
+    $client = $this->serpApiClient();
+    $response = $client->search($this->search_params);
+    $this->assertResponseHasProperty($response, 'organic_results', 'Error on `walmart` engine: no `organic_results`');
   }
 }

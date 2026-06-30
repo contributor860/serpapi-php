@@ -50,9 +50,9 @@ Then you need to load the dependency in your script.
 require __DIR__ . '/vendor/autoload.php';
 ```
 
-If not, you must clone this repository and link the class.
+If not, you must clone this repository and use Composer's autoloader.
 ```php
-require 'path/to/serpapi-php/src/serpapi.php';
+require 'path/to/serpapi-php/vendor/autoload.php';
 
 ```
 
@@ -61,13 +61,16 @@ Get "Your Private API Key" from [dashboard](https://serpapi.com/dashboard).
 Then you can start coding something like:
 ```php
 require 'vendor/autoload.php';
+
+use SerpApi\Client;
+
 $query = [
-  "engine" => "naver",
-  "query" => "paris",
+  'engine' => 'naver',
+  'query' => 'paris',
 ];
 
-$search = new SerpApiSearch('YOUR API KEY HERE');
-$result = $search->get_json($query);
+$client = new Client('YOUR API KEY HERE');
+$result = $client->search($query);
 print_r($result);
 ```
 
@@ -77,24 +80,30 @@ The SerpApi service (backend)
  - searches on Naver using the query: paris
  - parses the messy HTML responses
  - returns a standardized JSON response
-The PHP class SerpApiSearch
+
+The PHP class `SerpApi\Client`
  - formats the request to SerpApi server
  - executes GET http request
  - parses JSON into PHP objects using the ext-json extension
+
 Et voila..
 
 ### How to configure your SerpApi API key
-The SerpApi api_key can be set per client instance (either in the constructor or later via `set_serp_api_key`).
+The SerpApi api_key can be set per client instance (either in the constructor or later via `set_api_key`).
 
 ```php
-$client = new SerpApiSearch();
-$client->set_serp_api_key("Your Private Key");
+use SerpApi\Client;
+
+$client = new Client();
+$client->set_api_key('Your Private Key');
 
 ```
 Or
 
 ```php
-$client = new SerpApiSearch("Your Private Key");
+use SerpApi\Client;
+
+$client = new Client('Your Private Key');
 
 ```
 
@@ -105,10 +114,12 @@ Here is how to call the APIs
 
 Let's run a search to get a search_id.
 ```php
-$client = new SerpApiSearch(getenv("API_KEY"));
-$result = $client->get_json([
+use SerpApi\Client;
+
+$client = new Client(getenv('API_KEY'));
+$result = $client->search([
   'q' => 'Coffee',
-  'location' => 'Austin, Texas'
+  'location' => 'Austin, Texas',
 ]);
 $search_id = $result->search_metadata->id;
 ```
@@ -125,8 +136,10 @@ it prints the search from the archive.
 
 ### Account API
 ```php
-$client = new SerpApiSearch(getenv("API_KEY"));
-$info = $client->get_account();
+use SerpApi\Client;
+
+$client = new Client(getenv('API_KEY'));
+$info = $client->account();
 print_r($info);
 
 ```
@@ -135,13 +148,15 @@ it prints your account information.
 ### Search Google Images
 
 ```php
-$client = new SerpApiSearch(getenv("API_KEY"));
-$data = $client->get_json([
-  'q' => "Coffee",
-  'tbm' => 'isch'
+use SerpApi\Client;
+
+$client = new Client(getenv('API_KEY'));
+$data = $client->search([
+  'q' => 'Coffee',
+  'tbm' => 'isch',
 ]);
 
-foreach($data->images_results as $image_result) {
+foreach ($data->images_results as $image_result) {
   print_r($image_result->original);
   // to download the image:
   // `wget {$image_result->original}`
@@ -152,21 +167,24 @@ foreach($data->images_results as $image_result) {
 
 ### Search bing
 ```php
+namespace SerpApi\Tests;
+
 class ExampleSearchBingTest extends SerpApiTestCase {
-  
+  /** @var array<string, string> */
   private $search_params;
+
   protected function setUp(): void {
     parent::setUp();
     $this->search_params = [
       'engine' => 'bing',
-      'q' => 'coffee'
+      'q' => 'coffee',
     ];
- }
+  }
 
-  function test_if_result_exist() {
-    $search = $this->serpApiClient();
-    $response = $search->search($this->search_params);
-    $this->assertResponseHasProperty($response, 'organic_results', "Error on `{bing}` engine not has `{organic_results}`");
+  public function test_if_result_exist() {
+    $client = $this->serpApiClient();
+    $response = $client->search($this->search_params);
+    $this->assertResponseHasProperty($response, 'organic_results', 'Error on `bing` engine: no `organic_results`');
   }
 }
 ```
@@ -175,21 +193,24 @@ see: [https://serpapi.com/bing-search-api](https://serpapi.com/bing-search-api)
 
 ### Search baidu
 ```php
+namespace SerpApi\Tests;
+
 class ExampleSearchBaiduTest extends SerpApiTestCase {
-  
+  /** @var array<string, string> */
   private $search_params;
+
   protected function setUp(): void {
     parent::setUp();
     $this->search_params = [
       'engine' => 'baidu',
-      'q' => 'coffee'
+      'q' => 'coffee',
     ];
- }
+  }
 
-  function test_if_result_exist() {
-    $search = $this->serpApiClient();
-    $response = $search->search($this->search_params);
-    $this->assertResponseHasProperty($response, 'organic_results', "Error on `{baidu}` engine not has `{organic_results}`");
+  public function test_if_result_exist() {
+    $client = $this->serpApiClient();
+    $response = $client->search($this->search_params);
+    $this->assertResponseHasProperty($response, 'organic_results', 'Error on `baidu` engine: no `organic_results`');
   }
 }
 ```
@@ -198,21 +219,24 @@ see: [https://serpapi.com/baidu-search-api](https://serpapi.com/baidu-search-api
 
 ### Search yahoo
 ```php
-class ExampleSearchYahooTest extends SerpApiTestCase {
+namespace SerpApi\Tests;
 
+class ExampleSearchYahooTest extends SerpApiTestCase {
+  /** @var array<string, string> */
   private $search_params;
+
   protected function setUp(): void {
     parent::setUp();
     $this->search_params = [
       'engine' => 'yahoo',
-      'p' => 'coffee'
+      'p' => 'coffee',
     ];
- }
+  }
 
-  function test_if_result_exist() {
-    $search = $this->serpApiClient();
-    $response = $search->search($this->search_params);
-    $this->assertResponseHasProperty($response, 'organic_results', "Error on `{yahoo}` engine not has `{organic_results}`");
+  public function test_if_result_exist() {
+    $client = $this->serpApiClient();
+    $response = $client->search($this->search_params);
+    $this->assertResponseHasProperty($response, 'organic_results', 'Error on `yahoo` engine: no `organic_results`');
   }
 }
 ```
@@ -221,21 +245,24 @@ see: [https://serpapi.com/yahoo-search-api](https://serpapi.com/yahoo-search-api
 
 ### Search youtube
 ```php
-class ExampleSearchYoutubeTest extends SerpApiTestCase {
+namespace SerpApi\Tests;
 
+class ExampleSearchYoutubeTest extends SerpApiTestCase {
+  /** @var array<string, string> */
   private $search_params;
+
   protected function setUp(): void {
     parent::setUp();
     $this->search_params = [
       'engine' => 'youtube',
-      'search_query' => 'coffee'
+      'search_query' => 'coffee',
     ];
- }
+  }
 
-  function test_if_result_exist() {
-    $search = $this->serpApiClient();
-    $response = $search->search($this->search_params);
-    $this->assertResponseHasProperty($response, 'video_results', "Error on `{youtube}` engine not has `{video_results}`");
+  public function test_if_result_exist() {
+    $client = $this->serpApiClient();
+    $response = $client->search($this->search_params);
+    $this->assertResponseHasProperty($response, 'video_results', 'Error on `youtube` engine: no `video_results`');
   }
 }
 ```
@@ -244,21 +271,24 @@ see: [https://serpapi.com/youtube-search-api](https://serpapi.com/youtube-search
 
 ### Search walmart
 ```php
-class ExampleSearchWalmartTest extends SerpApiTestCase {
+namespace SerpApi\Tests;
 
+class ExampleSearchWalmartTest extends SerpApiTestCase {
+  /** @var array<string, string> */
   private $search_params;
+
   protected function setUp(): void {
     parent::setUp();
     $this->search_params = [
       'engine' => 'walmart',
-      'query' => 'coffee'
+      'query' => 'coffee',
     ];
- }
+  }
 
-  function test_if_result_exist() {
-    $search = $this->serpApiClient();
-    $response = $search->search($this->search_params);
-    $this->assertResponseHasProperty($response, 'organic_results', "Error on `{walmart}` engine not has `{organic_results}`");
+  public function test_if_result_exist() {
+    $client = $this->serpApiClient();
+    $response = $client->search($this->search_params);
+    $this->assertResponseHasProperty($response, 'organic_results', 'Error on `walmart` engine: no `organic_results`');
   }
 }
 ```
@@ -267,21 +297,24 @@ see: [https://serpapi.com/walmart-search-api](https://serpapi.com/walmart-search
 
 ### Search ebay
 ```php
+namespace SerpApi\Tests;
+
 class ExampleSearchEbayTest extends SerpApiTestCase {
-  
+  /** @var array<string, string> */
   private $search_params;
+
   protected function setUp(): void {
     parent::setUp();
     $this->search_params = [
       'engine' => 'ebay',
-      '_nkw' => 'coffee'
+      '_nkw' => 'coffee',
     ];
- }
+  }
 
-  function test_if_result_exist() {
-    $search = $this->serpApiClient();
-    $response = $search->search($this->search_params);
-    $this->assertResponseHasProperty($response, 'organic_results', "Error on `{ebay}` engine not has `{organic_results}`");
+  public function test_if_result_exist() {
+    $client = $this->serpApiClient();
+    $response = $client->search($this->search_params);
+    $this->assertResponseHasProperty($response, 'organic_results', 'Error on `ebay` engine: no `organic_results`');
   }
 }
 ```
@@ -290,21 +323,24 @@ see: [https://serpapi.com/ebay-search-api](https://serpapi.com/ebay-search-api)
 
 ### Search naver
 ```php
-class ExampleSearchNaverTest extends SerpApiTestCase {
+namespace SerpApi\Tests;
 
+class ExampleSearchNaverTest extends SerpApiTestCase {
+  /** @var array<string, string> */
   private $search_params;
+
   protected function setUp(): void {
     parent::setUp();
     $this->search_params = [
       'engine' => 'naver',
-      'query' => 'coffee'
+      'query' => 'coffee',
     ];
- }
+  }
 
-  function test_if_result_exist() {
-    $search = $this->serpApiClient();
-    $response = $search->search($this->search_params);
-    $this->assertResponseHasProperty($response, 'ads_results', "Error on `{naver}` engine not has `{ads_results}`");
+  public function test_if_result_exist() {
+    $client = $this->serpApiClient();
+    $response = $client->search($this->search_params);
+    $this->assertResponseHasProperty($response, 'ads_results', 'Error on `naver` engine: no `ads_results`');
   }
 }
 ```
@@ -313,21 +349,24 @@ see: [https://serpapi.com/naver-search-api](https://serpapi.com/naver-search-api
 
 ### Search home depot
 ```php
+namespace SerpApi\Tests;
+
 class ExampleSearchHomeDepotTest extends SerpApiTestCase {
-  
+  /** @var array<string, string> */
   private $search_params;
+
   protected function setUp(): void {
     parent::setUp();
     $this->search_params = [
       'engine' => 'home_depot',
-      'q' => 'table'
+      'q' => 'table',
     ];
- }
+  }
 
-  function test_if_result_exist() {
-    $search = $this->serpApiClient();
-    $response = $search->search($this->search_params);
-    $this->assertResponseHasProperty($response, 'products', "Error on `{home_depot}` engine not has `{products}`");
+  public function test_if_result_exist() {
+    $client = $this->serpApiClient();
+    $response = $client->search($this->search_params);
+    $this->assertResponseHasProperty($response, 'products', 'Error on `home_depot` engine: no `products`');
   }
 }
 ```
@@ -336,21 +375,24 @@ see: [https://serpapi.com/home-depot-search-api](https://serpapi.com/home-depot-
 
 ### Search apple app store
 ```php
+namespace SerpApi\Tests;
+
 class ExampleSearchAppleAppStoreTest extends SerpApiTestCase {
-  
+  /** @var array<string, string> */
   private $search_params;
+
   protected function setUp(): void {
     parent::setUp();
     $this->search_params = [
       'engine' => 'apple_app_store',
-      'term' => 'coffee'
+      'term' => 'coffee',
     ];
- }
+  }
 
-  function test_if_result_exist() {
-    $search = $this->serpApiClient();
-    $response = $search->search($this->search_params);
-    $this->assertResponseHasProperty($response, 'organic_results', "Error on `{apple_app_store}` engine not has `{organic_results}`");
+  public function test_if_result_exist() {
+    $client = $this->serpApiClient();
+    $response = $client->search($this->search_params);
+    $this->assertResponseHasProperty($response, 'organic_results', 'Error on `apple_app_store` engine: no `organic_results`');
   }
 }
 ```
@@ -359,21 +401,24 @@ see: [https://serpapi.com/apple-app-store](https://serpapi.com/apple-app-store)
 
 ### Search duckduckgo
 ```php
+namespace SerpApi\Tests;
+
 class ExampleSearchDuckduckgoTest extends SerpApiTestCase {
-  
+  /** @var array<string, string> */
   private $search_params;
+
   protected function setUp(): void {
     parent::setUp();
     $this->search_params = [
       'engine' => 'duckduckgo',
-      'q' => 'coffee'
+      'q' => 'coffee',
     ];
- }
+  }
 
-  function test_if_result_exist() {
-    $search = $this->serpApiClient();
-    $response = $search->search($this->search_params);
-    $this->assertResponseHasProperty($response, 'organic_results', "Error on `{duckduckgo}` engine not has `{organic_results}`");
+  public function test_if_result_exist() {
+    $client = $this->serpApiClient();
+    $response = $client->search($this->search_params);
+    $this->assertResponseHasProperty($response, 'organic_results', 'Error on `duckduckgo` engine: no `organic_results`');
   }
 }
 ```
@@ -382,22 +427,25 @@ see: [https://serpapi.com/duckduckgo-search-api](https://serpapi.com/duckduckgo-
 
 ### Search google
 ```php
+namespace SerpApi\Tests;
+
 class ExampleSearchGoogleTest extends SerpApiTestCase {
-  
+  /** @var array<string, string> */
   private $search_params;
+
   protected function setUp(): void {
     parent::setUp();
     $this->search_params = [
       'engine' => 'google',
       'tbm' => 'isch',
-      'q' => 'coffee'
+      'q' => 'coffee',
     ];
- }
+  }
 
-  function test_if_result_exist() {
-    $search = $this->serpApiClient();
-    $response = $search->search($this->search_params);
-    $this->assertResponseHasProperty($response, 'images_results', "Error on `{google}` engine not has `{images_results}`");
+  public function test_if_result_exist() {
+    $client = $this->serpApiClient();
+    $response = $client->search($this->search_params);
+    $this->assertResponseHasProperty($response, 'images_results', 'Error on `google` engine: no `images_results`');
   }
 }
 ```
@@ -406,21 +454,24 @@ see: [https://serpapi.com/search-api](https://serpapi.com/search-api)
 
 ### Search google scholar
 ```php
+namespace SerpApi\Tests;
+
 class ExampleSearchGoogleScholarTest extends SerpApiTestCase {
-  
+  /** @var array<string, string> */
   private $search_params;
+
   protected function setUp(): void {
     parent::setUp();
     $this->search_params = [
       'engine' => 'google_scholar',
-      'q' => 'coffee'
+      'q' => 'coffee',
     ];
- }
+  }
 
-  function test_if_result_exist() {
-    $search = $this->serpApiClient();
-    $response = $search->search($this->search_params);
-    $this->assertResponseHasProperty($response, 'organic_results', "Error on `{google_scholar}` engine not has `{organic_results}`");
+  public function test_if_result_exist() {
+    $client = $this->serpApiClient();
+    $response = $client->search($this->search_params);
+    $this->assertResponseHasProperty($response, 'organic_results', 'Error on `google_scholar` engine: no `organic_results`');
   }
 }
 ```
@@ -429,21 +480,24 @@ see: [https://serpapi.com/google-scholar-api](https://serpapi.com/google-scholar
 
 ### Search google autocomplete
 ```php
+namespace SerpApi\Tests;
+
 class ExampleSearchGoogleAutocompleteTest extends SerpApiTestCase {
-  
+  /** @var array<string, string> */
   private $search_params;
+
   protected function setUp(): void {
     parent::setUp();
     $this->search_params = [
       'engine' => 'google_autocomplete',
-      'q' => 'coffee'
+      'q' => 'coffee',
     ];
- }
+  }
 
-  function test_if_result_exist() {
-    $search = $this->serpApiClient();
-    $response = $search->search($this->search_params);
-    $this->assertResponseHasProperty($response, 'suggestions', "Error on `{google_autocomplete}` engine not has `{suggestions}`");
+  public function test_if_result_exist() {
+    $client = $this->serpApiClient();
+    $response = $client->search($this->search_params);
+    $this->assertResponseHasProperty($response, 'suggestions', 'Error on `google_autocomplete` engine: no `suggestions`');
   }
 }
 ```
@@ -452,21 +506,24 @@ see: [https://serpapi.com/google-autocomplete-api](https://serpapi.com/google-au
 
 ### Search google shopping
 ```php
+namespace SerpApi\Tests;
+
 class ExampleSearchGoogleShoppingTest extends SerpApiTestCase {
-  
+  /** @var array<string, string> */
   private $search_params;
+
   protected function setUp(): void {
     parent::setUp();
     $this->search_params = [
       'engine' => 'google_shopping',
       'q' => 'coffee',
     ];
- }
+  }
 
-  function test_if_result_exist() {
-    $search = $this->serpApiClient();
-    $response = $search->search($this->search_params);
-    $this->assertResponseHasProperty($response, 'shopping_results', "Error on `{google_shopping}` engine not has `{shopping_results}`");
+  public function test_if_result_exist() {
+    $client = $this->serpApiClient();
+    $response = $client->search($this->search_params);
+    $this->assertResponseHasProperty($response, 'shopping_results', 'Error on `google_shopping` engine: no `shopping_results`');
   }
 }
 ```
@@ -475,9 +532,12 @@ see: [https://serpapi.com/google-shopping-api](https://serpapi.com/google-shoppi
 
 ### Search google lens
 ```php
+namespace SerpApi\Tests;
+
 class ExampleSearchGoogleLensTest extends SerpApiTestCase {
-  
+  /** @var array<string, string> */
   private $search_params;
+
   protected function setUp(): void {
     parent::setUp();
     $this->search_params = [
@@ -486,12 +546,12 @@ class ExampleSearchGoogleLensTest extends SerpApiTestCase {
       'gl' => 'us',
       'hl' => 'en',
     ];
- }
+  }
 
-  function test_if_result_exist() {
-    $search = $this->serpApiClient();
-    $response = $search->search($this->search_params);
-    $this->assertResponseHasProperty($response, 'visual_matches', "Error on `{google_lens}` engine not has `{visual_matches}`");
+  public function test_if_result_exist() {
+    $client = $this->serpApiClient();
+    $response = $client->search($this->search_params);
+    $this->assertResponseHasProperty($response, 'visual_matches', 'Error on `google_lens` engine: no `visual_matches`');
   }
 }
 ```
@@ -500,22 +560,25 @@ see: [https://serpapi.com/google-lens-api](https://serpapi.com/google-lens-api)
 
 ### Search google events
 ```php
+namespace SerpApi\Tests;
+
 class ExampleSearchGoogleEventsTest extends SerpApiTestCase {
-  
+  /** @var array<string, string> */
   private $search_params;
+
   protected function setUp(): void {
     parent::setUp();
     $this->search_params = [
       'engine' => 'google_events',
       'q' => 'Events in Austin',
-      'location' => 'Austin, Texas, United States'
+      'location' => 'Austin, Texas, United States',
     ];
- }
+  }
 
-  function test_if_result_exist() {
-    $search = $this->serpApiClient();
-    $response = $search->search($this->search_params);
-    $this->assertResponseHasProperty($response, 'events_results', "Error on `{google_events}` engine not has `{events_results}`");
+  public function test_if_result_exist() {
+    $client = $this->serpApiClient();
+    $response = $client->search($this->search_params);
+    $this->assertResponseHasProperty($response, 'events_results', 'Error on `google_events` engine: no `events_results`');
   }
 }
 ```
@@ -524,22 +587,25 @@ see: [https://serpapi.com/google-events-api](https://serpapi.com/google-events-a
 
 ### Search google local services
 ```php
+namespace SerpApi\Tests;
+
 class ExampleSearchGoogleLocalServicesTest extends SerpApiTestCase {
-  
+  /** @var array<string, string> */
   private $search_params;
+
   protected function setUp(): void {
     parent::setUp();
     $this->search_params = [
       'engine' => 'google_local_services',
       'q' => 'electrician',
-      'data_cid' => '6745062158417646970'
+      'data_cid' => '6745062158417646970',
     ];
- }
+  }
 
-  function test_if_result_exist() {
-    $search = $this->serpApiClient();
-    $response = $search->search($this->search_params);
-    $this->assertResponseHasProperty($response, 'local_ads', "Error on `{google_local_services}` engine not has `{local_ads}`");
+  public function test_if_result_exist() {
+    $client = $this->serpApiClient();
+    $response = $client->search($this->search_params);
+    $this->assertResponseHasProperty($response, 'local_ads', 'Error on `google_local_services` engine: no `local_ads`');
   }
 }
 ```
@@ -548,23 +614,26 @@ see: [https://serpapi.com/google-local-services-api](https://serpapi.com/google-
 
 ### Search google maps
 ```php
+namespace SerpApi\Tests;
+
 class ExampleSearchGoogleMapsTest extends SerpApiTestCase {
-  
+  /** @var array<string, string> */
   private $search_params;
+
   protected function setUp(): void {
     parent::setUp();
     $this->search_params = [
       'engine' => 'google_maps',
       'q' => 'pizza',
       'll' => '@40.7455096,-74.0083012,15.1z',
-      'type' => 'search'
+      'type' => 'search',
     ];
- }
+  }
 
-  function test_if_result_exist() {
-    $search = $this->serpApiClient();
-    $response = $search->search($this->search_params);
-    $this->assertResponseHasProperty($response, 'local_results', "Error on `{google_maps}` engine not has `{local_results}`");
+  public function test_if_result_exist() {
+    $client = $this->serpApiClient();
+    $response = $client->search($this->search_params);
+    $this->assertResponseHasProperty($response, 'local_results', 'Error on `google_maps` engine: no `local_results`');
   }
 }
 ```
@@ -573,21 +642,24 @@ see: [https://serpapi.com/google-maps-api](https://serpapi.com/google-maps-api)
 
 ### Search google jobs
 ```php
+namespace SerpApi\Tests;
+
 class ExampleSearchGoogleJobsTest extends SerpApiTestCase {
-  
+  /** @var array<string, string> */
   private $search_params;
+
   protected function setUp(): void {
     parent::setUp();
     $this->search_params = [
       'engine' => 'google_jobs',
-      'q' => 'coffee'
+      'q' => 'coffee',
     ];
- }
+  }
 
-  function test_if_result_exist() {
-    $search = $this->serpApiClient();
-    $response = $search->search($this->search_params);
-    $this->assertResponseHasProperty($response, 'jobs_results', "Error on `{google_jobs}` engine not has `{jobs_results}`");
+  public function test_if_result_exist() {
+    $client = $this->serpApiClient();
+    $response = $client->search($this->search_params);
+    $this->assertResponseHasProperty($response, 'jobs_results', 'Error on `google_jobs` engine: no `jobs_results`');
   }
 }
 ```
@@ -596,22 +668,25 @@ see: [https://serpapi.com/google-jobs-api](https://serpapi.com/google-jobs-api)
 
 ### Search google play
 ```php
+namespace SerpApi\Tests;
+
 class ExampleSearchGooglePlayTest extends SerpApiTestCase {
-  
+  /** @var array<string, string> */
   private $search_params;
+
   protected function setUp(): void {
     parent::setUp();
     $this->search_params = [
       'engine' => 'google_play',
       'q' => 'kite',
-      'store' => 'apps'
+      'store' => 'apps',
     ];
- }
+  }
 
-  function test_if_result_exist() {
-    $search = $this->serpApiClient();
-    $response = $search->search($this->search_params);
-    $this->assertResponseHasProperty($response, 'organic_results', "Error on `{google_play}` engine not has `{organic_results}`");
+  public function test_if_result_exist() {
+    $client = $this->serpApiClient();
+    $response = $client->search($this->search_params);
+    $this->assertResponseHasProperty($response, 'organic_results', 'Error on `google_play` engine: no `organic_results`');
   }
 }
 ```

@@ -1,19 +1,22 @@
 <?php
 
-class ExampleSearchYoutubeTest extends SerpApiTestCase {
+namespace SerpApi\Tests;
 
+class ExampleSearchYoutubeTest extends SerpApiTestCase {
+  /** @var array<string, string> */
   private $search_params;
+
   protected function setUp(): void {
     parent::setUp();
     $this->search_params = [
       'engine' => 'youtube',
-      'search_query' => 'coffee'
+      'search_query' => 'coffee',
     ];
- }
+  }
 
-  function test_if_result_exist() {
-    $search = $this->serpApiClient();
-    $response = $search->search($this->search_params);
-    $this->assertResponseHasProperty($response, 'video_results', "Error on `{youtube}` engine not has `{video_results}`");
+  public function test_if_result_exist() {
+    $client = $this->serpApiClient();
+    $response = $client->search($this->search_params);
+    $this->assertResponseHasProperty($response, 'video_results', 'Error on `youtube` engine: no `video_results`');
   }
 }

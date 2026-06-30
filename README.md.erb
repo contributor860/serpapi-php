@@ -57,9 +57,9 @@ Then you need to load the dependency in your script.
 require __DIR__ . '/vendor/autoload.php';
 ```
 
-If not, you must clone this repository and link the class.
+If not, you must clone this repository and use Composer's autoloader.
 ```php
-require 'path/to/serpapi-php/src/serpapi.php';
+require 'path/to/serpapi-php/vendor/autoload.php';
 
 ```
 
@@ -68,13 +68,16 @@ Get "Your Private API Key" from [dashboard](https://serpapi.com/dashboard).
 Then you can start coding something like:
 ```php
 require 'vendor/autoload.php';
+
+use SerpApi\Client;
+
 $query = [
-  "engine" => "naver",
-  "query" => "paris",
+  'engine' => 'naver',
+  'query' => 'paris',
 ];
 
-$search = new SerpApiSearch('YOUR API KEY HERE');
-$result = $search->get_json($query);
+$client = new Client('YOUR API KEY HERE');
+$result = $client->search($query);
 print_r($result);
 ```
 
@@ -84,24 +87,30 @@ The SerpApi service (backend)
  - searches on Naver using the query: paris
  - parses the messy HTML responses
  - returns a standardized JSON response
-The PHP class SerpApiSearch
+
+The PHP class `SerpApi\Client`
  - formats the request to SerpApi server
  - executes GET http request
  - parses JSON into PHP objects using the ext-json extension
+
 Et voila..
 
 ### How to configure your SerpApi API key
-The SerpApi api_key can be set per client instance (either in the constructor or later via `set_serp_api_key`).
+The SerpApi api_key can be set per client instance (either in the constructor or later via `set_api_key`).
 
 ```php
-$client = new SerpApiSearch();
-$client->set_serp_api_key("Your Private Key");
+use SerpApi\Client;
+
+$client = new Client();
+$client->set_api_key('Your Private Key');
 
 ```
 Or
 
 ```php
-$client = new SerpApiSearch("Your Private Key");
+use SerpApi\Client;
+
+$client = new Client('Your Private Key');
 
 ```
 
@@ -112,10 +121,12 @@ Here is how to call the APIs
 
 Let's run a search to get a search_id.
 ```php
-$client = new SerpApiSearch(getenv("API_KEY"));
-$result = $client->get_json([
+use SerpApi\Client;
+
+$client = new Client(getenv('API_KEY'));
+$result = $client->search([
   'q' => 'Coffee',
-  'location' => 'Austin, Texas'
+  'location' => 'Austin, Texas',
 ]);
 $search_id = $result->search_metadata->id;
 ```
@@ -132,8 +143,10 @@ it prints the search from the archive.
 
 ### Account API
 ```php
-$client = new SerpApiSearch(getenv("API_KEY"));
-$info = $client->get_account();
+use SerpApi\Client;
+
+$client = new Client(getenv('API_KEY'));
+$info = $client->account();
 print_r($info);
 
 ```
@@ -142,13 +155,15 @@ it prints your account information.
 ### Search Google Images
 
 ```php
-$client = new SerpApiSearch(getenv("API_KEY"));
-$data = $client->get_json([
-  'q' => "Coffee",
-  'tbm' => 'isch'
+use SerpApi\Client;
+
+$client = new Client(getenv('API_KEY'));
+$data = $client->search([
+  'q' => 'Coffee',
+  'tbm' => 'isch',
 ]);
 
-foreach($data->images_results as $image_result) {
+foreach ($data->images_results as $image_result) {
   print_r($image_result->original);
   // to download the image:
   // `wget {$image_result->original}`
