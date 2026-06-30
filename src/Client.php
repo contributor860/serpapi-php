@@ -2,11 +2,10 @@
 
 namespace SerpApi;
 
-use RestClient;
-
 class Client {
   const VERSION = '1.0.0';
   const BASE_URL = 'https://serpapi.com';
+  const DEFAULT_TIMEOUT = 120;
 
   /** @var string */
   private $api_key;
@@ -14,21 +13,23 @@ class Client {
   /** @var string */
   private $engine;
 
-  /** @var RestClient|null */
-  private $rest_client;
+  /** @var int */
+  private $timeout;
 
   /**
    * @param string $api_key
    * @param string $engine
+   * @param int $timeout  Request timeout in seconds
    * @throws SerpApiException
    */
-  public function __construct(string $api_key = '', string $engine = 'google') {
+  public function __construct(string $api_key = '', string $engine = 'google', int $timeout = self::DEFAULT_TIMEOUT) {
     if (empty($engine)) {
       throw new SerpApiException('engine must be present');
     }
 
     $this->api_key = $api_key;
     $this->engine = $engine;
+    $this->timeout = $timeout;
   }
 
   /**
@@ -119,17 +120,6 @@ class Client {
     return $this->get("/searches/{$safe_search_id}.{$format}", $format, []);
   }
 
-  private function rest_client(): RestClient {
-    if ($this->rest_client === null) {
-      $this->rest_client = new RestClient([
-        'base_url'   => self::BASE_URL,
-        'user_agent' => 'serpapi-php/' . self::VERSION,
-      ]);
-    }
-
-    return $this->rest_client;
-  }
-
   /**
    * @param array<string, mixed> $params
    * @return object|array<int|string, mixed>|string
@@ -154,24 +144,41 @@ class Client {
     $query = array_merge($default_query, $params);
     $query['output'] = $format;
 
-    $result = $this->rest_client()->get($endpoint, $query);
+    $url = self::BASE_URL . $endpoint . '?' . http_build_query($query);
 
-    if ($result->info->http_code === 200) {
+    $ch = curl_init();
+    curl_setopt_array($ch, [
+      CURLOPT_URL            => $url,
+      CURLOPT_RETURNTRANSFER => true,
+      CURLOPT_USERAGENT      => 'serpapi-php/' . self::VERSION,
+      CURLOPT_FOLLOWLOCATION => true,
+      CURLOPT_TIMEOUT        => $this->timeout,
+    ]);
+
+    $response = curl_exec($ch);
+    $http_code = (int) curl_getinfo($ch, CURLINFO_HTTP_CODE);
+    $curl_error = curl_error($ch);
+
+    if ($response === false) {
+      throw new SerpApiException('cURL error: ' . $curl_error);
+    }
+
+    if ($http_code === 200) {
       if ($format === 'html') {
-        return $result->response;
+        return $response;
       }
 
-      return $result->decode_response();
+      return json_decode($response);
     }
 
     if ($format === 'json') {
-      $error = $result->decode_response();
+      $error = json_decode($response);
       $message = (is_object($error) && isset($error->error))
         ? $error->error
-        : 'Unexpected exception: ' . $result->response;
+        : 'Unexpected exception: ' . $response;
       throw new SerpApiException($message);
     }
 
-    throw new SerpApiException('Unexpected exception: ' . $result->response);
+    throw new SerpApiException('Unexpected exception: ' . $response);
   }
 }

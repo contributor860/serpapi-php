@@ -114,6 +114,16 @@ $client = new Client('Your Private Key');
 
 ```
 
+### How to configure the timeout
+The default request timeout is 120 seconds. You can customize it via the third constructor parameter:
+
+```php
+use SerpApi\Client;
+
+$client = new Client('Your Private Key', 'google', 30);
+
+```
+
 ## Examples in php
 Here is how to call the APIs
 
@@ -274,10 +284,6 @@ SerpApi supports all the major search engines. Google has the more advanced supp
 
 Authors: Victor Benarbia victor@serpapi.com, Alaa Abdulridha alaa@serpapi.com
 For more information: https://serpapi.com
-
-Thanks to REST API for PHP
- - Travis Dent  - https://github.com/tcdent/php-restclient
- - Test framework - PHPUnit - https://phpunit.de/index.html
 
 ## Continuous integration
 

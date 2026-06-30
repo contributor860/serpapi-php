@@ -107,6 +107,16 @@ $client = new Client('Your Private Key');
 
 ```
 
+### How to configure the timeout
+The default request timeout is 120 seconds. You can customize it via the third constructor parameter:
+
+```php
+use SerpApi\Client;
+
+$client = new Client('Your Private Key', 'google', 30);
+
+```
+
 ## Examples in php
 Here is how to call the APIs
 
@@ -181,7 +191,7 @@ class ExampleSearchBingTest extends SerpApiTestCase {
     ];
   }
 
-  public function test_if_result_exist() {
+  public function test_result_exists() {
     $client = $this->serpApiClient();
     $response = $client->search($this->search_params);
     $this->assertResponseHasProperty($response, 'organic_results', 'Error on `bing` engine: no `organic_results`');
@@ -207,7 +217,7 @@ class ExampleSearchBaiduTest extends SerpApiTestCase {
     ];
   }
 
-  public function test_if_result_exist() {
+  public function test_result_exists() {
     $client = $this->serpApiClient();
     $response = $client->search($this->search_params);
     $this->assertResponseHasProperty($response, 'organic_results', 'Error on `baidu` engine: no `organic_results`');
@@ -233,7 +243,7 @@ class ExampleSearchYahooTest extends SerpApiTestCase {
     ];
   }
 
-  public function test_if_result_exist() {
+  public function test_result_exists() {
     $client = $this->serpApiClient();
     $response = $client->search($this->search_params);
     $this->assertResponseHasProperty($response, 'organic_results', 'Error on `yahoo` engine: no `organic_results`');
@@ -259,7 +269,7 @@ class ExampleSearchYoutubeTest extends SerpApiTestCase {
     ];
   }
 
-  public function test_if_result_exist() {
+  public function test_result_exists() {
     $client = $this->serpApiClient();
     $response = $client->search($this->search_params);
     $this->assertResponseHasProperty($response, 'video_results', 'Error on `youtube` engine: no `video_results`');
@@ -285,7 +295,7 @@ class ExampleSearchWalmartTest extends SerpApiTestCase {
     ];
   }
 
-  public function test_if_result_exist() {
+  public function test_result_exists() {
     $client = $this->serpApiClient();
     $response = $client->search($this->search_params);
     $this->assertResponseHasProperty($response, 'organic_results', 'Error on `walmart` engine: no `organic_results`');
@@ -311,7 +321,7 @@ class ExampleSearchEbayTest extends SerpApiTestCase {
     ];
   }
 
-  public function test_if_result_exist() {
+  public function test_result_exists() {
     $client = $this->serpApiClient();
     $response = $client->search($this->search_params);
     $this->assertResponseHasProperty($response, 'organic_results', 'Error on `ebay` engine: no `organic_results`');
@@ -337,7 +347,7 @@ class ExampleSearchNaverTest extends SerpApiTestCase {
     ];
   }
 
-  public function test_if_result_exist() {
+  public function test_result_exists() {
     $client = $this->serpApiClient();
     $response = $client->search($this->search_params);
     $this->assertResponseHasProperty($response, 'ads_results', 'Error on `naver` engine: no `ads_results`');
@@ -363,7 +373,7 @@ class ExampleSearchHomeDepotTest extends SerpApiTestCase {
     ];
   }
 
-  public function test_if_result_exist() {
+  public function test_result_exists() {
     $client = $this->serpApiClient();
     $response = $client->search($this->search_params);
     $this->assertResponseHasProperty($response, 'products', 'Error on `home_depot` engine: no `products`');
@@ -389,7 +399,7 @@ class ExampleSearchAppleAppStoreTest extends SerpApiTestCase {
     ];
   }
 
-  public function test_if_result_exist() {
+  public function test_result_exists() {
     $client = $this->serpApiClient();
     $response = $client->search($this->search_params);
     $this->assertResponseHasProperty($response, 'organic_results', 'Error on `apple_app_store` engine: no `organic_results`');
@@ -415,7 +425,7 @@ class ExampleSearchDuckduckgoTest extends SerpApiTestCase {
     ];
   }
 
-  public function test_if_result_exist() {
+  public function test_result_exists() {
     $client = $this->serpApiClient();
     $response = $client->search($this->search_params);
     $this->assertResponseHasProperty($response, 'organic_results', 'Error on `duckduckgo` engine: no `organic_results`');
@@ -442,7 +452,7 @@ class ExampleSearchGoogleTest extends SerpApiTestCase {
     ];
   }
 
-  public function test_if_result_exist() {
+  public function test_result_exists() {
     $client = $this->serpApiClient();
     $response = $client->search($this->search_params);
     $this->assertResponseHasProperty($response, 'images_results', 'Error on `google` engine: no `images_results`');
@@ -468,7 +478,7 @@ class ExampleSearchGoogleScholarTest extends SerpApiTestCase {
     ];
   }
 
-  public function test_if_result_exist() {
+  public function test_result_exists() {
     $client = $this->serpApiClient();
     $response = $client->search($this->search_params);
     $this->assertResponseHasProperty($response, 'organic_results', 'Error on `google_scholar` engine: no `organic_results`');
@@ -494,7 +504,7 @@ class ExampleSearchGoogleAutocompleteTest extends SerpApiTestCase {
     ];
   }
 
-  public function test_if_result_exist() {
+  public function test_result_exists() {
     $client = $this->serpApiClient();
     $response = $client->search($this->search_params);
     $this->assertResponseHasProperty($response, 'suggestions', 'Error on `google_autocomplete` engine: no `suggestions`');
@@ -520,7 +530,7 @@ class ExampleSearchGoogleShoppingTest extends SerpApiTestCase {
     ];
   }
 
-  public function test_if_result_exist() {
+  public function test_result_exists() {
     $client = $this->serpApiClient();
     $response = $client->search($this->search_params);
     $this->assertResponseHasProperty($response, 'shopping_results', 'Error on `google_shopping` engine: no `shopping_results`');
@@ -548,7 +558,7 @@ class ExampleSearchGoogleLensTest extends SerpApiTestCase {
     ];
   }
 
-  public function test_if_result_exist() {
+  public function test_result_exists() {
     $client = $this->serpApiClient();
     $response = $client->search($this->search_params);
     $this->assertResponseHasProperty($response, 'visual_matches', 'Error on `google_lens` engine: no `visual_matches`');
@@ -575,7 +585,7 @@ class ExampleSearchGoogleEventsTest extends SerpApiTestCase {
     ];
   }
 
-  public function test_if_result_exist() {
+  public function test_result_exists() {
     $client = $this->serpApiClient();
     $response = $client->search($this->search_params);
     $this->assertResponseHasProperty($response, 'events_results', 'Error on `google_events` engine: no `events_results`');
@@ -602,7 +612,7 @@ class ExampleSearchGoogleLocalServicesTest extends SerpApiTestCase {
     ];
   }
 
-  public function test_if_result_exist() {
+  public function test_result_exists() {
     $client = $this->serpApiClient();
     $response = $client->search($this->search_params);
     $this->assertResponseHasProperty($response, 'local_ads', 'Error on `google_local_services` engine: no `local_ads`');
@@ -630,7 +640,7 @@ class ExampleSearchGoogleMapsTest extends SerpApiTestCase {
     ];
   }
 
-  public function test_if_result_exist() {
+  public function test_result_exists() {
     $client = $this->serpApiClient();
     $response = $client->search($this->search_params);
     $this->assertResponseHasProperty($response, 'local_results', 'Error on `google_maps` engine: no `local_results`');
@@ -656,7 +666,7 @@ class ExampleSearchGoogleJobsTest extends SerpApiTestCase {
     ];
   }
 
-  public function test_if_result_exist() {
+  public function test_result_exists() {
     $client = $this->serpApiClient();
     $response = $client->search($this->search_params);
     $this->assertResponseHasProperty($response, 'jobs_results', 'Error on `google_jobs` engine: no `jobs_results`');
@@ -683,7 +693,7 @@ class ExampleSearchGooglePlayTest extends SerpApiTestCase {
     ];
   }
 
-  public function test_if_result_exist() {
+  public function test_result_exists() {
     $client = $this->serpApiClient();
     $response = $client->search($this->search_params);
     $this->assertResponseHasProperty($response, 'organic_results', 'Error on `google_play` engine: no `organic_results`');
@@ -715,10 +725,6 @@ SerpApi supports all the major search engines. Google has the more advanced supp
 
 Authors: Victor Benarbia victor@serpapi.com, Alaa Abdulridha alaa@serpapi.com
 For more information: https://serpapi.com
-
-Thanks to REST API for PHP
- - Travis Dent  - https://github.com/tcdent/php-restclient
- - Test framework - PHPUnit - https://phpunit.de/index.html
 
 ## Continuous integration
 

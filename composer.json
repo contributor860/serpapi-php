@@ -40,7 +40,6 @@
         "issues": "https://github.com/serpapi/serpapi-php/issues"
     },
     "require": {
-        "tcdent/php-restclient": "0.1.8.4",
         "php": ">=7.2",
         "ext-curl": "*",
         "ext-json": "*"
