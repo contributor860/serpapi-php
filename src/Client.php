@@ -168,27 +168,82 @@ class Client {
       throw new SerpApiException('cURL error: ' . $curl_error);
     }
 
-    if ($http_code === 200) {
-      if ($format === 'html') {
+    if ($format === 'html') {
+      if ($http_code === 200) {
         return $response;
       }
 
-      $decoded = json_decode($response);
-      if ($decoded === null && json_last_error() !== JSON_ERROR_NONE) {
-        throw new SerpApiException('JSON decode error: ' . json_last_error_msg());
+      $this->raise_http_error($http_code, $endpoint, $query, null, null, 'html');
+    }
+
+    $decoded = json_decode($response);
+    if ($decoded === null && json_last_error() !== JSON_ERROR_NONE) {
+      $this->raise_parser_error($http_code, $endpoint, $query, $response);
+    }
+
+    $serpapi_error = (is_object($decoded) && isset($decoded->error)) ? $decoded->error : null;
+    $search_id = (is_object($decoded) && isset($decoded->search_metadata->id))
+      ? (string) $decoded->search_metadata->id
+      : null;
+
+    if ($http_code === 200) {
+      if ($serpapi_error !== null) {
+        $this->raise_http_error($http_code, $endpoint, $query, $serpapi_error, $search_id, 'json');
       }
 
       return $decoded;
     }
 
-    if ($format === 'json') {
-      $error = json_decode($response);
-      $message = (is_object($error) && isset($error->error))
-        ? $error->error
-        : 'Unexpected exception: ' . $response;
-      throw new SerpApiException($message);
-    }
+    $this->raise_http_error($http_code, $endpoint, $query, $serpapi_error, $search_id, 'json');
+  }
 
-    throw new SerpApiException('Unexpected exception: ' . $response);
+  /**
+   * @param array<string, mixed> $search_params
+   * @return never
+   * @throws SerpApiException
+   */
+  private function raise_http_error(
+    int $response_status,
+    string $endpoint,
+    array $search_params,
+    ?string $serpapi_error = null,
+    ?string $search_id = null,
+    string $decoder = 'json'
+  ): void {
+    $message = "HTTP request failed with status: {$response_status}";
+    if ($serpapi_error !== null) {
+      $message .= " error: {$serpapi_error}";
+    }
+    $message .= ' from url: ' . self::BASE_URL . $endpoint;
+
+    throw new SerpApiException(
+      $message,
+      $serpapi_error,
+      $search_params,
+      $response_status,
+      $search_id,
+      $decoder
+    );
+  }
+
+  /**
+   * @param array<string, mixed> $search_params
+   * @return never
+   * @throws SerpApiException
+   */
+  private function raise_parser_error(
+    int $response_status,
+    string $endpoint,
+    array $search_params,
+    string $response_body
+  ): void {
+    throw new SerpApiException(
+      'JSON parse error: ' . $response_body . ' on get url: ' . self::BASE_URL . $endpoint,
+      null,
+      $search_params,
+      $response_status,
+      null,
+      'json'
+    );
   }
 }

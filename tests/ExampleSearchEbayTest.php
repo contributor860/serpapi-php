@@ -10,7 +10,7 @@ class ExampleSearchEbayTest extends SerpApiTestCase {
     parent::setUp();
     $this->search_params = [
       'engine' => 'ebay',
-      '_nkw' => 'coffee',
+      '_nkw' => 'water',
     ];
   }
 

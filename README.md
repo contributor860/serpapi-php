@@ -357,7 +357,7 @@ use SerpApi\Client;
 $client = new Client(getenv('API_KEY'));
 $results = $client->search([
   'engine' => 'ebay',
-  '_nkw' => 'coffee',
+  '_nkw' => 'water',
 ]);
 
 print_r($results->organic_results);
@@ -491,6 +491,8 @@ echo strlen($html) . " bytes of HTML\n";
 
 ## Error handling
 
+`SerpApiException` includes structured context for HTTP and API errors (status code, endpoint, search params, search id).
+
 ```php
 use SerpApi\Client;
 use SerpApi\SerpApiException;
@@ -498,8 +500,15 @@ use SerpApi\SerpApiException;
 try {
   $client = new Client('invalid_key');
   $client->search(['q' => 'test']);
-} catch (SerpApiException $e) {
-  echo "SerpApi error: " . $e->getMessage() . "\n";
+} catch (SerpApiException $exception) {
+  echo $exception->getMessage() . "\n";
+  // HTTP request failed with status: 401 error: Invalid API key... from url: https://serpapi.com/search
+
+  echo $exception->get_serpapi_error() . "\n";
+  echo $exception->get_response_status() . "\n";
+  echo $exception->get_search_id() . "\n";
+  print_r($exception->get_search_params());
+  print_r($exception->to_array());
 }
 ```
 
