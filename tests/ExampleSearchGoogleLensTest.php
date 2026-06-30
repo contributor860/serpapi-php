@@ -16,7 +16,7 @@ class ExampleSearchGoogleLensTest extends SerpApiTestCase {
     ];
   }
 
-  public function test_if_result_exist() {
+  public function test_result_exists() {
     $client = $this->serpApiClient();
     $response = $client->search($this->search_params);
     $this->assertResponseHasProperty($response, 'visual_matches', 'Error on `google_lens` engine: no `visual_matches`');

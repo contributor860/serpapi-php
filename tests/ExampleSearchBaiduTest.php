@@ -14,7 +14,7 @@ class ExampleSearchBaiduTest extends SerpApiTestCase {
     ];
   }
 
-  public function test_if_result_exist() {
+  public function test_result_exists() {
     $client = $this->serpApiClient();
     $response = $client->search($this->search_params);
     $this->assertResponseHasProperty($response, 'organic_results', 'Error on `baidu` engine: no `organic_results`');

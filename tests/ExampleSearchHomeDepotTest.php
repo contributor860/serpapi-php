@@ -14,7 +14,7 @@ class ExampleSearchHomeDepotTest extends SerpApiTestCase {
     ];
   }
 
-  public function test_if_result_exist() {
+  public function test_result_exists() {
     $client = $this->serpApiClient();
     $response = $client->search($this->search_params);
     $this->assertResponseHasProperty($response, 'products', 'Error on `home_depot` engine: no `products`');

@@ -15,7 +15,7 @@ class ExampleSearchGoogleTest extends SerpApiTestCase {
     ];
   }
 
-  public function test_if_result_exist() {
+  public function test_result_exists() {
     $client = $this->serpApiClient();
     $response = $client->search($this->search_params);
     $this->assertResponseHasProperty($response, 'images_results', 'Error on `google` engine: no `images_results`');

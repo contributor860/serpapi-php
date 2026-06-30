@@ -14,7 +14,7 @@ class ExampleSearchGoogleAutocompleteTest extends SerpApiTestCase {
     ];
   }
 
-  public function test_if_result_exist() {
+  public function test_result_exists() {
     $client = $this->serpApiClient();
     $response = $client->search($this->search_params);
     $this->assertResponseHasProperty($response, 'suggestions', 'Error on `google_autocomplete` engine: no `suggestions`');

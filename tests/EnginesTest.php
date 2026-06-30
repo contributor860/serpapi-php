@@ -3,7 +3,7 @@
 namespace SerpApi\Tests;
 
 class EnginesTest extends SerpApiTestCase {
-  /** @var array<string, string> */
+  /** @var array<string, mixed> */
   private $search_params;
 
   protected function setUp(): void {

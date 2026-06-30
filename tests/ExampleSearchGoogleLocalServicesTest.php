@@ -15,7 +15,7 @@ class ExampleSearchGoogleLocalServicesTest extends SerpApiTestCase {
     ];
   }
 
-  public function test_if_result_exist() {
+  public function test_result_exists() {
     $client = $this->serpApiClient();
     $response = $client->search($this->search_params);
     $this->assertResponseHasProperty($response, 'local_ads', 'Error on `google_local_services` engine: no `local_ads`');

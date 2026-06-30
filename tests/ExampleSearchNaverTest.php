@@ -14,7 +14,7 @@ class ExampleSearchNaverTest extends SerpApiTestCase {
     ];
   }
 
-  public function test_if_result_exist() {
+  public function test_result_exists() {
     $client = $this->serpApiClient();
     $response = $client->search($this->search_params);
     $this->assertResponseHasProperty($response, 'ads_results', 'Error on `naver` engine: no `ads_results`');
