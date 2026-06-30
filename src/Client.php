@@ -131,15 +131,20 @@ class Client {
     }
 
     $api_key = $params['api_key'] ?? $this->api_key;
-    if (empty($api_key)) {
+
+    $requires_key = strpos($endpoint, '/locations') !== 0;
+    if ($requires_key && empty($api_key)) {
       throw new SerpApiException('api_key must be present');
     }
 
     $default_query = [
       'engine'  => $this->engine,
       'source'  => 'php',
-      'api_key' => $api_key,
     ];
+
+    if (!empty($api_key)) {
+      $default_query['api_key'] = $api_key;
+    }
 
     $query = array_merge($default_query, $params);
     $query['output'] = $format;
