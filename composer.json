@@ -60,8 +60,5 @@
     },
     "scripts": {
         "test": "vendor/bin/phpunit -c phpunit.xml"
-    },
-    "config": {
-        "platform-check": false
     }
 }
