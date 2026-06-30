@@ -41,7 +41,7 @@ abstract class SerpApiTestCase extends TestCase {
   }
 
   protected function serpApiClient(string $engine = 'google'): Client {
-    return new Client($this->api_key, $engine);
+    return new Client($this->api_key ?? '', $engine);
   }
 
   protected function assertResponseHasProperty(object $response, string $property, string $message = ''): void {
