@@ -11,16 +11,8 @@ def snippet(path)
 
   property = source[/assertResponseHasProperty\(\$response,\s*'([^']+)'/, 1] || 'organic_results'
 
-  # Check if engine is set in params
-  has_engine = raw_params.include?("'engine'")
-
   code = "use SerpApi\\Client;\n\n"
-  if has_engine
-    code += "$client = new Client(getenv('API_KEY'));\n"
-  else
-    engine = raw_params[/'engine'\s*=>\s*'([^']+)'/, 1] || 'google'
-    code += "$client = new Client(getenv('API_KEY'));\n"
-  end
+  code += "$client = new Client(getenv('API_KEY'));\n"
   code += "$results = $client->search(#{params});\n\n"
   code += "print_r($results->#{property});\n"
 
