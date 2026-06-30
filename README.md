@@ -519,6 +519,7 @@ export API_KEY="your_secret_key"
 Install dependencies and run the test suite:
 
 ```bash
+make install
 make test
 ```
 
