@@ -83,7 +83,7 @@ The PHP class SerpApiSearch
  - parses JSON into PHP objects using the ext-json extension
 Et voila..
 
-### How to set SERP API key
+### How to configure your SerpApi API key
 The SerpApi api_key can be set per client instance (either in the constructor or later via `set_serp_api_key`).
 
 ```php
