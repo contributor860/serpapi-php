@@ -151,18 +151,10 @@ class Client {
 
     $url = self::BASE_URL . $endpoint . '?' . http_build_query($query);
 
-    $ch = curl_init();
-    curl_setopt_array($ch, [
-      CURLOPT_URL            => $url,
-      CURLOPT_RETURNTRANSFER => true,
-      CURLOPT_USERAGENT      => 'serpapi-php/' . self::VERSION,
-      CURLOPT_FOLLOWLOCATION => true,
-      CURLOPT_TIMEOUT        => $this->timeout,
-    ]);
-
-    $response = curl_exec($ch);
-    $http_code = (int) curl_getinfo($ch, CURLINFO_HTTP_CODE);
-    $curl_error = curl_error($ch);
+    $request_result = $this->request($url);
+    $response = $request_result['response'];
+    $http_code = $request_result['http_code'];
+    $curl_error = $request_result['curl_error'];
 
     if ($response === false) {
       throw new SerpApiException('cURL error: ' . $curl_error);
@@ -195,6 +187,47 @@ class Client {
     }
 
     $this->raise_http_error($http_code, $endpoint, $query, $serpapi_error, $search_id, 'json');
+  }
+
+  /**
+   * @return array{response: string|false, http_code: int, curl_error: string}
+   * @throws SerpApiException
+   */
+  private function request(string $url): array {
+    $ch = curl_init();
+    if ($ch === false) {
+      throw new SerpApiException('Failed to initialize cURL handle');
+    }
+
+    try {
+      $is_configured = curl_setopt_array($ch, [
+        CURLOPT_URL            => $url,
+        CURLOPT_RETURNTRANSFER => true,
+        CURLOPT_USERAGENT      => 'serpapi-php/' . self::VERSION,
+        CURLOPT_FOLLOWLOCATION => true,
+        CURLOPT_TIMEOUT        => $this->timeout,
+      ]);
+
+      if ($is_configured === false) {
+        throw new SerpApiException('Failed to configure cURL options: ' . curl_error($ch));
+      }
+
+      $response = curl_exec($ch);
+      $http_code = (int) curl_getinfo($ch, CURLINFO_HTTP_CODE);
+      $curl_error = curl_error($ch);
+
+      return [
+        'response' => $response,
+        'http_code' => $http_code,
+        'curl_error' => $curl_error,
+      ];
+    } finally {
+      if (PHP_VERSION_ID < 80500) {
+        curl_close($ch);
+      }
+
+      $ch = null;
+    }
   }
 
   /**
