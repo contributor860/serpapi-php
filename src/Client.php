@@ -170,7 +170,7 @@ class Client {
 
     $decoded = json_decode($response);
     if ($decoded === null && json_last_error() !== JSON_ERROR_NONE) {
-      $this->raise_parser_error($http_code, $endpoint, $query, $response);
+      $this->raise_parser_error($http_code, $endpoint, $query);
     }
 
     $serpapi_error = (is_object($decoded) && isset($decoded->error)) ? $decoded->error : null;
@@ -268,13 +268,12 @@ class Client {
   private function raise_parser_error(
     int $response_status,
     string $endpoint,
-    array $search_params,
-    string $response_body
+    array $search_params
   ): void {
     $sanitized_search_params = $this->sanitize_search_params($search_params);
 
     throw new SerpApiException(
-      'JSON parse error: ' . json_last_error_msg() . ' response: ' . $response_body . ' on get url: ' . self::BASE_URL . $endpoint,
+      'JSON parse error: ' . json_last_error_msg() . ' on get url: ' . self::BASE_URL . $endpoint,
       null,
       $sanitized_search_params,
       $response_status,
