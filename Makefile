@@ -16,3 +16,10 @@ test:
 # Generate README from ERB template
 readme:
 	erb -T '-' README.md.erb > README.md
+
+# Run the demo scripts end to end
+demo:
+	@for file in demo/*.php; do \
+		echo "running demo: $$file"; \
+		php $$file || exit 1; \
+	done
