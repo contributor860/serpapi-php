@@ -28,12 +28,22 @@ class Client {
   /** @var resource|\CurlHandle|null Shared cURL handle used in persistent mode */
   private $handle = null;
 
+  /** @var bool Decode JSON responses to associative arrays instead of stdClass */
+  private $assoc = false;
+
   /**
    * Client-only configuration keys, never forwarded to the API as search parameters.
    *
    * @var array<int, string>
    */
-  private static $option_keys = ['api_key', 'engine', 'timeout', 'persistent'];
+  private static $option_keys = ['api_key', 'engine', 'timeout', 'persistent', 'assoc'];
+
+  /**
+   * Client-only keys stripped from the query string of every request.
+   *
+   * @var array<int, string>
+   */
+  private static $client_only_keys = ['timeout', 'persistent', 'assoc'];
 
   /**
    * Accepts either positional arguments or, like the Ruby client, a single
@@ -58,6 +68,7 @@ class Client {
       $engine = (string) $this->take($config, 'engine', $engine);
       $timeout = (int) $this->take($config, 'timeout', $timeout);
       $this->persistent = (bool) $this->take($config, 'persistent', true);
+      $this->assoc = (bool) $this->take($config, 'assoc', false);
       $params = array_merge($config, $params);
     }
 
@@ -161,6 +172,13 @@ class Client {
   }
 
   /**
+   * Whether JSON responses are decoded to associative arrays instead of stdClass.
+   */
+  public function is_assoc(): bool {
+    return $this->assoc;
+  }
+
+  /**
    * Close the shared connection. Safe to call more than once; the client
    * stays usable and opens a new connection on the next request.
    */
@@ -207,6 +225,7 @@ class Client {
       'engine'     => $this->engine,
       'timeout'    => $this->timeout,
       'persistent' => $this->persistent,
+      'assoc'      => $this->assoc,
       'api_key'    => $this->masked_api_key(),
       'params'     => $this->params,
     ];
@@ -233,9 +252,10 @@ class Client {
    * Run a search and return decoded JSON.
    *
    * @param array<string, mixed> $params
+   * @return object|array<string, mixed>  stdClass, or an array when `assoc` is enabled
    * @throws SerpApiException
    */
-  public function search(array $params = []): object {
+  public function search(array $params = []) {
     return $this->get('/search', 'json', $params);
   }
 
@@ -252,9 +272,10 @@ class Client {
   /**
    * Get account information using Account API.
    *
+   * @return object|array<string, mixed>  stdClass, or an array when `assoc` is enabled
    * @throws SerpApiException
    */
-  public function account(?string $api_key = null): object {
+  public function account(?string $api_key = null) {
     $params = empty($api_key) ? [] : ['api_key' => $api_key];
     return $this->get('/account', 'json', $params);
   }
@@ -263,7 +284,7 @@ class Client {
    * Get locations using Location API.
    *
    * @param array<string, mixed> $params
-   * @return array<int, object>
+   * @return array<int, object|array<string, mixed>>
    * @throws SerpApiException
    */
   public function location(array $params = []): array {
@@ -327,15 +348,19 @@ class Client {
       $this->raise_http_error($http_code, $endpoint, $query, null, null, 'html');
     }
 
-    $decoded = json_decode($response);
+    $assoc = isset($params['assoc']) ? (bool) $params['assoc'] : $this->assoc;
+
+    $decoded = json_decode($response, $assoc);
     if ($decoded === null && json_last_error() !== JSON_ERROR_NONE) {
       $this->raise_parser_error($http_code, $endpoint, $query);
     }
 
-    $serpapi_error = (is_object($decoded) && isset($decoded->error)) ? $decoded->error : null;
-    $search_id = (is_object($decoded) && isset($decoded->search_metadata->id))
-      ? (string) $decoded->search_metadata->id
-      : null;
+    $error = $this->dig($decoded, 'error');
+    $serpapi_error = is_string($error) ? $error : null;
+
+    $metadata = $this->dig($decoded, 'search_metadata');
+    $id = $this->dig($metadata, 'id');
+    $search_id = ($id === null) ? null : (string) $id;
 
     if ($http_code === 200) {
       if ($serpapi_error !== null) {
@@ -346,6 +371,25 @@ class Client {
     }
 
     $this->raise_http_error($http_code, $endpoint, $query, $serpapi_error, $search_id, 'json');
+  }
+
+  /**
+   * Read a key from a decoded response, which is an object or an
+   * associative array depending on the `assoc` setting.
+   *
+   * @param mixed $data
+   * @return mixed  null when absent
+   */
+  private function dig($data, string $key) {
+    if (is_object($data)) {
+      return $data->{$key} ?? null;
+    }
+
+    if (is_array($data)) {
+      return $data[$key] ?? null;
+    }
+
+    return null;
   }
 
   /**
@@ -366,6 +410,10 @@ class Client {
 
     $query = array_merge($default_query, $this->params, $params);
     $query['output'] = $format;
+
+    foreach (self::$client_only_keys as $key) {
+      unset($query[$key]);
+    }
 
     return array_filter($query, static function ($value) {
       return $value !== null;
