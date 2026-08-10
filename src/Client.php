@@ -7,6 +7,9 @@ class Client {
   const BASE_URL = 'https://serpapi.com';
   const DEFAULT_TIMEOUT = 120;
 
+  /** Client identifier reported to SerpApi for usage statistics. */
+  const SOURCE = 'serpapi-php:' . self::VERSION;
+
   /** @var string */
   private $api_key;
 
@@ -137,17 +140,7 @@ class Client {
       throw new SerpApiException('api_key must be present');
     }
 
-    $default_query = [
-      'engine'  => $this->engine,
-      'source'  => 'php',
-    ];
-
-    if (!empty($api_key)) {
-      $default_query['api_key'] = $api_key;
-    }
-
-    $query = array_merge($default_query, $params);
-    $query['output'] = $format;
+    $query = $this->query($params, $api_key, $format);
 
     $url = self::BASE_URL . $endpoint . '?' . http_build_query($query);
 
@@ -187,6 +180,28 @@ class Client {
     }
 
     $this->raise_http_error($http_code, $endpoint, $query, $serpapi_error, $search_id, 'json');
+  }
+
+  /**
+   * Build the query string parameters for a request.
+   *
+   * @param array<string, mixed> $params
+   * @return array<string, mixed>
+   */
+  private function query(array $params, string $api_key, string $format): array {
+    $default_query = [
+      'engine'  => $this->engine,
+      'source'  => self::SOURCE,
+    ];
+
+    if (!empty($api_key)) {
+      $default_query['api_key'] = $api_key;
+    }
+
+    $query = array_merge($default_query, $params);
+    $query['output'] = $format;
+
+    return $query;
   }
 
   /**
