@@ -22,12 +22,18 @@ class Client {
   /** @var array<string, mixed> Search parameters applied to every request */
   private $params = [];
 
+  /** @var bool Reuse a single cURL handle, keeping the connection alive between requests */
+  private $persistent = true;
+
+  /** @var resource|\CurlHandle|null Shared cURL handle used in persistent mode */
+  private $handle = null;
+
   /**
    * Client-only configuration keys, never forwarded to the API as search parameters.
    *
    * @var array<int, string>
    */
-  private static $option_keys = ['api_key', 'engine', 'timeout'];
+  private static $option_keys = ['api_key', 'engine', 'timeout', 'persistent'];
 
   /**
    * Accepts either positional arguments or, like the Ruby client, a single
@@ -51,6 +57,7 @@ class Client {
       $api_key = (string) $this->take($config, 'api_key', '');
       $engine = (string) $this->take($config, 'engine', $engine);
       $timeout = (int) $this->take($config, 'timeout', $timeout);
+      $this->persistent = (bool) $this->take($config, 'persistent', true);
       $params = array_merge($config, $params);
     }
 
@@ -147,14 +154,42 @@ class Client {
   }
 
   /**
+   * Whether the client reuses a single connection across requests.
+   */
+  public function is_persistent(): bool {
+    return $this->persistent;
+  }
+
+  /**
+   * Close the shared connection. Safe to call more than once; the client
+   * stays usable and opens a new connection on the next request.
+   */
+  public function close(): void {
+    if ($this->handle === null) {
+      return;
+    }
+
+    if (PHP_VERSION_ID < 80500) {
+      curl_close($this->handle);
+    }
+
+    $this->handle = null;
+  }
+
+  public function __destruct() {
+    $this->close();
+  }
+
+  /**
    * Human readable representation with the API key masked.
    */
   public function inspect(): string {
     return sprintf(
-      '#<%s @engine=%s @timeout=%d @api_key=%s>',
+      '#<%s @engine=%s @timeout=%d @persistent=%s @api_key=%s>',
       static::class,
       $this->engine,
       $this->timeout,
+      $this->persistent ? 'true' : 'false',
       $this->masked_api_key()
     );
   }
@@ -169,10 +204,11 @@ class Client {
    */
   public function __debugInfo(): array {
     return [
-      'engine'  => $this->engine,
-      'timeout' => $this->timeout,
-      'api_key' => $this->masked_api_key(),
-      'params'  => $this->params,
+      'engine'     => $this->engine,
+      'timeout'    => $this->timeout,
+      'persistent' => $this->persistent,
+      'api_key'    => $this->masked_api_key(),
+      'params'     => $this->params,
     ];
   }
 
@@ -341,10 +377,7 @@ class Client {
    * @throws SerpApiException
    */
   private function request(string $url): array {
-    $ch = curl_init();
-    if ($ch === false) {
-      throw new SerpApiException('Failed to initialize cURL handle');
-    }
+    $ch = $this->acquire_handle();
 
     try {
       $is_configured = curl_setopt_array($ch, [
@@ -369,11 +402,48 @@ class Client {
         'curl_error' => $curl_error,
       ];
     } finally {
-      if (PHP_VERSION_ID < 80500) {
-        curl_close($ch);
-      }
+      $this->release_handle($ch);
+    }
+  }
 
-      $ch = null;
+  /**
+   * Return the shared handle in persistent mode, otherwise a fresh one.
+   *
+   * @return resource|\CurlHandle
+   * @throws SerpApiException
+   */
+  private function acquire_handle() {
+    if ($this->persistent && $this->handle !== null) {
+      return $this->handle;
+    }
+
+    $ch = curl_init();
+    if ($ch === false) {
+      throw new SerpApiException('Failed to initialize cURL handle');
+    }
+
+    if ($this->persistent) {
+      $this->handle = $ch;
+    }
+
+    return $ch;
+  }
+
+  /**
+   * Keep the shared handle open so the underlying connection is reused;
+   * dispose of single use handles.
+   *
+   * @param resource|\CurlHandle $ch
+   */
+  private function release_handle($ch): void {
+    if ($this->persistent && $ch === $this->handle) {
+      return;
+    }
+
+    // curl_close() is a no-op since PHP 8.0 and deprecated in 8.5;
+    // the handle is released by the garbage collector instead.
+    if (PHP_VERSION_ID < 80500) {
+      curl_close($ch);
     }
   }
 
