@@ -25,7 +25,7 @@ class Client {
   /** @var bool Reuse a single cURL handle, keeping the connection alive between requests */
   private $persistent = true;
 
-  /** @var resource|\CurlHandle|null Shared cURL handle used in persistent mode */
+  /** @var resource|\CurlHandle|null Shared cURL handle (a resource on PHP 7, a CurlHandle on PHP 8) */
   private $handle = null;
 
   /** @var bool Decode JSON responses to associative arrays instead of stdClass */

@@ -1,5 +1,5 @@
 # Default target
-all: install readme test
+all: install readme analyse test
 
 # Clean up the project
 clean:
@@ -8,6 +8,10 @@ clean:
 # Install the necessary libraries and dependencies
 install:
 	composer install --prefer-dist --no-progress
+
+# Run static analysis
+analyse:
+	vendor/bin/phpstan analyse --no-progress --memory-limit=512M
 
 # Run the tests
 test:

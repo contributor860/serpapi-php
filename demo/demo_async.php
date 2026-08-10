@@ -17,6 +17,20 @@ require __DIR__ . '/../vendor/autoload.php';
 
 use SerpApi\Client;
 
+/**
+ * Read search_metadata off a decoded response, failing loudly on anything
+ * unexpected rather than on a property access further down.
+ *
+ * @param object|array<string, mixed>|string $response
+ */
+function search_metadata($response): object {
+  if (!is_object($response) || !isset($response->search_metadata)) {
+    throw new RuntimeException('response carries no search_metadata');
+  }
+
+  return $response->search_metadata;
+}
+
 $api_key = getenv('API_KEY');
 if (empty($api_key)) {
   fwrite(STDERR, "API_KEY environment variable must be set\n");
@@ -37,7 +51,7 @@ $client = new Client([
 $pending = [];
 foreach ($companies as $company) {
   $result = $client->search(['q' => $company]);
-  $pending[$result->search_metadata->id] = $company;
+  $pending[search_metadata($result)->id] = $company;
   echo "submitted: {$company}\n";
 }
 
@@ -47,11 +61,13 @@ echo "\ncollecting ", count($pending), " results\n";
 $deadline = time() + 60;
 while (!empty($pending) && time() < $deadline) {
   foreach ($pending as $search_id => $company) {
-    $archived = $client->search_archive($search_id);
-    $status = $archived->search_metadata->status;
+    $archived = $client->search_archive((string) $search_id);
+    $status = search_metadata($archived)->status;
 
     if ($status === 'Success' || $status === 'Cached') {
-      $count = isset($archived->organic_results) ? count($archived->organic_results) : 0;
+      $count = is_object($archived) && isset($archived->organic_results)
+        ? count((array) $archived->organic_results)
+        : 0;
       printf("  %-8s %s (%d organic results)\n", $company, $status, $count);
       unset($pending[$search_id]);
     }
