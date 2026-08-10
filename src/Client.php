@@ -147,6 +147,53 @@ class Client {
   }
 
   /**
+   * Human readable representation with the API key masked.
+   */
+  public function inspect(): string {
+    return sprintf(
+      '#<%s @engine=%s @timeout=%d @api_key=%s>',
+      static::class,
+      $this->engine,
+      $this->timeout,
+      $this->masked_api_key()
+    );
+  }
+
+  /**
+   * Keeps `var_dump()` and debuggers from printing the API key in clear text.
+   *
+   * Note that `print_r()` and `var_export()` bypass this hook and read
+   * properties directly; use `inspect()` when dumping a client on purpose.
+   *
+   * @return array<string, mixed>
+   */
+  public function __debugInfo(): array {
+    return [
+      'engine'  => $this->engine,
+      'timeout' => $this->timeout,
+      'api_key' => $this->masked_api_key(),
+      'params'  => $this->params,
+    ];
+  }
+
+  /**
+   * Show only the first and last 4 characters of the API key.
+   */
+  private function masked_api_key(): string {
+    $length = strlen($this->api_key);
+
+    if ($length === 0) {
+      return '';
+    }
+
+    if ($length <= 8) {
+      return '****';
+    }
+
+    return substr($this->api_key, 0, 4) . '****' . substr($this->api_key, -4);
+  }
+
+  /**
    * Run a search and return decoded JSON.
    *
    * @param array<string, mixed> $params
