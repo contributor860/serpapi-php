@@ -1,6 +1,10 @@
 # SerpApi PHP Library
 
-[![serpapi-php](https://github.com/serpapi/serpapi-php/actions/workflows/serpapi-php.yml/badge.svg)](https://github.com/serpapi/serpapi-php/actions/workflows/serpapi-php.yml)
+[![Packagist Version](https://img.shields.io/packagist/v/serpapi/serpapi-php.svg?label=packagist)](https://packagist.org/packages/serpapi/serpapi-php)
+[![Packagist Downloads](https://img.shields.io/packagist/dt/serpapi/serpapi-php.svg?label=downloads)](https://packagist.org/packages/serpapi/serpapi-php)
+[![CI](https://github.com/serpapi/serpapi-php/actions/workflows/serpapi-php.yml/badge.svg)](https://github.com/serpapi/serpapi-php/actions/workflows/serpapi-php.yml)
+[![PHP](https://img.shields.io/badge/php-%3E%3D7.2-brightgreen.svg)](https://www.php.net)
+[![License: MIT](https://img.shields.io/badge/license-MIT-blue.svg)](https://github.com/serpapi/serpapi-php/blob/master/MIT-LICENSE.txt)
 
 Integrate search data into your PHP application. This library is the official wrapper for [SerpApi](https://serpapi.com).
 
@@ -145,7 +149,7 @@ $results = $client->search([
   'q' => 'coffee',
 ]);
 
-print_r($results->suggestions);
+print_r($results->organic_results);
 ```
 
  * source: [tests/ExampleSearchGoogleAutocompleteTest.php](https://github.com/serpapi/serpapi-php/blob/master/tests/ExampleSearchGoogleAutocompleteTest.php)
@@ -161,7 +165,7 @@ $results = $client->search([
   'q' => 'coffee',
 ]);
 
-print_r($results->shopping_results);
+print_r($results->organic_results);
 ```
 
  * source: [tests/ExampleSearchGoogleShoppingTest.php](https://github.com/serpapi/serpapi-php/blob/master/tests/ExampleSearchGoogleShoppingTest.php)
@@ -212,7 +216,7 @@ $results = $client->search([
   'location' => 'Austin, Texas, United States',
 ]);
 
-print_r($results->events_results);
+print_r($results->organic_results);
 ```
 
  * source: [tests/ExampleSearchGoogleEventsTest.php](https://github.com/serpapi/serpapi-php/blob/master/tests/ExampleSearchGoogleEventsTest.php)
@@ -549,4 +553,4 @@ For more information: https://serpapi.com
 
 ## License
 
-MIT License.
+[MIT](MIT-LICENSE.txt)
