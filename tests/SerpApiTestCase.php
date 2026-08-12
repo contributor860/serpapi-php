@@ -5,11 +5,13 @@ namespace SerpApi\Tests;
 use SerpApi\Client;
 use PHPUnit\Framework\TestCase;
 
-abstract class SerpApiTestCase extends TestCase {
+abstract class SerpApiTestCase extends TestCase
+{
   /** @var string|null */
   protected $apiKey;
 
-  protected function setUp(): void {
+  protected function setUp(): void
+  {
     parent::setUp();
     $resolved = $this->resolveApiKey();
 
@@ -21,11 +23,13 @@ abstract class SerpApiTestCase extends TestCase {
     $this->apiKey = $resolved;
   }
 
-  protected function requiresApiKey(): bool {
+  protected function requiresApiKey(): bool
+  {
     return true;
   }
 
-  protected function resolveApiKey(): ?string {
+  protected function resolveApiKey(): ?string
+  {
     $env = $_ENV['API_KEY'] ?? null;
 
     if (!empty($env)) {
@@ -40,11 +44,13 @@ abstract class SerpApiTestCase extends TestCase {
     return null;
   }
 
-  protected function serpApiClient(string $engine = 'google'): Client {
+  protected function serpApiClient(string $engine = 'google'): Client
+  {
     return new Client($this->apiKey ?? '', $engine);
   }
 
-  protected function assertResponseHasProperty(object $response, string $property, string $message = ''): void {
+  protected function assertResponseHasProperty(object $response, string $property, string $message = ''): void
+  {
     if (method_exists($this, 'assertObjectHasProperty')) {
       $this->assertObjectHasProperty($property, $response, $message);
       return;

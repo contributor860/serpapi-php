@@ -2,11 +2,13 @@
 
 namespace SerpApi\Tests;
 
-class GoogleSearchTest extends SerpApiTestCase {
+class GoogleSearchTest extends SerpApiTestCase
+{
   /** @var array<string, string> */
   private $searchParams;
 
-  protected function setUp(): void {
+  protected function setUp(): void
+  {
     parent::setUp();
     $this->searchParams = [
       'q' => 'Coffee',
@@ -14,7 +16,8 @@ class GoogleSearchTest extends SerpApiTestCase {
     ];
   }
 
-  public function test_google_search_returns_organic_results() {
+  public function testGoogleSearchReturnsOrganicResults()
+  {
     $client = $this->serpApiClient('google');
     $response = $client->search($this->searchParams);
     $this->assertEquals('Success', $response->search_metadata->status);
@@ -22,19 +25,22 @@ class GoogleSearchTest extends SerpApiTestCase {
     $this->assertNotEmpty($response->organic_results);
   }
 
-  public function test_google_html_returns_html_payload() {
+  public function testGoogleHtmlReturnsHtmlPayload()
+  {
     $client = $this->serpApiClient('google');
     $response = $client->html($this->searchParams);
     $this->assertGreaterThan(10000, strlen($response));
   }
 
-  public function test_google_account_returns_api_key() {
+  public function testGoogleAccountReturnsApiKey()
+  {
     $client = $this->serpApiClient('google');
     $info = $client->account();
     $this->assertEquals($client->getApiKey(), $info->api_key);
   }
 
-  public function test_google_location_returns_results() {
+  public function testGoogleLocationReturnsResults()
+  {
     $client = $this->serpApiClient('google');
     $location_list = $client->location(['q' => 'Austin', 'limit' => 3]);
     $this->assertCount(3, $location_list);
@@ -42,7 +48,8 @@ class GoogleSearchTest extends SerpApiTestCase {
     $this->assertGreaterThan(0, $location_list[0]->google_id);
   }
 
-  public function test_google_search_archive_returns_same_id() {
+  public function testGoogleSearchArchiveReturnsSameId()
+  {
     $client = $this->serpApiClient('google');
     $result = $client->search($this->searchParams);
     $archived_result = $client->searchArchive($result->search_metadata->id);

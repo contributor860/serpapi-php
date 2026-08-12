@@ -2,10 +2,11 @@
 
 namespace SerpApi;
 
-class Client {
-  const VERSION = '1.0.0';
-  const BASE_URL = 'https://serpapi.com';
-  const DEFAULT_TIMEOUT = 120;
+class Client
+{
+  public const VERSION = '1.0.0';
+  public const BASE_URL = 'https://serpapi.com';
+  public const DEFAULT_TIMEOUT = 120;
 
   /** @var string */
   private $apiKey;
@@ -19,10 +20,11 @@ class Client {
   /**
    * @param string $apiKey
    * @param string $engine
-   * @param int $timeout  Request timeout in seconds
+   * @param int $timeout Request timeout in seconds
    * @throws SerpApiException
    */
-  public function __construct(string $apiKey = '', string $engine = 'google', int $timeout = self::DEFAULT_TIMEOUT) {
+  public function __construct(string $apiKey = '', string $engine = 'google', int $timeout = self::DEFAULT_TIMEOUT)
+  {
     if (empty($engine)) {
       throw new SerpApiException('engine must be present');
     }
@@ -38,7 +40,8 @@ class Client {
    * @param string $apiKey
    * @throws SerpApiException
    */
-  public function setApiKey(string $apiKey): void {
+  public function setApiKey(string $apiKey): void
+  {
     if (empty($apiKey)) {
       throw new SerpApiException('api_key must have a value');
     }
@@ -49,14 +52,16 @@ class Client {
   /**
    * Get the current API key.
    */
-  public function getApiKey(): string {
+  public function getApiKey(): string
+  {
     return $this->apiKey;
   }
 
   /**
    * Get the current engine.
    */
-  public function getEngine(): string {
+  public function getEngine(): string
+  {
     return $this->engine;
   }
 
@@ -66,7 +71,8 @@ class Client {
    * @param array<string, mixed> $params
    * @throws SerpApiException
    */
-  public function search(array $params = []): object {
+  public function search(array $params = []): object
+  {
     return $this->get('/search', 'json', $params);
   }
 
@@ -76,7 +82,8 @@ class Client {
    * @param array<string, mixed> $params
    * @throws SerpApiException
    */
-  public function html(array $params = []): string {
+  public function html(array $params = []): string
+  {
     return $this->get('/search', 'html', $params);
   }
 
@@ -85,7 +92,8 @@ class Client {
    *
    * @throws SerpApiException
    */
-  public function account(?string $apiKey = null): object {
+  public function account(?string $apiKey = null): object
+  {
     $params = empty($apiKey) ? [] : ['api_key' => $apiKey];
     return $this->get('/account', 'json', $params);
   }
@@ -97,7 +105,8 @@ class Client {
    * @return array<int, object>
    * @throws SerpApiException
    */
-  public function location(array $params = []): array {
+  public function location(array $params = []): array
+  {
     return $this->get('/locations.json', 'json', $params);
   }
 
@@ -107,7 +116,8 @@ class Client {
    * @return object|string
    * @throws SerpApiException
    */
-  public function searchArchive(string $searchId, string $format = 'json') {
+  public function searchArchive(string $searchId, string $format = 'json')
+  {
     if (empty($searchId)) {
       throw new SerpApiException('search_id must be present');
     }
@@ -125,7 +135,8 @@ class Client {
    * @return object|array<int|string, mixed>|string
    * @throws SerpApiException
    */
-  private function get(string $endpoint, string $format = 'json', array $params = []) {
+  private function get(string $endpoint, string $format = 'json', array $params = [])
+  {
     if (!in_array($format, ['json', 'html'], true)) {
       throw new SerpApiException("Unsupported format '$format'. Expected 'html' or 'json'.");
     }
@@ -138,8 +149,8 @@ class Client {
     }
 
     $defaultQuery = [
-      'engine'  => $this->engine,
-      'source'  => 'php',
+      'engine' => $this->engine,
+      'source' => 'php',
     ];
 
     if (!empty($apiKey)) {
@@ -193,7 +204,8 @@ class Client {
    * @return array{response: string|false, http_code: int, curl_error: string}
    * @throws SerpApiException
    */
-  private function request(string $url): array {
+  private function request(string $url): array
+  {
     $ch = curl_init();
     if ($ch === false) {
       throw new SerpApiException('Failed to initialize cURL handle');
@@ -201,11 +213,11 @@ class Client {
 
     try {
       $isConfigured = curl_setopt_array($ch, [
-        CURLOPT_URL            => $url,
+        CURLOPT_URL => $url,
         CURLOPT_RETURNTRANSFER => true,
-        CURLOPT_USERAGENT      => 'serpapi-php/' . self::VERSION,
+        CURLOPT_USERAGENT => 'serpapi-php/' . self::VERSION,
         CURLOPT_FOLLOWLOCATION => true,
-        CURLOPT_TIMEOUT        => $this->timeout,
+        CURLOPT_TIMEOUT => $this->timeout,
       ]);
 
       if ($isConfigured === false) {
@@ -287,7 +299,8 @@ class Client {
    * @param array<int, string> $keysToRemove
    * @return array<string, mixed>
    */
-  private function sanitizeSearchParams(array $searchParams, array $keysToRemove = ['api_key']): array {
+  private function sanitizeSearchParams(array $searchParams, array $keysToRemove = ['api_key']): array
+  {
     foreach ($keysToRemove as $key) {
       unset($searchParams[$key]);
     }

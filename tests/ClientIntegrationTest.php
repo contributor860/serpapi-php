@@ -2,11 +2,13 @@
 
 namespace SerpApi\Tests;
 
-class ClientIntegrationTest extends SerpApiTestCase {
+class ClientIntegrationTest extends SerpApiTestCase
+{
   /** @var array<string, string> */
   private $searchParams;
 
-  protected function setUp(): void {
+  protected function setUp(): void
+  {
     parent::setUp();
     $this->searchParams = [
       'q' => 'Coffee',
@@ -14,19 +16,22 @@ class ClientIntegrationTest extends SerpApiTestCase {
     ];
   }
 
-  public function test_account() {
+  public function testAccount()
+  {
     $client = $this->serpApiClient();
     $response = $client->account();
     $this->assertEquals($client->getApiKey(), $response->api_key);
   }
 
-  public function test_html() {
+  public function testHtml()
+  {
     $client = $this->serpApiClient();
     $response = $client->html($this->searchParams);
     $this->assertGreaterThan(10000, strlen($response));
   }
 
-  public function test_search() {
+  public function testSearch()
+  {
     $client = $this->serpApiClient();
     $response = $client->search($this->searchParams);
     $this->assertEquals('Success', $response->search_metadata->status);
@@ -34,7 +39,8 @@ class ClientIntegrationTest extends SerpApiTestCase {
     $this->assertNotEmpty($response->organic_results);
   }
 
-  public function test_location() {
+  public function testLocation()
+  {
     $client = $this->serpApiClient();
     $location_list = $client->location(['q' => 'Austin', 'limit' => 3]);
     $this->assertCount(3, $location_list);
@@ -42,7 +48,8 @@ class ClientIntegrationTest extends SerpApiTestCase {
     $this->assertGreaterThan(0, $location_list[0]->google_id);
   }
 
-  public function test_search_archive() {
+  public function testSearchArchive()
+  {
     $client = $this->serpApiClient();
     $result = $client->search($this->searchParams);
     $archived_result = $client->searchArchive($result->search_metadata->id);

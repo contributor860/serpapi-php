@@ -2,11 +2,13 @@
 
 namespace SerpApi\Tests;
 
-class ExampleSearchGoogleTest extends SerpApiTestCase {
+class ExampleSearchGoogleTest extends SerpApiTestCase
+{
   /** @var array<string, string> */
   private $searchParams;
 
-  protected function setUp(): void {
+  protected function setUp(): void
+  {
     parent::setUp();
     $this->searchParams = [
       'engine' => 'google',
@@ -15,7 +17,8 @@ class ExampleSearchGoogleTest extends SerpApiTestCase {
     ];
   }
 
-  public function test_result_exists() {
+  public function testResultExists()
+  {
     $client = $this->serpApiClient();
     $response = $client->search($this->searchParams);
     $this->assertResponseHasProperty($response, 'images_results', 'Error on `google` engine: no `images_results`');

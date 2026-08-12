@@ -2,7 +2,8 @@
 
 namespace SerpApi;
 
-class SerpApiException extends \Exception {
+class SerpApiException extends \Exception
+{
   /** @var string|null */
   private $serpApiError;
 
@@ -39,40 +40,46 @@ class SerpApiException extends \Exception {
     $this->decoder = $decoder;
   }
 
-  public function getSerpApiError(): ?string {
+  public function getSerpApiError(): ?string
+  {
     return $this->serpApiError;
   }
 
   /**
    * @return array<string, mixed>|null
    */
-  public function getSearchParams(): ?array {
+  public function getSearchParams(): ?array
+  {
     return $this->searchParams;
   }
 
-  public function getResponseStatus(): ?int {
+  public function getResponseStatus(): ?int
+  {
     return $this->responseStatus;
   }
 
-  public function getSearchId(): ?string {
+  public function getSearchId(): ?string
+  {
     return $this->searchId;
   }
 
-  public function getDecoder(): ?string {
+  public function getDecoder(): ?string
+  {
     return $this->decoder;
   }
 
   /**
    * @return array<string, mixed>
    */
-  public function toArray(): array {
+  public function toArray(): array
+  {
     return array_filter([
-      'message'         => $this->getMessage(),
-      'serpApiError'    => $this->serpApiError,
-      'searchParams'    => $this->searchParams,
-      'responseStatus'  => $this->responseStatus,
-      'searchId'        => $this->searchId,
-      'decoder'         => $this->decoder,
+      'message' => $this->getMessage(),
+      'serpApiError' => $this->serpApiError,
+      'searchParams' => $this->searchParams,
+      'responseStatus' => $this->responseStatus,
+      'searchId' => $this->searchId,
+      'decoder' => $this->decoder,
     ], static function ($value) {
       return $value !== null;
     });
