@@ -64,7 +64,7 @@ See the [playground](https://serpapi.com/playground) to generate your own code.
 
 ### API key
 
-The API key can be set in the constructor or later via `set_api_key`:
+The API key can be set in the constructor or later via `setApiKey`:
 
 ```php
 use SerpApi\Client;
@@ -74,7 +74,7 @@ $client = new Client('Your Private Key');
 
 // or later
 $client = new Client();
-$client->set_api_key('Your Private Key');
+$client->setApiKey('Your Private Key');
 ```
 
 Get your API key from [serpapi.com/dashboard](https://serpapi.com/dashboard).
@@ -464,7 +464,7 @@ $search_id = $results->search_metadata->id;
 Now retrieve the previous search from the archive (free of charge):
 
 ```php
-$archived = $client->search_archive($search_id);
+$archived = $client->searchArchive($search_id);
 print_r($archived);
 ```
 
@@ -504,11 +504,11 @@ try {
   echo $exception->getMessage() . "\n";
   // HTTP request failed with status: 401 error: Invalid API key... from url: https://serpapi.com/search
 
-  echo $exception->get_serpapi_error() . "\n";
-  echo $exception->get_response_status() . "\n";
-  echo $exception->get_search_id() . "\n";
-  print_r($exception->get_search_params());
-  print_r($exception->to_array());
+  echo $exception->getSerpApiError() . "\n";
+  echo $exception->getResponseStatus() . "\n";
+  echo $exception->getSearchId() . "\n";
+  print_r($exception->getSearchParams());
+  print_r($exception->toArray());
 }
 ```
 

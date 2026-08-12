@@ -7,7 +7,7 @@ use PHPUnit\Framework\TestCase;
 
 abstract class SerpApiTestCase extends TestCase {
   /** @var string|null */
-  protected $api_key;
+  protected $apiKey;
 
   protected function setUp(): void {
     parent::setUp();
@@ -18,7 +18,7 @@ abstract class SerpApiTestCase extends TestCase {
       return;
     }
 
-    $this->api_key = $resolved;
+    $this->apiKey = $resolved;
   }
 
   protected function requiresApiKey(): bool {
@@ -41,7 +41,7 @@ abstract class SerpApiTestCase extends TestCase {
   }
 
   protected function serpApiClient(string $engine = 'google'): Client {
-    return new Client($this->api_key ?? '', $engine);
+    return new Client($this->apiKey ?? '', $engine);
   }
 
   protected function assertResponseHasProperty(object $response, string $property, string $message = ''): void {

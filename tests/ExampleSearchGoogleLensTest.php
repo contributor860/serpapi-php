@@ -4,11 +4,11 @@ namespace SerpApi\Tests;
 
 class ExampleSearchGoogleLensTest extends SerpApiTestCase {
   /** @var array<string, string> */
-  private $search_params;
+  private $searchParams;
 
   protected function setUp(): void {
     parent::setUp();
-    $this->search_params = [
+    $this->searchParams = [
       'engine' => 'google_lens',
       'url' => 'https://i.imgur.com/5bGzZi7.jpg',
       'gl' => 'us',
@@ -18,7 +18,7 @@ class ExampleSearchGoogleLensTest extends SerpApiTestCase {
 
   public function test_result_exists() {
     $client = $this->serpApiClient();
-    $response = $client->search($this->search_params);
+    $response = $client->search($this->searchParams);
     $this->assertResponseHasProperty($response, 'visual_matches', 'Error on `google_lens` engine: no `visual_matches`');
   }
 }

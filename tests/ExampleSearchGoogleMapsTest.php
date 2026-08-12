@@ -4,11 +4,11 @@ namespace SerpApi\Tests;
 
 class ExampleSearchGoogleMapsTest extends SerpApiTestCase {
   /** @var array<string, string> */
-  private $search_params;
+  private $searchParams;
 
   protected function setUp(): void {
     parent::setUp();
-    $this->search_params = [
+    $this->searchParams = [
       'engine' => 'google_maps',
       'q' => 'pizza',
       'll' => '@40.7455096,-74.0083012,15.1z',
@@ -18,7 +18,7 @@ class ExampleSearchGoogleMapsTest extends SerpApiTestCase {
 
   public function test_result_exists() {
     $client = $this->serpApiClient();
-    $response = $client->search($this->search_params);
+    $response = $client->search($this->searchParams);
     $this->assertResponseHasProperty($response, 'local_results', 'Error on `google_maps` engine: no `local_results`');
   }
 }
