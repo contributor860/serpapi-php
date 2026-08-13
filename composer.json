@@ -37,7 +37,9 @@
         }
     ],
     "support": {
-        "issues": "https://github.com/serpapi/serpapi-php/issues"
+        "issues": "https://github.com/serpapi/serpapi-php/issues",
+        "source": "https://github.com/serpapi/serpapi-php",
+        "docs": "https://serpapi.com/integrations/php"
     },
     "require": {
         "php": ">=7.2",
@@ -59,7 +61,7 @@
         }
     },
     "scripts": {
-        "test": "vendor/bin/phpunit -c phpunit.xml",
-        "lint": "vendor/bin/phpcs"
+        "test": "phpunit -c phpunit.xml",
+        "lint": "phpcs"
     }
 }
