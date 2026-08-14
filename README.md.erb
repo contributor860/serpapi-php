@@ -1,3 +1,27 @@
+<%-
+def snippet(path)
+  source = File.read(path)
+
+  params_match = source.match(/\$this->searchParams\s*=\s*(\[.*?\]);/m)
+  raise "Could not find $this->searchParams in #{path}" unless params_match
+  raw_params = params_match[1]
+
+  # Re-indent: keep opening/closing bracket at column 0, indent inner lines by 2 spaces
+  raw_lines = raw_params.lines.map { |l| l.strip }
+  params = raw_lines.each_with_index.map { |l, i|
+    (i == 0 || i == raw_lines.length - 1) ? l : "  #{l}"
+  }.join("\n")
+
+  property = source[/assertResponseHasProperty\(\$response,\s*'([^']+)'/, 1] || 'organic_results'
+
+  code = "use SerpApi\\Client;\n\n"
+  code += "$client = new Client(getenv('API_KEY'));\n"
+  code += "$results = $client->search(#{params});\n\n"
+  code += "print_r($results->#{property});\n"
+
+  "```php\n#{code}```\n\n * source: [#{path}](https://github.com/serpapi/serpapi-php/blob/master/#{path})"
+end
+-%>
 # SerpApi PHP Library
 
 [![Packagist Version](https://img.shields.io/packagist/v/serpapi/serpapi-php.svg?label=packagist)](https://packagist.org/packages/serpapi/serpapi-php)
@@ -105,331 +129,83 @@ $client = new Client(getenv('API_KEY'), 'google', 30);
 ## Search API
 
 ### Search Google
-```php
-use SerpApi\Client;
-
-$client = new Client(getenv('API_KEY'));
-$results = $client->search([
-  'engine' => 'google',
-  'tbm' => 'isch',
-  'q' => 'coffee',
-]);
-
-print_r($results->images_results);
-```
-
- * source: [tests/ExampleSearchGoogleTest.php](https://github.com/serpapi/serpapi-php/blob/master/tests/ExampleSearchGoogleTest.php)
+<%= snippet('tests/ExampleSearchGoogleTest.php') %>
 see: [https://serpapi.com/search-api](https://serpapi.com/search-api)
 
 ### Search Google Scholar
-```php
-use SerpApi\Client;
-
-$client = new Client(getenv('API_KEY'));
-$results = $client->search([
-  'engine' => 'google_scholar',
-  'q' => 'coffee',
-]);
-
-print_r($results->organic_results);
-```
-
- * source: [tests/ExampleSearchGoogleScholarTest.php](https://github.com/serpapi/serpapi-php/blob/master/tests/ExampleSearchGoogleScholarTest.php)
+<%= snippet('tests/ExampleSearchGoogleScholarTest.php') %>
 see: [https://serpapi.com/google-scholar-api](https://serpapi.com/google-scholar-api)
 
 ### Search Google Autocomplete
-```php
-use SerpApi\Client;
-
-$client = new Client(getenv('API_KEY'));
-$results = $client->search([
-  'engine' => 'google_autocomplete',
-  'q' => 'coffee',
-]);
-
-print_r($results->organic_results);
-```
-
- * source: [tests/ExampleSearchGoogleAutocompleteTest.php](https://github.com/serpapi/serpapi-php/blob/master/tests/ExampleSearchGoogleAutocompleteTest.php)
+<%= snippet('tests/ExampleSearchGoogleAutocompleteTest.php') %>
 see: [https://serpapi.com/google-autocomplete-api](https://serpapi.com/google-autocomplete-api)
 
 ### Search Google Shopping
-```php
-use SerpApi\Client;
-
-$client = new Client(getenv('API_KEY'));
-$results = $client->search([
-  'engine' => 'google_shopping',
-  'q' => 'coffee',
-]);
-
-print_r($results->organic_results);
-```
-
- * source: [tests/ExampleSearchGoogleShoppingTest.php](https://github.com/serpapi/serpapi-php/blob/master/tests/ExampleSearchGoogleShoppingTest.php)
+<%= snippet('tests/ExampleSearchGoogleShoppingTest.php') %>
 see: [https://serpapi.com/google-shopping-api](https://serpapi.com/google-shopping-api)
 
 ### Search Google Maps
-```php
-use SerpApi\Client;
-
-$client = new Client(getenv('API_KEY'));
-$results = $client->search([
-  'engine' => 'google_maps',
-  'q' => 'pizza',
-  'll' => '@40.7455096,-74.0083012,15.1z',
-  'type' => 'search',
-]);
-
-print_r($results->local_results);
-```
-
- * source: [tests/ExampleSearchGoogleMapsTest.php](https://github.com/serpapi/serpapi-php/blob/master/tests/ExampleSearchGoogleMapsTest.php)
+<%= snippet('tests/ExampleSearchGoogleMapsTest.php') %>
 see: [https://serpapi.com/google-maps-api](https://serpapi.com/google-maps-api)
 
 ### Search Google Jobs
-```php
-use SerpApi\Client;
-
-$client = new Client(getenv('API_KEY'));
-$results = $client->search([
-  'engine' => 'google_jobs',
-  'q' => 'coffee',
-]);
-
-print_r($results->jobs_results);
-```
-
- * source: [tests/ExampleSearchGoogleJobsTest.php](https://github.com/serpapi/serpapi-php/blob/master/tests/ExampleSearchGoogleJobsTest.php)
+<%= snippet('tests/ExampleSearchGoogleJobsTest.php') %>
 see: [https://serpapi.com/google-jobs-api](https://serpapi.com/google-jobs-api)
 
 ### Search Google Events
-```php
-use SerpApi\Client;
-
-$client = new Client(getenv('API_KEY'));
-$results = $client->search([
-  'engine' => 'google_events',
-  'q' => 'Events in Austin',
-  'location' => 'Austin, Texas, United States',
-]);
-
-print_r($results->organic_results);
-```
-
- * source: [tests/ExampleSearchGoogleEventsTest.php](https://github.com/serpapi/serpapi-php/blob/master/tests/ExampleSearchGoogleEventsTest.php)
+<%= snippet('tests/ExampleSearchGoogleEventsTest.php') %>
 see: [https://serpapi.com/google-events-api](https://serpapi.com/google-events-api)
 
 ### Search Google Lens
-```php
-use SerpApi\Client;
-
-$client = new Client(getenv('API_KEY'));
-$results = $client->search([
-  'engine' => 'google_lens',
-  'url' => 'https://i.imgur.com/5bGzZi7.jpg',
-  'gl' => 'us',
-  'hl' => 'en',
-]);
-
-print_r($results->visual_matches);
-```
-
- * source: [tests/ExampleSearchGoogleLensTest.php](https://github.com/serpapi/serpapi-php/blob/master/tests/ExampleSearchGoogleLensTest.php)
+<%= snippet('tests/ExampleSearchGoogleLensTest.php') %>
 see: [https://serpapi.com/google-lens-api](https://serpapi.com/google-lens-api)
 
 ### Search Google Play
-```php
-use SerpApi\Client;
-
-$client = new Client(getenv('API_KEY'));
-$results = $client->search([
-  'engine' => 'google_play',
-  'q' => 'kite',
-  'store' => 'apps',
-]);
-
-print_r($results->organic_results);
-```
-
- * source: [tests/ExampleSearchGooglePlayTest.php](https://github.com/serpapi/serpapi-php/blob/master/tests/ExampleSearchGooglePlayTest.php)
+<%= snippet('tests/ExampleSearchGooglePlayTest.php') %>
 see: [https://serpapi.com/google-play-api](https://serpapi.com/google-play-api)
 
 ### Search Google Local Services
-```php
-use SerpApi\Client;
-
-$client = new Client(getenv('API_KEY'));
-$results = $client->search([
-  'engine' => 'google_local_services',
-  'q' => 'electrician',
-  'data_cid' => '6745062158417646970',
-]);
-
-print_r($results->local_ads);
-```
-
- * source: [tests/ExampleSearchGoogleLocalServicesTest.php](https://github.com/serpapi/serpapi-php/blob/master/tests/ExampleSearchGoogleLocalServicesTest.php)
+<%= snippet('tests/ExampleSearchGoogleLocalServicesTest.php') %>
 see: [https://serpapi.com/google-local-services-api](https://serpapi.com/google-local-services-api)
 
 ### Search Bing
-```php
-use SerpApi\Client;
-
-$client = new Client(getenv('API_KEY'));
-$results = $client->search([
-  'engine' => 'bing',
-  'q' => 'coffee',
-]);
-
-print_r($results->organic_results);
-```
-
- * source: [tests/ExampleSearchBingTest.php](https://github.com/serpapi/serpapi-php/blob/master/tests/ExampleSearchBingTest.php)
+<%= snippet('tests/ExampleSearchBingTest.php') %>
 see: [https://serpapi.com/bing-search-api](https://serpapi.com/bing-search-api)
 
 ### Search Baidu
-```php
-use SerpApi\Client;
-
-$client = new Client(getenv('API_KEY'));
-$results = $client->search([
-  'engine' => 'baidu',
-  'q' => 'coffee',
-]);
-
-print_r($results->organic_results);
-```
-
- * source: [tests/ExampleSearchBaiduTest.php](https://github.com/serpapi/serpapi-php/blob/master/tests/ExampleSearchBaiduTest.php)
+<%= snippet('tests/ExampleSearchBaiduTest.php') %>
 see: [https://serpapi.com/baidu-search-api](https://serpapi.com/baidu-search-api)
 
 ### Search Yahoo
-```php
-use SerpApi\Client;
-
-$client = new Client(getenv('API_KEY'));
-$results = $client->search([
-  'engine' => 'yahoo',
-  'p' => 'coffee',
-]);
-
-print_r($results->organic_results);
-```
-
- * source: [tests/ExampleSearchYahooTest.php](https://github.com/serpapi/serpapi-php/blob/master/tests/ExampleSearchYahooTest.php)
+<%= snippet('tests/ExampleSearchYahooTest.php') %>
 see: [https://serpapi.com/yahoo-search-api](https://serpapi.com/yahoo-search-api)
 
 ### Search YouTube
-```php
-use SerpApi\Client;
-
-$client = new Client(getenv('API_KEY'));
-$results = $client->search([
-  'engine' => 'youtube',
-  'search_query' => 'coffee',
-]);
-
-print_r($results->video_results);
-```
-
- * source: [tests/ExampleSearchYoutubeTest.php](https://github.com/serpapi/serpapi-php/blob/master/tests/ExampleSearchYoutubeTest.php)
+<%= snippet('tests/ExampleSearchYoutubeTest.php') %>
 see: [https://serpapi.com/youtube-search-api](https://serpapi.com/youtube-search-api)
 
 ### Search Walmart
-```php
-use SerpApi\Client;
-
-$client = new Client(getenv('API_KEY'));
-$results = $client->search([
-  'engine' => 'walmart',
-  'query' => 'coffee',
-]);
-
-print_r($results->organic_results);
-```
-
- * source: [tests/ExampleSearchWalmartTest.php](https://github.com/serpapi/serpapi-php/blob/master/tests/ExampleSearchWalmartTest.php)
+<%= snippet('tests/ExampleSearchWalmartTest.php') %>
 see: [https://serpapi.com/walmart-search-api](https://serpapi.com/walmart-search-api)
 
 ### Search eBay
-```php
-use SerpApi\Client;
-
-$client = new Client(getenv('API_KEY'));
-$results = $client->search([
-  'engine' => 'ebay',
-  '_nkw' => 'water',
-]);
-
-print_r($results->organic_results);
-```
-
- * source: [tests/ExampleSearchEbayTest.php](https://github.com/serpapi/serpapi-php/blob/master/tests/ExampleSearchEbayTest.php)
+<%= snippet('tests/ExampleSearchEbayTest.php') %>
 see: [https://serpapi.com/ebay-search-api](https://serpapi.com/ebay-search-api)
 
 ### Search Naver
-```php
-use SerpApi\Client;
-
-$client = new Client(getenv('API_KEY'));
-$results = $client->search([
-  'engine' => 'naver',
-  'query' => 'coffee',
-]);
-
-print_r($results->ads_results);
-```
-
- * source: [tests/ExampleSearchNaverTest.php](https://github.com/serpapi/serpapi-php/blob/master/tests/ExampleSearchNaverTest.php)
+<%= snippet('tests/ExampleSearchNaverTest.php') %>
 see: [https://serpapi.com/naver-search-api](https://serpapi.com/naver-search-api)
 
 ### Search Home Depot
-```php
-use SerpApi\Client;
-
-$client = new Client(getenv('API_KEY'));
-$results = $client->search([
-  'engine' => 'home_depot',
-  'q' => 'table',
-]);
-
-print_r($results->products);
-```
-
- * source: [tests/ExampleSearchHomeDepotTest.php](https://github.com/serpapi/serpapi-php/blob/master/tests/ExampleSearchHomeDepotTest.php)
+<%= snippet('tests/ExampleSearchHomeDepotTest.php') %>
 see: [https://serpapi.com/home-depot-search-api](https://serpapi.com/home-depot-search-api)
 
 ### Search Apple App Store
-```php
-use SerpApi\Client;
-
-$client = new Client(getenv('API_KEY'));
-$results = $client->search([
-  'engine' => 'apple_app_store',
-  'term' => 'coffee',
-]);
-
-print_r($results->organic_results);
-```
-
- * source: [tests/ExampleSearchAppleAppStoreTest.php](https://github.com/serpapi/serpapi-php/blob/master/tests/ExampleSearchAppleAppStoreTest.php)
+<%= snippet('tests/ExampleSearchAppleAppStoreTest.php') %>
 see: [https://serpapi.com/apple-app-store](https://serpapi.com/apple-app-store)
 
 ### Search DuckDuckGo
-```php
-use SerpApi\Client;
-
-$client = new Client(getenv('API_KEY'));
-$results = $client->search([
-  'engine' => 'duckduckgo',
-  'q' => 'coffee',
-]);
-
-print_r($results->organic_results);
-```
-
- * source: [tests/ExampleSearchDuckduckgoTest.php](https://github.com/serpapi/serpapi-php/blob/master/tests/ExampleSearchDuckduckgoTest.php)
+<%= snippet('tests/ExampleSearchDuckduckgoTest.php') %>
 see: [https://serpapi.com/duckduckgo-search-api](https://serpapi.com/duckduckgo-search-api)
 
 ## APIs supported

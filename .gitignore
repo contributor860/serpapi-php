@@ -1,0 +1,15 @@
+vendor/*
+.vscode/*
+
+# PHPUnit
+.phpunit.result.cache
+
+# MacOS Specific
+.DS_Store
+
+composer.lock
+composer.phar
+tmp/
+
+.env
+.env.*

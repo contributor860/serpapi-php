@@ -1,0 +1,66 @@
+name: PHP build
+on:
+  push:
+    branches: [ master ]
+  pull_request:
+    branches: [ master ]
+
+jobs:
+  lint:
+    runs-on: ubuntu-latest
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v4
+
+    - name: Setup PHP
+      uses: shivammathur/setup-php@v2
+      with:
+        php-version: '8.5'
+        extensions: mbstring, intl, curl
+        tools: composer
+
+    - name: Install dependencies
+      run: composer install --prefer-dist --no-progress
+
+    - name: Run linter
+      run: composer run-script lint
+
+  run:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        php-versions: ['7.2', '7.3', '7.4', '8.0', '8.1', '8.2', '8.3', '8.4', '8.5']
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v4
+
+    - name: Setup PHP
+      uses: shivammathur/setup-php@v2
+      with:
+        php-version: ${{ matrix.php-versions }}
+        extensions: mbstring, intl, curl
+        ini-values: post_max_size=256M, max_execution_time=180
+
+    - name: Verify required PHP extensions
+      run: |
+        php -m | grep -i curl
+        php -m | grep -i json
+        
+    - name: Validate composer.json
+      run: composer validate
+
+    - name: Cache Composer packages
+      uses: actions/cache@v4
+      with:
+        path: ~/.composer/cache
+        key: ${{ runner.os }}-php-${{ matrix.php-versions }}-composer-${{ hashFiles('composer.json') }}
+        restore-keys: |
+          ${{ runner.os }}-php-${{ matrix.php-versions }}-composer-
+
+    - name: Install dependencies
+      run: composer install --prefer-dist --no-progress
+
+    - name: Run test suite
+      run: composer run-script test
+      env:
+        API_KEY: ${{ secrets.API_KEY }}
