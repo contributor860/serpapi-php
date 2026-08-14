@@ -1,0 +1,90 @@
+name: Publish release to Packagist
+
+on:
+  release:
+    types: [published]
+
+permissions:
+  contents: read
+
+jobs:
+  verify-tag:
+    name: Verify release tag
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out the released revision
+        uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6
+
+      - name: Verify release tag matches the package version
+        shell: bash
+        run: |
+          set -euo pipefail
+          package_version="$(php -r 'require "src/Client.php"; echo (new ReflectionClass(SerpApi\Client::class))->getConstant("VERSION");')"
+          if [[ "${GITHUB_REF_NAME}" != "v${package_version}" ]]; then
+            echo "Release tag ${GITHUB_REF_NAME} must equal v${package_version}." >&2
+            exit 1
+          fi
+
+  test:
+    name: Test with PHP ${{ matrix.php-version }}
+    needs: verify-tag
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        php-version: ["7.2", "7.3", "7.4", "8.0", "8.1", "8.2", "8.3", "8.4", "8.5"]
+
+    steps:
+      - name: Check out the released revision
+        uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6
+
+      - name: Setup PHP ${{ matrix.php-version }}
+        uses: shivammathur/setup-php@f3e473d116dcccaddc5834248c87452386958240 # 2.37.2
+        with:
+          php-version: ${{ matrix.php-version }}
+          extensions: mbstring, intl, curl
+          ini-values: post_max_size=256M, max_execution_time=180
+          coverage: none
+          tools: composer
+
+      - name: Validate composer.json
+        run: composer validate
+
+      - name: Install dependencies
+        run: composer install --prefer-dist --no-progress
+
+      - name: Lint
+        if: matrix.php-version == '8.5'
+        run: composer run-script lint
+
+      - name: Test
+        run: composer run-script test
+        env:
+          API_KEY: ${{ secrets.API_KEY }}
+
+  publish:
+    name: Publish to Packagist
+    needs: [verify-tag, test]
+    runs-on: ubuntu-latest
+    environment:
+      name: packagist
+      url: https://packagist.org/packages/serpapi/serpapi-php
+    env:
+      PACKAGIST_USERNAME: ${{ secrets.PACKAGIST_USERNAME }}
+      PACKAGIST_TOKEN: ${{ secrets.PACKAGIST_TOKEN }}
+
+    steps:
+      - name: Trigger a Packagist crawl
+        shell: bash
+        run: |
+          set -euo pipefail
+          if [[ -z "${PACKAGIST_USERNAME}" || -z "${PACKAGIST_TOKEN}" ]]; then
+            echo "Add PACKAGIST_USERNAME and PACKAGIST_TOKEN as GitHub Actions secrets on the packagist environment." >&2
+            exit 1
+          fi
+
+          curl -sS --fail-with-body -X POST \
+            -H 'Content-Type: application/json' \
+            -H 'User-Agent: serpapi-php-release (mailto:contact@serpapi.com)' \
+            -d "{\"repository\":{\"url\":\"https://github.com/${GITHUB_REPOSITORY}\"}}" \
+            "https://packagist.org/api/update-package?username=${PACKAGIST_USERNAME}&apiToken=${PACKAGIST_TOKEN}"
