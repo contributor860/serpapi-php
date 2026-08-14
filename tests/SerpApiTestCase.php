@@ -14,7 +14,7 @@ abstract class SerpApiTestCase extends TestCase {
     $resolved = $this->resolveApiKey();
 
     if ($resolved === null && $this->requiresApiKey()) {
-      $this->markTestSkipped('API_KEY is not set');
+      $this->markTestSkipped('SERPAPI_KEY is not set');
       return;
     }
 
@@ -25,16 +25,25 @@ abstract class SerpApiTestCase extends TestCase {
     return true;
   }
 
+  /**
+   * Look up the secret key, preferring SERPAPI_KEY. API_KEY is the previous
+   * name, still accepted so existing setups keep working.
+   *
+   * @var array<int, string>
+   */
+  protected static $api_key_env_names = ['SERPAPI_KEY', 'API_KEY'];
+
   protected function resolveApiKey(): ?string {
-    $env = $_ENV['API_KEY'] ?? null;
+    foreach (self::$api_key_env_names as $name) {
+      $env = $_ENV[$name] ?? null;
+      if (!empty($env)) {
+        return $env;
+      }
 
-    if (!empty($env)) {
-      return $env;
-    }
-
-    $value = getenv('API_KEY');
-    if (!empty($value)) {
-      return $value;
+      $value = getenv($name);
+      if (!empty($value)) {
+        return $value;
+      }
     }
 
     return null;

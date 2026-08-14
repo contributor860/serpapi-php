@@ -9,7 +9,7 @@
  * is much faster than running the searches one after another.
  *
  * Usage:
- *  export API_KEY="your secret key"
+ *  export SERPAPI_KEY="your secret key"
  *  php demo/demo_async.php
  */
 
@@ -31,9 +31,9 @@ function search_metadata($response): object {
   return $response->search_metadata;
 }
 
-$api_key = getenv('API_KEY');
+$api_key = getenv('SERPAPI_KEY');
 if (empty($api_key)) {
-  fwrite(STDERR, "API_KEY environment variable must be set\n");
+  fwrite(STDERR, "SERPAPI_KEY environment variable must be set\n");
   exit(1);
 }
 

@@ -15,7 +15,7 @@ def snippet(path)
   property = source[/assertResponseHasProperty\(\$response,\s*'([^']+)'/, 1] || 'organic_results'
 
   code = "use SerpApi\\Client;\n\n"
-  code += "$client = new Client(getenv('API_KEY'));\n"
+  code += "$client = new Client(getenv('SERPAPI_KEY'));\n"
   code += "$results = $client->search(#{params});\n\n"
   code += "print_r($results->#{property});\n"
 
@@ -72,7 +72,7 @@ require 'vendor/autoload.php';
 
 use SerpApi\Client;
 
-$client = new Client(getenv('API_KEY'));
+$client = new Client(getenv('SERPAPI_KEY'));
 $results = $client->search([
   'q' => 'coffee',
 ]);
@@ -110,7 +110,7 @@ The default engine is `google`. You can change it via the second constructor par
 ```php
 use SerpApi\Client;
 
-$client = new Client(getenv('API_KEY'), 'bing');
+$client = new Client(getenv('SERPAPI_KEY'), 'bing');
 $results = $client->search(['q' => 'coffee']);
 ```
 
@@ -121,7 +121,7 @@ The default request timeout is 120 seconds. Customize it via the third construct
 ```php
 use SerpApi\Client;
 
-$client = new Client(getenv('API_KEY'), 'google', 30);
+$client = new Client(getenv('SERPAPI_KEY'), 'google', 30);
 ```
 
 ## Search API
@@ -213,7 +213,7 @@ see: [https://serpapi.com/duckduckgo-search-api](https://serpapi.com/duckduckgo-
 ```php
 use SerpApi\Client;
 
-$client = new Client(getenv('API_KEY'));
+$client = new Client(getenv('SERPAPI_KEY'));
 $locations = $client->location(['q' => 'Austin', 'limit' => 3]);
 
 echo "Number of locations: " . count($locations) . "\n";
@@ -229,7 +229,7 @@ First, run a search and save the search ID:
 ```php
 use SerpApi\Client;
 
-$client = new Client(getenv('API_KEY'));
+$client = new Client(getenv('SERPAPI_KEY'));
 $results = $client->search([
   'q' => 'Coffee',
   'location' => 'Austin, Texas',
@@ -249,7 +249,7 @@ print_r($archived);
 ```php
 use SerpApi\Client;
 
-$client = new Client(getenv('API_KEY'));
+$client = new Client(getenv('SERPAPI_KEY'));
 $account = $client->account();
 print_r($account);
 ```
@@ -259,7 +259,7 @@ print_r($account);
 ```php
 use SerpApi\Client;
 
-$client = new Client(getenv('API_KEY'));
+$client = new Client(getenv('SERPAPI_KEY'));
 $html = $client->html(['q' => 'Coffee']);
 
 echo strlen($html) . " bytes of HTML\n";
@@ -298,7 +298,7 @@ The `tests/` directory includes specifications which serve the dual purposes of 
 Set your secret API key in your shell before running tests:
 
 ```bash
-export API_KEY="your_secret_key"
+export SERPAPI_KEY="your_secret_key"
 ```
 
 Install dependencies and run the test suite:

@@ -5,7 +5,7 @@
  *
  * Prerequisites:
  *  - composer install
- *  - export API_KEY="your secret key"  (get one at https://serpapi.com/dashboard)
+ *  - export SERPAPI_KEY="your secret key"  (get one at https://serpapi.com/dashboard)
  *
  * Usage:
  *  php demo/demo.php
@@ -15,9 +15,9 @@ require __DIR__ . '/../vendor/autoload.php';
 
 use SerpApi\Client;
 
-$api_key = getenv('API_KEY');
+$api_key = getenv('SERPAPI_KEY');
 if (empty($api_key)) {
-  fwrite(STDERR, "API_KEY environment variable must be set\n");
+  fwrite(STDERR, "SERPAPI_KEY environment variable must be set\n");
   exit(1);
 }
 
