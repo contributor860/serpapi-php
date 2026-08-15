@@ -1,4 +1,4 @@
-name: PHP build
+name: serpapi-php
 on:
   push:
     branches: [ master ]
@@ -63,4 +63,4 @@ jobs:
     - name: Run test suite
       run: composer run-script test
       env:
-        API_KEY: ${{ secrets.API_KEY }}
+        SERPAPI_KEY: ${{ secrets.SERPAPI_KEY }}

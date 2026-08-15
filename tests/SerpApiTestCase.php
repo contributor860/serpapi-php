@@ -16,7 +16,7 @@ abstract class SerpApiTestCase extends TestCase
     $resolved = $this->resolveApiKey();
 
     if ($resolved === null && $this->requiresApiKey()) {
-      $this->markTestSkipped('API_KEY is not set');
+      $this->markTestSkipped('SERPAPI_KEY is not set');
       return;
     }
 
@@ -30,13 +30,13 @@ abstract class SerpApiTestCase extends TestCase
 
   protected function resolveApiKey(): ?string
   {
-    $env = $_ENV['API_KEY'] ?? null;
+    $env = $_ENV['SERPAPI_KEY'] ?? null;
 
     if (!empty($env)) {
       return $env;
     }
 
-    $value = getenv('API_KEY');
+    $value = getenv('SERPAPI_KEY');
     if (!empty($value)) {
       return $value;
     }
