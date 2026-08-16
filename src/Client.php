@@ -10,6 +10,12 @@ class Client {
   /** Client identifier reported to SerpApi for usage statistics. */
   const SOURCE = 'serpapi-php:' . self::VERSION;
 
+  /** Output formats accepted by the API. */
+  const FORMATS = ['json', 'html', 'md'];
+
+  /** Formats returned to the caller as a raw string rather than decoded. */
+  const RAW_FORMATS = ['html', 'md'];
+
   /** @var string */
   private $api_key;
 
@@ -270,6 +276,21 @@ class Client {
   }
 
   /**
+   * Run a search and return the results as Markdown.
+   *
+   * The response opens with a YAML front matter block holding
+   * `search_metadata` and `search_parameters`, followed by the results as
+   * Markdown sections. Useful for feeding results to an LLM, or for RAG
+   * pipelines that index text rather than JSON.
+   *
+   * @param array<string, mixed> $params
+   * @throws SerpApiException
+   */
+  public function markdown(array $params = []): string {
+    return $this->get('/search', 'md', $params);
+  }
+
+  /**
    * Get account information using Account API.
    *
    * @return object|array<string, mixed>  stdClass, or an array when `assoc` is enabled
@@ -302,8 +323,8 @@ class Client {
       throw new SerpApiException('search_id must be present');
     }
 
-    if (!in_array($format, ['json', 'html'], true)) {
-      throw new SerpApiException('format must be json or html');
+    if (!in_array($format, self::FORMATS, true)) {
+      throw new SerpApiException('format must be json, html or md');
     }
 
     $safe_search_id = rawurlencode($search_id);
@@ -316,8 +337,10 @@ class Client {
    * @throws SerpApiException
    */
   private function get(string $endpoint, string $format = 'json', array $params = []) {
-    if (!in_array($format, ['json', 'html'], true)) {
-      throw new SerpApiException("Unsupported format '$format'. Expected 'html' or 'json'.");
+    if (!in_array($format, self::FORMATS, true)) {
+      throw new SerpApiException(
+        "Unsupported format '$format'. Expected " . implode(', ', self::FORMATS) . '.'
+      );
     }
 
     $api_key = $params['api_key'] ?? $this->api_key;
@@ -340,12 +363,12 @@ class Client {
       throw new SerpApiException('cURL error: ' . $curl_error);
     }
 
-    if ($format === 'html') {
+    if (in_array($format, self::RAW_FORMATS, true)) {
       if ($http_code === 200) {
         return $response;
       }
 
-      $this->raise_http_error($http_code, $endpoint, $query, null, null, 'html');
+      $this->raise_http_error($http_code, $endpoint, $query, null, null, $format);
     }
 
     $assoc = isset($params['assoc']) ? (bool) $params['assoc'] : $this->assoc;

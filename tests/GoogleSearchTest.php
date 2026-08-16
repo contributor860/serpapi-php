@@ -28,6 +28,23 @@ class GoogleSearchTest extends SerpApiTestCase {
     $this->assertGreaterThan(10000, strlen($response));
   }
 
+  public function test_google_markdown_returns_markdown_payload() {
+    $client = $this->serpApiClient('google');
+    $response = $client->markdown($this->search_params);
+
+    $this->assertStringStartsWith('---', $response, 'markdown output should open with YAML front matter');
+    $this->assertStringContainsString('search_metadata:', $response);
+    $this->assertStringContainsString('## ', $response, 'markdown output should contain headings');
+  }
+
+  public function test_google_search_archive_returns_markdown() {
+    $client = $this->serpApiClient('google');
+    $result = $client->search($this->search_params);
+    $archived = $client->search_archive($result->search_metadata->id, 'md');
+
+    $this->assertStringContainsString($result->search_metadata->id, $archived);
+  }
+
   public function test_google_account_returns_api_key() {
     $client = $this->serpApiClient('google');
     $info = $client->account();

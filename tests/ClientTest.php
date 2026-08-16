@@ -39,7 +39,7 @@ class ClientTest extends SerpApiTestCase {
 
   public function test_search_archive_throws_when_format_invalid() {
     $this->expectException(SerpApiException::class);
-    $this->expectExceptionMessage('format must be json or html');
+    $this->expectExceptionMessage('format must be json, html or md');
     $client = new Client('test_key');
     $client->search_archive('abc', 'xml');
   }

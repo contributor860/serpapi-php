@@ -489,6 +489,43 @@ $html = $client->html(['q' => 'Coffee']);
 echo strlen($html) . " bytes of HTML\n";
 ```
 
+### Markdown results
+
+Markdown output is convenient when feeding results to an LLM or indexing
+them for RAG, since it carries the structure of the results without the
+weight of JSON or HTML.
+
+```php
+use SerpApi\Client;
+
+$client = new Client(getenv('SERPAPI_KEY'));
+$markdown = $client->markdown(['q' => 'Coffee']);
+
+echo $markdown;
+```
+
+The response opens with a YAML front matter block holding `search_metadata`
+and `search_parameters`, followed by the results as Markdown sections:
+
+```markdown
+---
+search_metadata:
+  id: 68d2f1a4c3b19a7d5e2f0c11
+  status: Success
+---
+
+## Search Information
+
+- Query Displayed: coffee
+```
+
+A past search can also be replayed as Markdown through the Search Archive
+API, by passing `md` as the format:
+
+```php
+$markdown = $client->search_archive($search_id, 'md');
+```
+
 ## Error handling
 
 `SerpApiException` includes structured context for HTTP and API errors (status code, endpoint, search params, search id).
