@@ -30,6 +30,14 @@ class ClientIntegrationTest extends SerpApiTestCase
     $this->assertGreaterThan(10000, strlen($response));
   }
 
+  public function testMd()
+  {
+    $client = $this->serpApiClient();
+    $response = $client->md($this->searchParams);
+    $this->assertStringStartsWith('---', $response);
+    $this->assertStringContainsString('## Organic Results', $response);
+  }
+
   public function testSearch()
   {
     $client = $this->serpApiClient();

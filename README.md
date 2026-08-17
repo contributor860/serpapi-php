@@ -62,6 +62,30 @@ This example runs a search for "coffee" on Google. It returns the results as a P
 
 See the [playground](https://serpapi.com/playground) to generate your own code.
 
+## Response formats
+
+Use `search` for structured results decoded into a PHP object:
+
+```php
+$results = $client->search(['q' => 'coffee']);
+```
+
+Use `md` for a token-efficient Markdown string optimized for LLMs and AI agents:
+
+```php
+$markdown = $client->md(['q' => 'coffee']);
+```
+
+Use `html` when you need the raw search-engine response:
+
+```php
+$html = $client->html(['q' => 'coffee']);
+```
+
+Archived results are also available as Markdown with `$client->searchArchive($searchId, 'md')`.
+
+Learn more about [SerpApi Markdown output](https://serpapi.com/markdown-output).
+
 ## Configuration
 
 ### API key
@@ -468,6 +492,9 @@ Now retrieve the previous search from the archive (free of charge):
 ```php
 $archived = $client->searchArchive($search_id);
 print_r($archived);
+
+$markdown = $client->searchArchive($search_id, 'md');
+echo $markdown;
 ```
 
 ### Account API
@@ -538,6 +565,7 @@ Contributions are welcome. Feel free to submit a pull request!
 
 ## Change log
 
+ * Unreleased - Add Markdown search and archive output support
  * 1.0 - First stable version
 
 ## Conclusion
