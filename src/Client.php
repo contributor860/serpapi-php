@@ -215,7 +215,7 @@ class Client
    * @return array{response: string|false, http_code: int, curl_error: string}
    * @throws SerpApiException
    */
-  protected function request(string $url): array
+  private function request(string $url): array
   {
     $ch = curl_init();
     if ($ch === false) {

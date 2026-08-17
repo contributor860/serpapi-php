@@ -62,5 +62,9 @@ class ClientIntegrationTest extends SerpApiTestCase
     $result = $client->search($this->searchParams);
     $archived_result = $client->searchArchive($result->search_metadata->id);
     $this->assertEquals($result->search_metadata->id, $archived_result->search_metadata->id);
+
+    $archived_markdown = $client->searchArchive($result->search_metadata->id, 'md');
+    $this->assertStringStartsWith('---', $archived_markdown);
+    $this->assertStringContainsString('## Organic Results', $archived_markdown);
   }
 }
