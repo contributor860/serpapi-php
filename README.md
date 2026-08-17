@@ -50,7 +50,7 @@ require 'vendor/autoload.php';
 
 use SerpApi\Client;
 
-$client = new Client(getenv('API_KEY'));
+$client = new Client(getenv('SERPAPI_KEY'));
 $results = $client->search([
   'q' => 'coffee',
 ]);
@@ -88,7 +88,7 @@ The default engine is `google`. You can change it via the second constructor par
 ```php
 use SerpApi\Client;
 
-$client = new Client(getenv('API_KEY'), 'bing');
+$client = new Client(getenv('SERPAPI_KEY'), 'bing');
 $results = $client->search(['q' => 'coffee']);
 ```
 
@@ -99,7 +99,7 @@ The default request timeout is 120 seconds. Customize it via the third construct
 ```php
 use SerpApi\Client;
 
-$client = new Client(getenv('API_KEY'), 'google', 30);
+$client = new Client(getenv('SERPAPI_KEY'), 'google', 30);
 ```
 
 ## Search API
@@ -108,7 +108,7 @@ $client = new Client(getenv('API_KEY'), 'google', 30);
 ```php
 use SerpApi\Client;
 
-$client = new Client(getenv('API_KEY'));
+$client = new Client(getenv('SERPAPI_KEY'));
 $results = $client->search([
   'engine' => 'google',
   'tbm' => 'isch',
@@ -125,7 +125,7 @@ see: [https://serpapi.com/search-api](https://serpapi.com/search-api)
 ```php
 use SerpApi\Client;
 
-$client = new Client(getenv('API_KEY'));
+$client = new Client(getenv('SERPAPI_KEY'));
 $results = $client->search([
   'engine' => 'google_scholar',
   'q' => 'coffee',
@@ -141,7 +141,7 @@ see: [https://serpapi.com/google-scholar-api](https://serpapi.com/google-scholar
 ```php
 use SerpApi\Client;
 
-$client = new Client(getenv('API_KEY'));
+$client = new Client(getenv('SERPAPI_KEY'));
 $results = $client->search([
   'engine' => 'google_autocomplete',
   'q' => 'coffee',
@@ -157,7 +157,7 @@ see: [https://serpapi.com/google-autocomplete-api](https://serpapi.com/google-au
 ```php
 use SerpApi\Client;
 
-$client = new Client(getenv('API_KEY'));
+$client = new Client(getenv('SERPAPI_KEY'));
 $results = $client->search([
   'engine' => 'google_shopping',
   'q' => 'coffee',
@@ -173,7 +173,7 @@ see: [https://serpapi.com/google-shopping-api](https://serpapi.com/google-shoppi
 ```php
 use SerpApi\Client;
 
-$client = new Client(getenv('API_KEY'));
+$client = new Client(getenv('SERPAPI_KEY'));
 $results = $client->search([
   'engine' => 'google_maps',
   'q' => 'pizza',
@@ -191,7 +191,7 @@ see: [https://serpapi.com/google-maps-api](https://serpapi.com/google-maps-api)
 ```php
 use SerpApi\Client;
 
-$client = new Client(getenv('API_KEY'));
+$client = new Client(getenv('SERPAPI_KEY'));
 $results = $client->search([
   'engine' => 'google_jobs',
   'q' => 'coffee',
@@ -207,7 +207,7 @@ see: [https://serpapi.com/google-jobs-api](https://serpapi.com/google-jobs-api)
 ```php
 use SerpApi\Client;
 
-$client = new Client(getenv('API_KEY'));
+$client = new Client(getenv('SERPAPI_KEY'));
 $results = $client->search([
   'engine' => 'google_events',
   'q' => 'Events in Austin',
@@ -224,7 +224,7 @@ see: [https://serpapi.com/google-events-api](https://serpapi.com/google-events-a
 ```php
 use SerpApi\Client;
 
-$client = new Client(getenv('API_KEY'));
+$client = new Client(getenv('SERPAPI_KEY'));
 $results = $client->search([
   'engine' => 'google_lens',
   'url' => 'https://i.imgur.com/5bGzZi7.jpg',
@@ -242,7 +242,7 @@ see: [https://serpapi.com/google-lens-api](https://serpapi.com/google-lens-api)
 ```php
 use SerpApi\Client;
 
-$client = new Client(getenv('API_KEY'));
+$client = new Client(getenv('SERPAPI_KEY'));
 $results = $client->search([
   'engine' => 'google_play',
   'q' => 'kite',
@@ -259,7 +259,7 @@ see: [https://serpapi.com/google-play-api](https://serpapi.com/google-play-api)
 ```php
 use SerpApi\Client;
 
-$client = new Client(getenv('API_KEY'));
+$client = new Client(getenv('SERPAPI_KEY'));
 $results = $client->search([
   'engine' => 'google_local_services',
   'q' => 'electrician',
@@ -276,7 +276,7 @@ see: [https://serpapi.com/google-local-services-api](https://serpapi.com/google-
 ```php
 use SerpApi\Client;
 
-$client = new Client(getenv('API_KEY'));
+$client = new Client(getenv('SERPAPI_KEY'));
 $results = $client->search([
   'engine' => 'bing',
   'q' => 'coffee',
@@ -292,7 +292,7 @@ see: [https://serpapi.com/bing-search-api](https://serpapi.com/bing-search-api)
 ```php
 use SerpApi\Client;
 
-$client = new Client(getenv('API_KEY'));
+$client = new Client(getenv('SERPAPI_KEY'));
 $results = $client->search([
   'engine' => 'baidu',
   'q' => 'coffee',
@@ -308,7 +308,7 @@ see: [https://serpapi.com/baidu-search-api](https://serpapi.com/baidu-search-api
 ```php
 use SerpApi\Client;
 
-$client = new Client(getenv('API_KEY'));
+$client = new Client(getenv('SERPAPI_KEY'));
 $results = $client->search([
   'engine' => 'yahoo',
   'p' => 'coffee',
@@ -324,7 +324,7 @@ see: [https://serpapi.com/yahoo-search-api](https://serpapi.com/yahoo-search-api
 ```php
 use SerpApi\Client;
 
-$client = new Client(getenv('API_KEY'));
+$client = new Client(getenv('SERPAPI_KEY'));
 $results = $client->search([
   'engine' => 'youtube',
   'search_query' => 'coffee',
@@ -340,7 +340,7 @@ see: [https://serpapi.com/youtube-search-api](https://serpapi.com/youtube-search
 ```php
 use SerpApi\Client;
 
-$client = new Client(getenv('API_KEY'));
+$client = new Client(getenv('SERPAPI_KEY'));
 $results = $client->search([
   'engine' => 'walmart',
   'query' => 'coffee',
@@ -356,7 +356,7 @@ see: [https://serpapi.com/walmart-search-api](https://serpapi.com/walmart-search
 ```php
 use SerpApi\Client;
 
-$client = new Client(getenv('API_KEY'));
+$client = new Client(getenv('SERPAPI_KEY'));
 $results = $client->search([
   'engine' => 'ebay',
   '_nkw' => 'water',
@@ -372,7 +372,7 @@ see: [https://serpapi.com/ebay-search-api](https://serpapi.com/ebay-search-api)
 ```php
 use SerpApi\Client;
 
-$client = new Client(getenv('API_KEY'));
+$client = new Client(getenv('SERPAPI_KEY'));
 $results = $client->search([
   'engine' => 'naver',
   'query' => 'coffee',
@@ -388,7 +388,7 @@ see: [https://serpapi.com/naver-search-api](https://serpapi.com/naver-search-api
 ```php
 use SerpApi\Client;
 
-$client = new Client(getenv('API_KEY'));
+$client = new Client(getenv('SERPAPI_KEY'));
 $results = $client->search([
   'engine' => 'home_depot',
   'q' => 'table',
@@ -404,7 +404,7 @@ see: [https://serpapi.com/home-depot-search-api](https://serpapi.com/home-depot-
 ```php
 use SerpApi\Client;
 
-$client = new Client(getenv('API_KEY'));
+$client = new Client(getenv('SERPAPI_KEY'));
 $results = $client->search([
   'engine' => 'apple_app_store',
   'term' => 'coffee',
@@ -420,7 +420,7 @@ see: [https://serpapi.com/apple-app-store](https://serpapi.com/apple-app-store)
 ```php
 use SerpApi\Client;
 
-$client = new Client(getenv('API_KEY'));
+$client = new Client(getenv('SERPAPI_KEY'));
 $results = $client->search([
   'engine' => 'duckduckgo',
   'q' => 'coffee',
@@ -439,7 +439,7 @@ see: [https://serpapi.com/duckduckgo-search-api](https://serpapi.com/duckduckgo-
 ```php
 use SerpApi\Client;
 
-$client = new Client(getenv('API_KEY'));
+$client = new Client(getenv('SERPAPI_KEY'));
 $locations = $client->location(['q' => 'Austin', 'limit' => 3]);
 
 echo "Number of locations: " . count($locations) . "\n";
@@ -455,7 +455,7 @@ First, run a search and save the search ID:
 ```php
 use SerpApi\Client;
 
-$client = new Client(getenv('API_KEY'));
+$client = new Client(getenv('SERPAPI_KEY'));
 $results = $client->search([
   'q' => 'Coffee',
   'location' => 'Austin, Texas',
@@ -475,7 +475,7 @@ print_r($archived);
 ```php
 use SerpApi\Client;
 
-$client = new Client(getenv('API_KEY'));
+$client = new Client(getenv('SERPAPI_KEY'));
 $account = $client->account();
 print_r($account);
 ```
@@ -485,7 +485,7 @@ print_r($account);
 ```php
 use SerpApi\Client;
 
-$client = new Client(getenv('API_KEY'));
+$client = new Client(getenv('SERPAPI_KEY'));
 $html = $client->html(['q' => 'Coffee']);
 
 echo strlen($html) . " bytes of HTML\n";
@@ -524,7 +524,7 @@ The `tests/` directory includes specifications which serve the dual purposes of 
 Set your secret API key in your shell before running tests:
 
 ```bash
-export API_KEY="your_secret_key"
+export SERPAPI_KEY="your_secret_key"
 ```
 
 Install dependencies and run the test suite:
