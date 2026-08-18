@@ -30,6 +30,14 @@ class ClientIntegrationTest extends SerpApiTestCase
     $this->assertGreaterThan(10000, strlen($response));
   }
 
+  public function testMd()
+  {
+    $client = $this->serpApiClient();
+    $response = $client->md($this->searchParams);
+    $this->assertStringStartsWith('---', $response);
+    $this->assertStringContainsString('## Organic Results', $response);
+  }
+
   public function testSearch()
   {
     $client = $this->serpApiClient();
@@ -54,5 +62,9 @@ class ClientIntegrationTest extends SerpApiTestCase
     $result = $client->search($this->searchParams);
     $archived_result = $client->searchArchive($result->search_metadata->id);
     $this->assertEquals($result->search_metadata->id, $archived_result->search_metadata->id);
+
+    $archived_markdown = $client->searchArchive($result->search_metadata->id, 'md');
+    $this->assertStringStartsWith('---', $archived_markdown);
+    $this->assertStringContainsString('## Organic Results', $archived_markdown);
   }
 }

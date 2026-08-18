@@ -77,6 +77,17 @@ class Client
   }
 
   /**
+   * Run a search and return Markdown optimized for LLMs and AI agents.
+   *
+   * @param array<string, mixed> $params
+   * @throws SerpApiException
+   */
+  public function md(array $params = []): string
+  {
+    return $this->get('/search.md', 'md', $params);
+  }
+
+  /**
    * Run a search and return raw HTML.
    *
    * @param array<string, mixed> $params
@@ -122,8 +133,8 @@ class Client
       throw new SerpApiException('search_id must be present');
     }
 
-    if (!in_array($format, ['json', 'html'], true)) {
-      throw new SerpApiException('format must be json or html');
+    if (!in_array($format, ['json', 'html', 'md'], true)) {
+      throw new SerpApiException('format must be json, html, or md');
     }
 
     $safeSearchId = rawurlencode($searchId);
@@ -137,8 +148,8 @@ class Client
    */
   private function get(string $endpoint, string $format = 'json', array $params = [])
   {
-    if (!in_array($format, ['json', 'html'], true)) {
-      throw new SerpApiException("Unsupported format '$format'. Expected 'html' or 'json'.");
+    if (!in_array($format, ['json', 'html', 'md'], true)) {
+      throw new SerpApiException("Unsupported format '$format'. Expected 'html', 'json', or 'md'.");
     }
 
     $apiKey = $params['api_key'] ?? $this->apiKey;
@@ -171,12 +182,12 @@ class Client
       throw new SerpApiException('cURL error: ' . $curlError);
     }
 
-    if ($format === 'html') {
+    if (in_array($format, ['html', 'md'], true)) {
       if ($httpCode === 200) {
         return $response;
       }
 
-      $this->raiseHttpError($httpCode, $endpoint, $query, null, null, 'html');
+      $this->raiseHttpError($httpCode, $endpoint, $query, null, null, $format);
     }
 
     $decoded = json_decode($response);
