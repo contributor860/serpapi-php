@@ -8,7 +8,7 @@ Integrate search data into your PHP application. This library is the official wr
 
 SerpApi supports Google, Google Maps, Google Shopping, Baidu, Yandex, Yahoo, eBay, App Stores, and [more](https://serpapi.com).
 
-This is the new library provided by SerpApi as a replacement for our old library, which can be found [here](https://github.com/serpapi/google-search-results-php). Feel free to contact us if you need any help: contact@serpapi.com
+This is the new library provided by SerpApi as a replacement for our old library that can be found [here](https://github.com/serpapi/google-search-results-php). Feel free to contact us if you need any help: contact@serpapi.com
 
 [The full documentation is available here.](https://serpapi.com/search-api)
 
@@ -22,7 +22,7 @@ SerpApi provides a [script builder](https://serpapi.com/playground) to get you s
 
 ## Installation
 
-PHP 7.2+ with `ext-curl` and `ext-json` must be installed, along with the [Composer](https://getcomposer.org/) dependency management tool.
+PHP 7.2+ with `ext-curl` and `ext-json` must be installed along with the [Composer](https://getcomposer.org/) dependency management tool.
 
 Tested PHP versions:
 * 7.2
@@ -142,7 +142,7 @@ $results = $client->search([
 print_r($results->images_results);
 ```
 
- * Source: [tests/ExampleSearchGoogleTest.php](https://github.com/serpapi/serpapi-php/blob/master/tests/ExampleSearchGoogleTest.php)
+ * source: [tests/ExampleSearchGoogleTest.php](https://github.com/serpapi/serpapi-php/blob/master/tests/ExampleSearchGoogleTest.php)
 see: [https://serpapi.com/search-api](https://serpapi.com/search-api)
 
 ### Search Google Scholar
@@ -158,7 +158,7 @@ $results = $client->search([
 print_r($results->organic_results);
 ```
 
- * Source: [tests/ExampleSearchGoogleScholarTest.php](https://github.com/serpapi/serpapi-php/blob/master/tests/ExampleSearchGoogleScholarTest.php)
+ * source: [tests/ExampleSearchGoogleScholarTest.php](https://github.com/serpapi/serpapi-php/blob/master/tests/ExampleSearchGoogleScholarTest.php)
 see: [https://serpapi.com/google-scholar-api](https://serpapi.com/google-scholar-api)
 
 ### Search Google Autocomplete
@@ -174,7 +174,7 @@ $results = $client->search([
 print_r($results->organic_results);
 ```
 
- * Source: [tests/ExampleSearchGoogleAutocompleteTest.php](https://github.com/serpapi/serpapi-php/blob/master/tests/ExampleSearchGoogleAutocompleteTest.php)
+ * source: [tests/ExampleSearchGoogleAutocompleteTest.php](https://github.com/serpapi/serpapi-php/blob/master/tests/ExampleSearchGoogleAutocompleteTest.php)
 see: [https://serpapi.com/google-autocomplete-api](https://serpapi.com/google-autocomplete-api)
 
 ### Search Google Shopping
@@ -190,7 +190,7 @@ $results = $client->search([
 print_r($results->organic_results);
 ```
 
- * Source: [tests/ExampleSearchGoogleShoppingTest.php](https://github.com/serpapi/serpapi-php/blob/master/tests/ExampleSearchGoogleShoppingTest.php)
+ * source: [tests/ExampleSearchGoogleShoppingTest.php](https://github.com/serpapi/serpapi-php/blob/master/tests/ExampleSearchGoogleShoppingTest.php)
 see: [https://serpapi.com/google-shopping-api](https://serpapi.com/google-shopping-api)
 
 ### Search Google Maps
@@ -224,7 +224,7 @@ $results = $client->search([
 print_r($results->jobs_results);
 ```
 
- * Source: [tests/ExampleSearchGoogleJobsTest.php](https://github.com/serpapi/serpapi-php/blob/master/tests/ExampleSearchGoogleJobsTest.php)
+ * source: [tests/ExampleSearchGoogleJobsTest.php](https://github.com/serpapi/serpapi-php/blob/master/tests/ExampleSearchGoogleJobsTest.php)
 see: [https://serpapi.com/google-jobs-api](https://serpapi.com/google-jobs-api)
 
 ### Search Google Events
@@ -241,7 +241,7 @@ $results = $client->search([
 print_r($results->organic_results);
 ```
 
- * Source: [tests/ExampleSearchGoogleEventsTest.php](https://github.com/serpapi/serpapi-php/blob/master/tests/ExampleSearchGoogleEventsTest.php)
+ * source: [tests/ExampleSearchGoogleEventsTest.php](https://github.com/serpapi/serpapi-php/blob/master/tests/ExampleSearchGoogleEventsTest.php)
 see: [https://serpapi.com/google-events-api](https://serpapi.com/google-events-api)
 
 ### Search Google Lens
@@ -259,7 +259,7 @@ $results = $client->search([
 print_r($results->visual_matches);
 ```
 
- * Source: [tests/ExampleSearchGoogleLensTest.php](https://github.com/serpapi/serpapi-php/blob/master/tests/ExampleSearchGoogleLensTest.php)
+ * source: [tests/ExampleSearchGoogleLensTest.php](https://github.com/serpapi/serpapi-php/blob/master/tests/ExampleSearchGoogleLensTest.php)
 see: [https://serpapi.com/google-lens-api](https://serpapi.com/google-lens-api)
 
 ### Search Google Play
@@ -276,7 +276,7 @@ $results = $client->search([
 print_r($results->organic_results);
 ```
 
- * Source: [tests/ExampleSearchGooglePlayTest.php](https://github.com/serpapi/serpapi-php/blob/master/tests/ExampleSearchGooglePlayTest.php)
+ * source: [tests/ExampleSearchGooglePlayTest.php](https://github.com/serpapi/serpapi-php/blob/master/tests/ExampleSearchGooglePlayTest.php)
 see: [https://serpapi.com/google-play-api](https://serpapi.com/google-play-api)
 
 ### Search Google Local Services
@@ -293,7 +293,7 @@ $results = $client->search([
 print_r($results->local_ads);
 ```
 
- * Source: [tests/ExampleSearchGoogleLocalServicesTest.php](https://github.com/serpapi/serpapi-php/blob/master/tests/ExampleSearchGoogleLocalServicesTest.php)
+ * source: [tests/ExampleSearchGoogleLocalServicesTest.php](https://github.com/serpapi/serpapi-php/blob/master/tests/ExampleSearchGoogleLocalServicesTest.php)
 see: [https://serpapi.com/google-local-services-api](https://serpapi.com/google-local-services-api)
 
 ### Search Bing
@@ -309,7 +309,7 @@ $results = $client->search([
 print_r($results->organic_results);
 ```
 
- * Source: [tests/ExampleSearchBingTest.php](https://github.com/serpapi/serpapi-php/blob/master/tests/ExampleSearchBingTest.php)
+ * source: [tests/ExampleSearchBingTest.php](https://github.com/serpapi/serpapi-php/blob/master/tests/ExampleSearchBingTest.php)
 see: [https://serpapi.com/bing-search-api](https://serpapi.com/bing-search-api)
 
 ### Search Baidu
@@ -325,7 +325,7 @@ $results = $client->search([
 print_r($results->organic_results);
 ```
 
- * Source: [tests/ExampleSearchBaiduTest.php](https://github.com/serpapi/serpapi-php/blob/master/tests/ExampleSearchBaiduTest.php)
+ * source: [tests/ExampleSearchBaiduTest.php](https://github.com/serpapi/serpapi-php/blob/master/tests/ExampleSearchBaiduTest.php)
 see: [https://serpapi.com/baidu-search-api](https://serpapi.com/baidu-search-api)
 
 ### Search Yahoo
@@ -341,7 +341,7 @@ $results = $client->search([
 print_r($results->organic_results);
 ```
 
- * Source: [tests/ExampleSearchYahooTest.php](https://github.com/serpapi/serpapi-php/blob/master/tests/ExampleSearchYahooTest.php)
+ * source: [tests/ExampleSearchYahooTest.php](https://github.com/serpapi/serpapi-php/blob/master/tests/ExampleSearchYahooTest.php)
 see: [https://serpapi.com/yahoo-search-api](https://serpapi.com/yahoo-search-api)
 
 ### Search YouTube
@@ -357,7 +357,7 @@ $results = $client->search([
 print_r($results->video_results);
 ```
 
- * Source: [tests/ExampleSearchYoutubeTest.php](https://github.com/serpapi/serpapi-php/blob/master/tests/ExampleSearchYoutubeTest.php)
+ * source: [tests/ExampleSearchYoutubeTest.php](https://github.com/serpapi/serpapi-php/blob/master/tests/ExampleSearchYoutubeTest.php)
 see: [https://serpapi.com/youtube-search-api](https://serpapi.com/youtube-search-api)
 
 ### Search Walmart
@@ -373,7 +373,7 @@ $results = $client->search([
 print_r($results->organic_results);
 ```
 
- * Source: [tests/ExampleSearchWalmartTest.php](https://github.com/serpapi/serpapi-php/blob/master/tests/ExampleSearchWalmartTest.php)
+ * source: [tests/ExampleSearchWalmartTest.php](https://github.com/serpapi/serpapi-php/blob/master/tests/ExampleSearchWalmartTest.php)
 see: [https://serpapi.com/walmart-search-api](https://serpapi.com/walmart-search-api)
 
 ### Search eBay
@@ -389,7 +389,7 @@ $results = $client->search([
 print_r($results->organic_results);
 ```
 
- * Source: [tests/ExampleSearchEbayTest.php](https://github.com/serpapi/serpapi-php/blob/master/tests/ExampleSearchEbayTest.php)
+ * source: [tests/ExampleSearchEbayTest.php](https://github.com/serpapi/serpapi-php/blob/master/tests/ExampleSearchEbayTest.php)
 see: [https://serpapi.com/ebay-search-api](https://serpapi.com/ebay-search-api)
 
 ### Search Naver
@@ -405,7 +405,7 @@ $results = $client->search([
 print_r($results->ads_results);
 ```
 
- * Source: [tests/ExampleSearchNaverTest.php](https://github.com/serpapi/serpapi-php/blob/master/tests/ExampleSearchNaverTest.php)
+ * source: [tests/ExampleSearchNaverTest.php](https://github.com/serpapi/serpapi-php/blob/master/tests/ExampleSearchNaverTest.php)
 see: [https://serpapi.com/naver-search-api](https://serpapi.com/naver-search-api)
 
 ### Search Home Depot
@@ -421,7 +421,7 @@ $results = $client->search([
 print_r($results->products);
 ```
 
- * Source: [tests/ExampleSearchHomeDepotTest.php](https://github.com/serpapi/serpapi-php/blob/master/tests/ExampleSearchHomeDepotTest.php)
+ * source: [tests/ExampleSearchHomeDepotTest.php](https://github.com/serpapi/serpapi-php/blob/master/tests/ExampleSearchHomeDepotTest.php)
 see: [https://serpapi.com/home-depot-search-api](https://serpapi.com/home-depot-search-api)
 
 ### Search Apple App Store
@@ -437,7 +437,7 @@ $results = $client->search([
 print_r($results->organic_results);
 ```
 
- * Source: [tests/ExampleSearchAppleAppStoreTest.php](https://github.com/serpapi/serpapi-php/blob/master/tests/ExampleSearchAppleAppStoreTest.php)
+ * source: [tests/ExampleSearchAppleAppStoreTest.php](https://github.com/serpapi/serpapi-php/blob/master/tests/ExampleSearchAppleAppStoreTest.php)
 see: [https://serpapi.com/apple-app-store](https://serpapi.com/apple-app-store)
 
 ### Search DuckDuckGo
@@ -453,7 +453,7 @@ $results = $client->search([
 print_r($results->organic_results);
 ```
 
- * Source: [tests/ExampleSearchDuckduckgoTest.php](https://github.com/serpapi/serpapi-php/blob/master/tests/ExampleSearchDuckduckgoTest.php)
+ * source: [tests/ExampleSearchDuckduckgoTest.php](https://github.com/serpapi/serpapi-php/blob/master/tests/ExampleSearchDuckduckgoTest.php)
 see: [https://serpapi.com/duckduckgo-search-api](https://serpapi.com/duckduckgo-search-api)
 
 ## APIs supported
