@@ -242,7 +242,7 @@ use SerpApi\Client;
 $client = new Client(getenv('SERPAPI_KEY'));
 $locations = $client->location(['q' => 'Austin', 'limit' => 3]);
 
-echo "Number of locations: ". count($locations) . "\n";
+echo "Number of locations: " . count($locations) . "\n";
 print_r($locations);
 ```
 
